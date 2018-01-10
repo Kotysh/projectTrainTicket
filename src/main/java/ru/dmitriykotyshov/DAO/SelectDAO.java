@@ -61,7 +61,7 @@ public class SelectDAO {
 
         ResultSet resultSet = connectionDAO.getSelect("select * from city where id_city = "+i);
 
-        City city = null;
+        City city = new City();
 
         try {
 
@@ -101,7 +101,7 @@ public class SelectDAO {
 
             if (resultSet.next()) {
                 do {
-                    if (city == null) {
+                    if (city.getId() == 0) {
                         city = getCity(resultSet.getInt(3));
                     }
                     Station newStation = new Station(resultSet.getInt(1), resultSet.getString(2), city);

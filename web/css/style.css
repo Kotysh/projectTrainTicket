@@ -21,10 +21,10 @@ body{
 }
 
 #body{
-    height: 400px;
+    min-height: 400px;
     width: 900px;
     margin:0 auto 0;
-    padding: 5px;
+    padding: 10px;
     background-color: aliceblue;
     border-left: 1px solid black;
     border-right: 1px solid black;
@@ -39,6 +39,45 @@ body{
     width: 400px;
     border-radius: 15px;
     margin: 0 auto 20px;
+}
+
+.train{
+
+    background-color: gold;
+    border-radius: 15px;
+    margin: 20px;
+    padding: 10px;
+    border: 1px solid black;
+
+}
+
+.train h3{
+    text-align: center;
+    margin: 0px 10px;
+}
+
+.train p{
+    margin: 0px 10px;
+}
+
+.train hr{
+    text-align: left;
+    width: 650px;
+    margin: 10px 5px;
+}
+
+.train div{
+    background-color: #acc4ee;
+    border-radius: 15px;
+    margin: -50px 15px 10px 700px;
+    padding: 10px;
+    width: 100px;
+}
+
+.noRoute {
+    margin: 50px;
+    font-weight: bold;
+    font-size: 20px;
 }
 
 #form{

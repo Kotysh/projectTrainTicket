@@ -35,26 +35,28 @@
 
             List<Train> trainList = (List<Train>) request.getAttribute("listTrain");
             StringBuilder listToHtml = new StringBuilder();
-            listToHtml.append("<ul>");
             if (trainList.size() == 0){
-                listToHtml.append("Маршрутов между данными станциями не найдено...");
+                listToHtml.append("<div class=\"noRoute\">Маршрутов между данными станциями не найдено...</div>");
             }else {
                 for (int i = 0; i < trainList.size(); i++) {
-                    listToHtml.append("<li>");
-                    listToHtml.append(trainList.get(i).getNumberTrain() + " ");
-                    listToHtml.append("маршрут: ");
-                    listToHtml.append(trainList.get(i).getRoute().getNameRoute() + " ");
+
+                    listToHtml.append("<div class = \"train\">");
+                    listToHtml.append("<h3>");
                     if (trainList.get(i).getRoute().getFirstStation().getCity().getNameCity() != null)
-                        listToHtml.append(trainList.get(i).getRoute().getFirstStation().getCity().getNameCity() + "_");
-                    listToHtml.append(trainList.get(i).getRoute().getFirstStation().getNameStation() + " - ");
+                        listToHtml.append("("+trainList.get(i).getRoute().getFirstStation().getCity().getNameCity()+") ");
+                    listToHtml.append(trainList.get(i).getRoute().getFirstStation().getNameStation()+ " - ");
                     if (trainList.get(i).getRoute().getSecondStation().getCity().getNameCity() != null)
-                        listToHtml.append(trainList.get(i).getRoute().getSecondStation().getCity().getNameCity() + "_");
-                    listToHtml.append(trainList.get(i).getRoute().getSecondStation().getNameStation() + " ");
-                    listToHtml.append(trainList.get(i).getDateOut());
-                    listToHtml.append("</li>");
+                        listToHtml.append("("+trainList.get(i).getRoute().getSecondStation().getCity().getNameCity()+") ");
+                    listToHtml.append(trainList.get(i).getRoute().getSecondStation().getNameStation()+"</h3>");
+                    listToHtml.append("<hr>");
+                    listToHtml.append("<p>Маршрут: "+trainList.get(i).getRoute().getNameRoute()+"</p>");
+                    listToHtml.append("<p>Поезд №: "+trainList.get(i).getNumberTrain()+"</p>");
+                    listToHtml.append("<p>Дата и время отправка: "+trainList.get(i).getDateOut());
+                    listToHtml.append("<div>Купить билет</div></div>");
+
+
                 }
             }
-            listToHtml.append("</ul>");
 
         %>
         <%=listToHtml%>
