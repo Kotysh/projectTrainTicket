@@ -1,0 +1,71 @@
+body{
+    margin: 0;
+    padding: 0;
+}
+
+#header{
+    width: 1000px;
+    height: 100px;
+    background-color: rgba(199, 223, 255, 0.53);
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    border-bottom: 1px solid black;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    margin:0 auto 0;
+    padding: 10px;
+}
+
+#header h1{
+    text-align: center;
+}
+
+#body{
+    height: 400px;
+    width: 900px;
+    margin:0 auto 0;
+    padding: 5px;
+    background-color: aliceblue;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    border-bottom: 1px solid black;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+#body h2{
+    text-align: center;
+    background-color: #acc4ee;
+    width: 400px;
+    border-radius: 15px;
+    margin: 0 auto 20px;
+}
+
+#form{
+
+    background-image: url(../img/train.png);
+    padding: 25px;
+    margin: 25px 0 0;
+
+}
+
+#footer{
+    width: 1100px;
+    height: 20px;
+    margin:80px auto 0;
+    padding: 10px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    background-color: rgba(199, 219, 239, 0.74);
+    display: table;
+}
+
+#footer p{
+    display: table-cell;
+    vertical-align: bottom;
+    font-size: 12px;
+}
+
+.bold {
+    font-weight: bold;
+}
