@@ -1,6 +1,6 @@
 package ru.dmitriykotyshov.trainticketobjects;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
 /**
  * Created by Дмитрий on 09.01.2018.
@@ -10,13 +10,11 @@ public class Train {
     private int id;
     private String numberTrain;
     private Route route;
-    private Date dateOut;
 
-    public Train(int id, String numberTrain, Route route, Date dateOut) {
+    public Train(int id, String numberTrain, Route route) {
         this.id = id;
         this.numberTrain = numberTrain;
         this.route = route;
-        this.dateOut = dateOut;
     }
 
     @Override
@@ -24,8 +22,7 @@ public class Train {
         return "Train{" +
                 "id=" + id +
                 ", numberTrain='" + numberTrain + '\'' +
-                ", route='" + route + '\'' +
-                ", dateOut=" + dateOut +
+                ", route='" + route +
                 '}';
     }
 
@@ -53,11 +50,4 @@ public class Train {
         this.route = route;
     }
 
-    public Date getDateOut() {
-        return dateOut;
-    }
-
-    public void setDateOut(Date dateOut) {
-        this.dateOut = dateOut;
-    }
 }

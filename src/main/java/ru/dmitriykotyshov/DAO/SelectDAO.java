@@ -1,5 +1,7 @@
 package ru.dmitriykotyshov.DAO;
 
+import com.sun.org.apache.regexp.internal.RE;
+import com.sun.org.apache.xpath.internal.SourceTree;
 import ru.dmitriykotyshov.trainticketobjects.City;
 import ru.dmitriykotyshov.trainticketobjects.Route;
 import ru.dmitriykotyshov.trainticketobjects.Station;
@@ -26,7 +28,7 @@ public class SelectDAO {
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
 
-        ResultSet resultSet = connectionDAO.getSelect("select * from city where name_city = '"+nameCity+"'");
+        ResultSet resultSet = connectionDAO.getSelect("select * from city where city = '"+nameCity+"'");
 
         City city = new City();
 
@@ -59,7 +61,7 @@ public class SelectDAO {
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
 
-        ResultSet resultSet = connectionDAO.getSelect("select * from city where id_city = "+i);
+        ResultSet resultSet = connectionDAO.getSelect("select * from city where city_id = "+i);
 
         City city = new City();
 
@@ -89,11 +91,11 @@ public class SelectDAO {
      * @return - Возвращает все станции расположенные в указанном городе и станции
      * у которых имя совпадает с полем station
      */
-    public static List<Station> getStation(String station, City city){
+    public static List<Station> getStations(String station, City city){
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
 
-        ResultSet resultSet = connectionDAO.getSelect("select * from station where name_station = '" + station + "' or city = " + city.getId());
+        ResultSet resultSet = connectionDAO.getSelect("select * from station where station = '" + station + "' or city_id = " + city.getId());
 
         List<Station> stations = new ArrayList<Station>();
 
@@ -126,19 +128,74 @@ public class SelectDAO {
 
     /**
      *
+     * @param firstStationList - Список станций из пункта А
+     * @param secondStationList - Список станций в пункт Б
+     * @return  Возвращает количество маршрутов из пунка А в пункт Б
+     */
+    public static List<Route> getRoutes (List<Station> firstStationList, List<Station> secondStationList){
+
+        ConnectionDAO connectionDAO = new ConnectionDAO();
+
+        List<Route> routes = new ArrayList<Route>();
+        int orderFirstStation = 0;
+        int orderSecondStation = 0;
+
+        for (int i=0; i<firstStationList.size(); i++){
+            for (int j=0; j<secondStationList.size(); j++){
+
+                String sql = "select route_station.route_id, route.route,  count(route_station.station_id) " +
+                        "from route_station " +
+                        "join route on route.route_id = route_station.route_id " +
+                        "where route_station.station_id in ("+firstStationList.get(i).getId()+","+secondStationList.get(j).getId()+") " +
+                        "group by route_station.route_id, route.route " +
+                        "having count(route_station.station_id)=2";
+
+                ResultSet resultSet = connectionDAO.getSelect(sql);
+
+                try {
+                    if (resultSet.next()){
+                        do{
+
+                            orderFirstStation = getOrderOnRoute(resultSet.getInt(1), firstStationList.get(i).getId());
+                            orderSecondStation = getOrderOnRoute(resultSet.getInt(1), secondStationList.get(j).getId());
+
+                            if (orderFirstStation<orderSecondStation){
+
+                                routes.add(new Route(resultSet.getInt(1), resultSet.getString(2),
+                                        firstStationList.get(i), secondStationList.get(j)));
+
+                            }
+
+                        }while(resultSet.next());
+                    }
+                } catch (SQLException e) {
+                    System.out.println("getRoute() - "+e.getMessage());
+                }
+
+            }
+        }
+
+        connectionDAO.disconnect();
+
+        return routes;
+    }
+
+
+    /**
+     *
      * @param i - id первой станции
      * @param j - id второй станции
-     * @return - Возвращает идентификатор маршрута на котором находятся обе станции
+     * @return - Возвращает идентификатор маршрута route_id на котором находятся обе станции
      */
     public static int getNumberRoute (int i, int j){
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
 
-        String sql = "select route, count(station) "+
+        String sql = "select route_id, count(station_id) "+
                 "from route_station "+
-                "where station in ("+i+","+j+") "+
-                "group by route "+
-                "having count(station)=2";
+                "where station_id in ("+i+","+j+") "+
+                "group by route_id "+
+                "having count(station_id)=2";
 
         ResultSet resultSet = connectionDAO.getSelect(sql);
 
@@ -164,13 +221,13 @@ public class SelectDAO {
      * @param i - Номер станции
      * @return - Возвращает порядковый номер станции на маршруте(order_station)
      */
-    public static int getOrderRoute (int route, int i){
+    public static int getOrderOnRoute (int route, int i){
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
 
         String sql = "select order_station " +
                 "from route_station " +
-                "where route = "+route+" and station = "+i;
+                "where route_id = "+route+" and station_id = "+i;
 
         int order = 0;
 
@@ -192,42 +249,6 @@ public class SelectDAO {
 
     /**
      *
-     * @param stationsCityOne - List станций отбытия
-     * @param stationsCityTwo - List станций прибытия
-     * @return - Возвращает List<Route> маршрутов которые удовлетворяют условию
-     * (порядковый номер первой станции меньше порядкового номера второй станции)
-     */
-    public static List<Route> getRoutes(List<Station> stationsCityOne, List<Station> stationsCityTwo){
-
-        List<Route> routes = new ArrayList<Route>();
-
-        for (int i=0; i<stationsCityOne.size(); i++){
-
-            for (int j=0; j<stationsCityTwo.size(); j++){
-
-                int numberRoute = getNumberRoute(stationsCityOne.get(i).getId(), stationsCityTwo.get(j).getId());
-                int orderOneStation = getOrderRoute(numberRoute, stationsCityOne.get(i).getId());
-                int orderTwoStation = getOrderRoute(numberRoute, stationsCityTwo.get(j).getId());
-                System.out.println(orderOneStation+" "+orderTwoStation);
-                if (orderOneStation < orderTwoStation){
-                    Route newRoute = new Route(numberRoute, getNameRoute(numberRoute), stationsCityOne.get(i),
-                            stationsCityTwo.get(j));
-                    System.out.println("Маршрут есть! - "+numberRoute);
-                    routes.add(newRoute);
-                }else{
-                    System.out.println("Маршрута нет!");
-                }
-
-            }
-
-        }
-
-        return routes;
-
-    }
-
-    /**
-     *
      * @param numberRoute - Номер маршрута
      * @return - По указанному id_route(идентификатору) возвращает name_route(имя маршрута)
      */
@@ -235,7 +256,7 @@ public class SelectDAO {
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
 
-        String sql = "select name_route from route where id_route = "+numberRoute;
+        String sql = "select route from route where route_id = "+numberRoute;
 
         String name = "";
 
@@ -264,7 +285,7 @@ public class SelectDAO {
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
 
-        String sql = "select * from train where route = "+route.getId();
+        String sql = "select * from train where route_id = "+route.getId();
 
         List<Train> trains = new ArrayList<Train>();
 
@@ -275,7 +296,7 @@ public class SelectDAO {
                 do {
 
                     Train newTrain = new Train(resultSet.getInt(1), resultSet.getString(2),
-                            route, resultSet.getDate(4));
+                            route);
                     trains.add(newTrain);
                     System.out.println(newTrain);
 

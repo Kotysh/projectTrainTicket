@@ -51,9 +51,8 @@
                     listToHtml.append("<hr>");
                     listToHtml.append("<p>Маршрут: "+trainList.get(i).getRoute().getNameRoute()+"</p>");
                     listToHtml.append("<p>Поезд №: "+trainList.get(i).getNumberTrain()+"</p>");
-                    listToHtml.append("<p>Дата и время отправка: "+trainList.get(i).getDateOut());
+                    listToHtml.append("<p>Дата и время отправка: ");
                     listToHtml.append("<div>Купить билет</div></div>");
-
 
                 }
             }

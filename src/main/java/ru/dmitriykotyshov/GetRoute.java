@@ -1,5 +1,6 @@
 package ru.dmitriykotyshov;
 
+import ru.dmitriykotyshov.DAO.ConnectionDAO;
 import ru.dmitriykotyshov.trainticketobjects.City;
 import ru.dmitriykotyshov.trainticketobjects.Route;
 import ru.dmitriykotyshov.trainticketobjects.Station;
@@ -10,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.*;
 import java.util.*;
 
 import static ru.dmitriykotyshov.DAO.SelectDAO.*;
@@ -37,12 +39,28 @@ public class GetRoute extends HttpServlet {
 
         System.out.println("Поиск станций");
 
-        List<Station> stationsCityOne = getStation(fieldOne, cityOne);
-        List<Station> stationsCityTwo = getStation(fieldTwo, cityTwo);
+        List<Station> stationsCityOne = getStations(fieldOne, cityOne);
+        List<Station> stationsCityTwo = getStations(fieldTwo, cityTwo);
 
         System.out.println("Поиск маршрутов");
 
-        List<Route> routes = null;
+        List<Route> routes = getRoutes(stationsCityOne, stationsCityTwo);
+
+        System.out.println("Поиск поездов");
+
+        List<Train> trains = new ArrayList<Train>();
+
+        for (int i=0; i<routes.size(); i++){
+
+            trains.addAll(getTrain(routes.get(i)));
+
+        }
+
+        req.setAttribute("listTrain", trains);
+        req.getRequestDispatcher("routes.jsp").forward(req, resp);
+
+
+/*        List<Route> routes = null;
 
         if (stationsCityOne.size() == 0 || stationsCityTwo.size() == 0){
             System.out.println("Между указаннами станциями маршрутов не найдено");
@@ -64,7 +82,7 @@ public class GetRoute extends HttpServlet {
             req.setAttribute("listTrain", trains);
             req.getRequestDispatcher("routes.jsp").forward(req, resp);
 
-        }
+        }*/
 
 
     }
