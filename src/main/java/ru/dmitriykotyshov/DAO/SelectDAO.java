@@ -1,7 +1,5 @@
 package ru.dmitriykotyshov.DAO;
 
-import com.sun.org.apache.regexp.internal.RE;
-import com.sun.org.apache.xpath.internal.SourceTree;
 import ru.dmitriykotyshov.other.MyDate;
 import ru.dmitriykotyshov.trainticketobjects.City;
 import ru.dmitriykotyshov.trainticketobjects.Route;
@@ -12,7 +10,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 /**

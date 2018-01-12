@@ -35,10 +35,6 @@ public class GetRoute extends HttpServlet {
         Integer day = Integer.valueOf(req.getParameter("day"));
 
         MyDate myDate = new MyDate(year, month, day);
-/*
-        GregorianCalendar gregorianCalendar = new GregorianCalendar(year, month-1, day);
-        Timestamp date = new Timestamp(gregorianCalendar.getTimeInMillis());*/
-
 
         System.out.println(fieldOne + " " + fieldTwo);
 
