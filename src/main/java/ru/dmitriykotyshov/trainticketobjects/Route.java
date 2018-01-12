@@ -1,5 +1,6 @@
 package ru.dmitriykotyshov.trainticketobjects;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -10,13 +11,17 @@ public class Route {
     private int id;
     private String nameRoute;
     private Station firstStation;
-    private Station secondSttaion;
+    private Station secondStation;
+    private Timestamp timeDateFirstStation;
+    private Timestamp timeDateSecondStation;
 
-    public Route(int id, String nameRoute, Station firstStation, Station secondSttaion) {
+    public Route(int id, String nameRoute, Station firstStation, Station secondSttaion, Timestamp timeDateFirstStation, Timestamp timeDateSecondStation) {
         this.id = id;
         this.nameRoute = nameRoute;
         this.firstStation = firstStation;
-        this.secondSttaion = secondSttaion;
+        this.secondStation = secondSttaion;
+        this.timeDateFirstStation = timeDateFirstStation;
+        this.timeDateSecondStation = timeDateSecondStation;
     }
 
     @Override
@@ -25,8 +30,24 @@ public class Route {
                 "id=" + id +
                 ", nameRoute='" + nameRoute + '\'' +
                 ", firstStation=" + firstStation +
-                ", secondSttaion=" + secondSttaion +
+                ", secondSttaion=" + secondStation +
                 '}';
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getNameRoute() {
+        return nameRoute;
+    }
+
+    public void setNameRoute(String nameRoute) {
+        this.nameRoute = nameRoute;
     }
 
     public Station getFirstStation() {
@@ -38,27 +59,26 @@ public class Route {
     }
 
     public Station getSecondStation() {
-        return secondSttaion;
+        return secondStation;
     }
 
-    public void setSecondSttaion(Station secondSttaion) {
-        this.secondSttaion = secondSttaion;
+    public void setSecondStation(Station secondStation) {
+        this.secondStation = secondStation;
     }
 
-    public int getId() {
-        return id;
+    public Timestamp getTimeDateFirstStation() {
+        return timeDateFirstStation;
     }
 
-    public void setId(int numberRoute) {
-        this.id = numberRoute;
+    public void setTimeDateFirstStation(Timestamp timeDateFirstStation) {
+        this.timeDateFirstStation = timeDateFirstStation;
     }
 
-    public String getNameRoute() {
-        return nameRoute;
+    public Timestamp getTimeDateSecondStation() {
+        return timeDateSecondStation;
     }
 
-    public void setNameRoute(String nameRoute) {
-        this.nameRoute = nameRoute;
+    public void setGetTimeDateSecondStation(Timestamp getTimeDateSecondStation) {
+        this.timeDateSecondStation = getTimeDateSecondStation;
     }
-
 }

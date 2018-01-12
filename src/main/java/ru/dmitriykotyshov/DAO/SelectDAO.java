@@ -2,6 +2,7 @@ package ru.dmitriykotyshov.DAO;
 
 import com.sun.org.apache.regexp.internal.RE;
 import com.sun.org.apache.xpath.internal.SourceTree;
+import ru.dmitriykotyshov.other.MyDate;
 import ru.dmitriykotyshov.trainticketobjects.City;
 import ru.dmitriykotyshov.trainticketobjects.Route;
 import ru.dmitriykotyshov.trainticketobjects.Station;
@@ -9,7 +10,9 @@ import ru.dmitriykotyshov.trainticketobjects.Train;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
@@ -132,7 +135,7 @@ public class SelectDAO {
      * @param secondStationList - Список станций в пункт Б
      * @return  Возвращает количество маршрутов из пунка А в пункт Б
      */
-    public static List<Route> getRoutes (List<Station> firstStationList, List<Station> secondStationList){
+    public static List<Route> getRoutes (List<Station> firstStationList, List<Station> secondStationList, MyDate date){
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
 
@@ -143,7 +146,7 @@ public class SelectDAO {
         for (int i=0; i<firstStationList.size(); i++){
             for (int j=0; j<secondStationList.size(); j++){
 
-                String sql = "select route_station.route_id, route.route,  count(route_station.station_id) " +
+                String sql = "select route_station.route_id, route.route, count(route_station.station_id) " +
                         "from route_station " +
                         "join route on route.route_id = route_station.route_id " +
                         "where route_station.station_id in ("+firstStationList.get(i).getId()+","+secondStationList.get(j).getId()+") " +
@@ -156,13 +159,16 @@ public class SelectDAO {
                     if (resultSet.next()){
                         do{
 
-                            orderFirstStation = getOrderOnRoute(resultSet.getInt(1), firstStationList.get(i).getId());
-                            orderSecondStation = getOrderOnRoute(resultSet.getInt(1), secondStationList.get(j).getId());
+                            orderFirstStation = getOrderOnRoute(resultSet.getInt(1), firstStationList.get(i).getId(), date, 1);
+                            orderSecondStation = getOrderOnRoute(resultSet.getInt(1), secondStationList.get(j).getId(), date, 2);
 
                             if (orderFirstStation<orderSecondStation){
 
+                                Timestamp timestampFirstStation = getTimestamp(resultSet.getInt(1), firstStationList.get(i).getId(), date, 1);
+                                Timestamp timestampSecondStation = getTimestamp(resultSet.getInt(1), secondStationList.get(j).getId(), date, 2);
+
                                 routes.add(new Route(resultSet.getInt(1), resultSet.getString(2),
-                                        firstStationList.get(i), secondStationList.get(j)));
+                                        firstStationList.get(i), secondStationList.get(j), timestampFirstStation, timestampSecondStation));
 
                             }
 
@@ -178,6 +184,44 @@ public class SelectDAO {
         connectionDAO.disconnect();
 
         return routes;
+    }
+
+    /**
+     *
+     * @param route - Маршрут на котором находятся какое то количество поездов
+     * @return - Возвращает List<Train> поездов, которые находятся на данном маршруте
+     */
+    public static List<Train> getTrain(Route route){
+
+        ConnectionDAO connectionDAO = new ConnectionDAO();
+
+        String sql = "select * from train where route_id = "+route.getId();
+
+        List<Train> trains = new ArrayList<Train>();
+
+        ResultSet resultSet = connectionDAO.getSelect(sql);
+
+        try {
+            if (resultSet.next()) {
+                do {
+
+                    Train newTrain = new Train(resultSet.getInt(1), resultSet.getString(2),
+                            route);
+                    trains.add(newTrain);
+                    System.out.println(newTrain);
+
+                } while (resultSet.next());
+            }else{
+                System.out.println("Поезда на маршруте "+route.getNameRoute()+" отсутствуют");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        connectionDAO.disconnect();
+
+        return trains;
+
     }
 
 
@@ -221,13 +265,23 @@ public class SelectDAO {
      * @param i - Номер станции
      * @return - Возвращает порядковый номер станции на маршруте(order_station)
      */
-    public static int getOrderOnRoute (int route, int i){
+    public static int getOrderOnRoute (int route, int i, MyDate date, int index){
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
-
-        String sql = "select order_station " +
-                "from route_station " +
-                "where route_id = "+route+" and station_id = "+i;
+        String sql;
+        if (index == 1) {//откуда = 1
+            sql = "select order_station " +
+                    "from route_station " +
+                    "where route_id = " + route + " and station_id = " + i + " " +
+                    "and DEPARTURE_TIME>TO_TIMESTAMP('"+date.getYear()+"/"+date.getMonth()+"/"+date.getDay()+"', 'YYYY/MM/DD') " +
+                    "and DEPARTURE_TIME<TO_TIMESTAMP('"+date.getYear()+"/"+date.getMonth()+"/"+(date.getDay()+1)+"', 'YYYY/MM/DD')";
+        }else{//куда = 2
+            sql = "select order_station "+
+                    "from route_station "+
+                    "where route_id = "+route+" and station_id = "+i+" "+
+                    "and ARRIVAL_TIME>TO_TIMESTAMP('"+date.getYear()+"/"+date.getMonth()+"/"+date.getDay()+"', 'YYYY/MM/DD') "+
+                    "and ARRIVAL_TIME<TO_TIMESTAMP('"+date.getYear()+"/"+date.getMonth()+"/"+(date.getDay()+1)+"', 'YYYY/MM/DD')";
+        }
 
         int order = 0;
 
@@ -245,6 +299,44 @@ public class SelectDAO {
 
         return order;
 
+    }
+
+    public static Timestamp getTimestamp(int route, int station, MyDate date, int index){
+
+        ConnectionDAO connectionDAO = new ConnectionDAO();
+
+        String sql;
+
+        if (index == 1) {//откуда = 1
+            sql = "select DEPARTURE_TIME " +
+                    "from route_station " +
+                    "where route_id = " + route + " and station_id = " + station + " " +
+                    "and DEPARTURE_TIME>TO_TIMESTAMP('"+date.getYear()+"/"+date.getMonth()+"/"+date.getDay()+"', 'YYYY/MM/DD') " +
+                    "and DEPARTURE_TIME<TO_TIMESTAMP('"+date.getYear()+"/"+date.getMonth()+"/"+(date.getDay()+1)+"', 'YYYY/MM/DD')";
+        }else{//куда = 2
+            sql = "select ARRIVAL_TIME "+
+                    "from route_station "+
+                    "where route_id = "+route+" and station_id = "+station+" "+
+                    "and ARRIVAL_TIME>TO_TIMESTAMP('"+date.getYear()+"/"+date.getMonth()+"/"+date.getDay()+"', 'YYYY/MM/DD') "+
+                    "and ARRIVAL_TIME<TO_TIMESTAMP('"+date.getYear()+"/"+date.getMonth()+"/"+(date.getDay()+1)+"', 'YYYY/MM/DD')";
+        }
+
+        Timestamp timestamp = null;
+
+        ResultSet resultSet = connectionDAO.getSelect(sql);
+
+        try {
+            if (resultSet.next()){
+                timestamp = resultSet.getTimestamp(1);
+            }
+        } catch (SQLException e) {
+            System.out.println("getOrderRoute - " + e.getMessage());
+        }
+
+        connectionDAO.disconnect();
+
+
+        return timestamp;
     }
 
     /**
@@ -273,44 +365,6 @@ public class SelectDAO {
         connectionDAO.disconnect();
 
         return name;
-
-    }
-
-    /**
-     *
-     * @param route - Маршрут на котором находятся какое то количество поездов
-     * @return - Возвращает List<Train> поездов, которые находятся на данном маршруте
-     */
-    public static List<Train> getTrain(Route route){
-
-        ConnectionDAO connectionDAO = new ConnectionDAO();
-
-        String sql = "select * from train where route_id = "+route.getId();
-
-        List<Train> trains = new ArrayList<Train>();
-
-        ResultSet resultSet = connectionDAO.getSelect(sql);
-
-        try {
-            if (resultSet.next()) {
-                do {
-
-                    Train newTrain = new Train(resultSet.getInt(1), resultSet.getString(2),
-                            route);
-                    trains.add(newTrain);
-                    System.out.println(newTrain);
-
-                } while (resultSet.next());
-            }else{
-                System.out.println("Поезда на маршруте "+route.getNameRoute()+" отсутствуют");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        connectionDAO.disconnect();
-
-        return trains;
 
     }
 

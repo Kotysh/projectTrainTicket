@@ -25,6 +25,11 @@
                 <tr>
                     <td><label for="stationOne"><span class="bold">Откуда:</span> </label></td><td><input type="text" id="stationOne" name="stationOne"></td>
                     <td><label for="stationTwo"><span class="bold">Куда:</span> </label></td><td><input type="text" id="stationTwo" name="stationTwo"></td>
+                </tr>
+                <tr>
+                    <td><label for="year"><span class="bold">Год:</span> </label></td><td><input type="text" id="year" name="year" value="2018"></td>
+                    <td><label for="month"><span class="bold">Месяц:</span> </label></td><td><input type="text" id="month" name="month"></td>
+                    <td><label for="day"><span class="bold">День:</span> </label></td><td><input type="text" id="day" name="day"></td>
                     <td colspan="2"><input type="submit" value="Найти"></td>
                 </tr>
             </table>
@@ -51,7 +56,8 @@
                     listToHtml.append("<hr>");
                     listToHtml.append("<p>Маршрут: "+trainList.get(i).getRoute().getNameRoute()+"</p>");
                     listToHtml.append("<p>Поезд №: "+trainList.get(i).getNumberTrain()+"</p>");
-                    listToHtml.append("<p>Дата и время отправка: ");
+                    listToHtml.append("<p>Дата и время отправка: "+trainList.get(i).getRoute().getTimeDateFirstStation()+"</p>");
+                    listToHtml.append("<p>Дата и время прибытия: "+trainList.get(i).getRoute().getTimeDateSecondStation()+"</p>");
                     listToHtml.append("<div>Купить билет</div></div>");
 
                 }

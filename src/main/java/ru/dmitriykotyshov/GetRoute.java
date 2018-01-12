@@ -1,6 +1,7 @@
 package ru.dmitriykotyshov;
 
 import ru.dmitriykotyshov.DAO.ConnectionDAO;
+import ru.dmitriykotyshov.other.MyDate;
 import ru.dmitriykotyshov.trainticketobjects.City;
 import ru.dmitriykotyshov.trainticketobjects.Route;
 import ru.dmitriykotyshov.trainticketobjects.Station;
@@ -29,6 +30,16 @@ public class GetRoute extends HttpServlet {
         String fieldOne = new String(req.getParameter("stationOne")).toLowerCase();
         String fieldTwo = new String(req.getParameter("stationTwo")).toLowerCase();
 
+        Integer year = Integer.valueOf(req.getParameter("year"));
+        Integer month = Integer.valueOf(req.getParameter("month"));
+        Integer day = Integer.valueOf(req.getParameter("day"));
+
+        MyDate myDate = new MyDate(year, month, day);
+/*
+        GregorianCalendar gregorianCalendar = new GregorianCalendar(year, month-1, day);
+        Timestamp date = new Timestamp(gregorianCalendar.getTimeInMillis());*/
+
+
         System.out.println(fieldOne + " " + fieldTwo);
 
         System.out.println("Поиск городов");
@@ -44,7 +55,7 @@ public class GetRoute extends HttpServlet {
 
         System.out.println("Поиск маршрутов");
 
-        List<Route> routes = getRoutes(stationsCityOne, stationsCityTwo);
+        List<Route> routes = getRoutes(stationsCityOne, stationsCityTwo, myDate);
 
         System.out.println("Поиск поездов");
 
@@ -58,32 +69,6 @@ public class GetRoute extends HttpServlet {
 
         req.setAttribute("listTrain", trains);
         req.getRequestDispatcher("routes.jsp").forward(req, resp);
-
-
-/*        List<Route> routes = null;
-
-        if (stationsCityOne.size() == 0 || stationsCityTwo.size() == 0){
-            System.out.println("Между указаннами станциями маршрутов не найдено");
-        }else{
-
-            routes = getRoutes(stationsCityOne, stationsCityTwo);
-            System.out.println(routes);
-
-            System.out.println("Поиск поездов");
-
-            List<Train> trains = new ArrayList<Train>();
-
-            for (int i=0; i<routes.size(); i++){
-
-                trains.addAll(getTrain(routes.get(i)));
-
-            }
-
-            req.setAttribute("listTrain", trains);
-            req.getRequestDispatcher("routes.jsp").forward(req, resp);
-
-        }*/
-
 
     }
 
