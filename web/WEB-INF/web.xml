@@ -13,5 +13,67 @@
         <url-pattern>/getroute</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>Admin</servlet-name>
+        <servlet-class>ru.dmitriykotyshov.admin.Admin</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Admin</servlet-name>
+        <url-pattern>/admin</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>AdminCity</servlet-name>
+        <servlet-class>ru.dmitriykotyshov.admin.AdminCity</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AdminCity</servlet-name>
+        <url-pattern>/city</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>AddCity</servlet-name>
+        <servlet-class>ru.dmitriykotyshov.admin.AddCity</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AddCity</servlet-name>
+        <url-pattern>/addCity</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>DeleteCity</servlet-name>
+        <servlet-class>ru.dmitriykotyshov.admin.DeleteCity</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DeleteCity</servlet-name>
+        <url-pattern>/delCity</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>AdminStation</servlet-name>
+        <servlet-class>ru.dmitriykotyshov.admin.AdminStation</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AdminStation</servlet-name>
+        <url-pattern>/station</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>AddStation</servlet-name>
+        <servlet-class>ru.dmitriykotyshov.admin.AddStation</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AddStation</servlet-name>
+        <url-pattern>/addStation</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>DeleteStation</servlet-name>
+        <servlet-class>ru.dmitriykotyshov.admin.DeleteStation</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DeleteStation</servlet-name>
+        <url-pattern>/delStation</url-pattern>
+    </servlet-mapping>
 
 </web-app>

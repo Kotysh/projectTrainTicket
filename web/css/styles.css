@@ -77,7 +77,7 @@ body{
 .noRoute {
     margin: 50px;
     font-weight: bold;
-    font-size: 20px;
+    font-size: 25px;
 }
 
 #form{
@@ -107,4 +107,14 @@ body{
 
 .bold {
     font-weight: bold;
+}
+
+.adminTable {
+    border: 1px solid black;
+    border-collapse: collapse;
+    text-align: center;
+    margin: 0 auto 0;
+}
+.adminTable tr, .adminTable td{
+    border: 1px solid black;
 }

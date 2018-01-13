@@ -10,7 +10,7 @@
   <head>
     <title>TrainTicket</title>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/styles.css">
   </head>
   <body>
     <div id="header">
@@ -26,7 +26,7 @@
               <td><label for="stationTwo"><span class="bold">Куда:</span> </label></td><td><input type="text" id="stationTwo" name="stationTwo"></td>
             </tr>
             <tr>
-              <td><label for="year"><span class="bold">Год:</span> </label></td><td><input type="text" id="year" name="year" value="2018"></td>
+              <td><label for="year"><span class="bold">Год:</span> </label></td><td><input type="text" id="year" name="year"></td>
               <td><label for="month"><span class="bold">Месяц:</span> </label></td><td><input type="text" id="month" name="month"></td>
               <td><label for="day"><span class="bold">День:</span> </label></td><td><input type="text" id="day" name="day"></td>
               <td colspan="2"><input type="submit" value="Найти"></td>

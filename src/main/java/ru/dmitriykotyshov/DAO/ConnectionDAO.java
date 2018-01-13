@@ -41,14 +41,27 @@ public class ConnectionDAO {
 
             connection = dataSource.getConnection();
             statement = connection.createStatement();
-            String sql = select;
-            resultSet = statement.executeQuery(sql);
+            resultSet = statement.executeQuery(select);
 
         } catch (SQLException e) {
             System.out.println("Error: " + e.getMessage());
         }
 
         return resultSet;
+
+    }
+
+    public void operatorDML (String sql){
+
+        try {
+
+            connection = dataSource.getConnection();
+            statement = connection.createStatement();
+            statement.execute(sql);
+
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
 
     }
 
@@ -61,3 +74,7 @@ public class ConnectionDAO {
     }
 
 }
+
+
+
+
