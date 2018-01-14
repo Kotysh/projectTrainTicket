@@ -11,7 +11,7 @@ import java.io.IOException;
 /**
  * Created by Дмитрий on 13.01.2018.
  */
-public class DeleteCity extends HttpServlet {
+public class AddDocument extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -19,8 +19,8 @@ public class DeleteCity extends HttpServlet {
         req.setCharacterEncoding("UTF-8");
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
-        String  document_id = (req.getParameter("document"));
-        connectionDAO.operatorDML("delete from city where city_id = "+document_id);
+        String document = req.getParameter("document");
+        connectionDAO.operatorDML("insert into document (document) values ('"+document+"')");
         connectionDAO.disconnect();
 
         req.getRequestDispatcher("document").forward(req, resp);

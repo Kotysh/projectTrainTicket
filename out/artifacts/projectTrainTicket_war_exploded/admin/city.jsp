@@ -17,6 +17,7 @@
 <div id="header">
     <h1>Города</h1>
 </div>
+<div id="wrap">
 <div id="body">
     <p><a href="/admin">На главную администратора</a></p>
     <form action="/addCity" method="get">
@@ -53,6 +54,7 @@
         %>
         <%=stringBuilder%>
     </table>
+</div>
 </div>
 <div id="footer">
     <p>Дмитрий Котяшов 2к18<br>

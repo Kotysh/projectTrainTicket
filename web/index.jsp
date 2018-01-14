@@ -13,12 +13,15 @@
     <link rel="stylesheet" href="css/styles.css">
   </head>
   <body>
+  <div id="wrap">
     <div id="header">
       <h1>Train&Ticket</h1>
     </div>
     <div id="body">
+      <h2>Добро пожаловать!</h2>
+      <p>На нашем портале, Вы можете приобрести билет на поезд</p>
       <div id="form">
-      <h2>Укажите маршрут и дату поездки</h2>
+        <h2>Укажите маршрут и дату поездки</h2>
         <form action="/getroute" method="post">
           <table align="center">
             <tr>
@@ -35,6 +38,7 @@
         </form>
       </div>
     </div>
+  </div>
     <div id="footer">
       <p>Дмитрий Котяшов 2к18<br>
         kotyshok@yandex.ru</p>

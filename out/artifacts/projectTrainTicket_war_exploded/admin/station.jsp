@@ -17,6 +17,7 @@
 <div id="header">
     <h1>Станции</h1>
 </div>
+<div id="wrap">
 <div id="body">
     <p><a href="/admin">На главную администратора</a></p>
     <form action="/addStation" method="get">
@@ -55,6 +56,7 @@
         %>
         <%=stringBuilder%>
     </table>
+</div>
 </div>
 <div id="footer">
     <p>Дмитрий Котяшов 2к18<br>

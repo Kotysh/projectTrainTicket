@@ -76,4 +76,32 @@
         <url-pattern>/delStation</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>AdminDocument</servlet-name>
+        <servlet-class>ru.dmitriykotyshov.admin.AdminDocument</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AdminDocument</servlet-name>
+        <url-pattern>/document</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>AddDocument</servlet-name>
+        <servlet-class>ru.dmitriykotyshov.admin.AddDocument</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AddDocument</servlet-name>
+        <url-pattern>/addDocument</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>DeleteDocument</servlet-name>
+        <servlet-class>ru.dmitriykotyshov.admin.DeleteDocument</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DeleteDocument</servlet-name>
+        <url-pattern>/delDocument</url-pattern>
+    </servlet-mapping>
+
+
 </web-app>
