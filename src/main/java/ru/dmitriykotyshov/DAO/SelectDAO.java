@@ -1,10 +1,7 @@
 package ru.dmitriykotyshov.DAO;
 
 import ru.dmitriykotyshov.other.MyDate;
-import ru.dmitriykotyshov.trainticketobjects.City;
-import ru.dmitriykotyshov.trainticketobjects.Route;
-import ru.dmitriykotyshov.trainticketobjects.Station;
-import ru.dmitriykotyshov.trainticketobjects.Train;
+import ru.dmitriykotyshov.trainticketobjects.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -221,6 +218,37 @@ public class SelectDAO {
 
     }
 
+    public static List<Wagon> getWagons(Train train){
+
+        ConnectionDAO connectionDAO = new ConnectionDAO();
+
+        List<Wagon> wagons = new ArrayList<Wagon>();
+
+        String sql = "select wagon.wagon_id, wagon.order_wagon, type_wagon.type_name, type_wagon.bio_tiolet, type_wagon.air_condition, type_wagon.count_place " +
+                "from wagon " +
+                "join type_wagon on wagon.type_wagon_id = type_wagon.type_wagon_id " +
+                "where wagon.train_id = "+train.getId()+" "+
+                "order by order_wagon";
+
+        ResultSet resultSet = connectionDAO.getSelect(sql);
+
+        try {
+            if (resultSet.next()){
+                do{
+                    Wagon wagon = new Wagon(resultSet.getInt(1), train,
+                            resultSet.getString(3), resultSet.getString(4) != null, resultSet.getString(5) != null, resultSet.getInt(2));
+                    System.out.println(wagon);
+                    wagons.add(wagon);
+                }while (resultSet.next());
+            }else{
+                System.out.println("У поезда "+train.getNumberTrain()+" нет вагонов");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return wagons;
+    }
 
     /**
      *

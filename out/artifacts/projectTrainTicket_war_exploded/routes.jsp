@@ -1,5 +1,8 @@
 <%@ page import="ru.dmitriykotyshov.trainticketobjects.Train" %>
-<%@ page import="java.util.List" %><%--
+<%@ page import="java.util.List" %>
+<%@ page import="com.fasterxml.jackson.databind.ObjectMapper" %>
+<%@ page import="com.fasterxml.jackson.core.type.TypeReference" %>
+<%@ page import="java.util.ArrayList" %><%--
   Created by IntelliJ IDEA.
   User: Дмитрий
   Date: 09.01.2018
@@ -8,7 +11,11 @@
 --%>
 
 <%
-    List<Train> trainList = (List<Train>) request.getAttribute("listTrain");
+
+    ObjectMapper objectMapper = new ObjectMapper();
+    String str = (String) request.getAttribute("json");
+    List<Train> trainList = objectMapper.readValue(str, new TypeReference<ArrayList<Train>>(){});
+
     StringBuilder listToHtml = new StringBuilder();
     if (trainList.size() == 0){
         listToHtml.append("<div class=\"noRoute\">Маршрутов не найдено...</div>");
@@ -28,7 +35,7 @@
             listToHtml.append("<p>Поезд №: "+trainList.get(i).getNumberTrain()+"</p>");
             listToHtml.append("<p>Дата и время отправка: "+trainList.get(i).getRoute().getTimeDateFirstStation()+"</p>");
             listToHtml.append("<p>Дата и время прибытия: "+trainList.get(i).getRoute().getTimeDateSecondStation()+"</p>");
-            listToHtml.append("<div><a href=\"#\">Купить билет</a></div></div>");
+            listToHtml.append("<div><a href=\"javascript: goToTrain(jsonParse["+i+"])\">Купить билет</a></div></div>");
             listToHtml.append("\n");
         }
     }
@@ -74,3 +81,8 @@
 </div>
 </body>
 </html>
+<script src="scripts.js" defer>
+</script>
+<script defer>
+    var jsonParse = JSON.parse('<%=str%>');
+</script>

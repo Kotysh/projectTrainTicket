@@ -57,6 +57,16 @@ body{
 
 }
 
+.wagon{
+
+    background-color: #cbff75;
+    border-radius: 5px;
+    margin: 20px;
+    padding: 10px;
+    border: 1px solid black;
+
+}
+
 .train h3{
     text-align: center;
     margin: 0px 10px;
@@ -72,12 +82,12 @@ body{
     margin: 10px 5px;
 }
 
-.train div{
+.train div, .wagon div{
     background-color: #acc4ee;
     border-radius: 15px;
     margin: -50px 15px 10px 700px;
     padding: 10px;
-    width: 100px;
+    min-width: 100px;
 }
 
 .noRoute {

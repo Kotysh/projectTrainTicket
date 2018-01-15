@@ -14,6 +14,15 @@
     </servlet-mapping>
 
     <servlet>
+        <servlet-name>GetTrain</servlet-name>
+        <servlet-class>ru.dmitriykotyshov.GetTrain</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GetTrain</servlet-name>
+        <url-pattern>/gettrain</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>Admin</servlet-name>
         <servlet-class>ru.dmitriykotyshov.admin.Admin</servlet-class>
     </servlet>
@@ -101,6 +110,33 @@
     <servlet-mapping>
         <servlet-name>DeleteDocument</servlet-name>
         <url-pattern>/delDocument</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>AdminRoute</servlet-name>
+        <servlet-class>ru.dmitriykotyshov.admin.AdminRoute</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AdminRoute</servlet-name>
+        <url-pattern>/route</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>AddRoute</servlet-name>
+        <servlet-class>ru.dmitriykotyshov.admin.AddRoute</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AddRoute</servlet-name>
+        <url-pattern>/addRoute</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>DeleteRoute</servlet-name>
+        <servlet-class>ru.dmitriykotyshov.admin.DeleteRoute</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DeleteRoute</servlet-name>
+        <url-pattern>/delRoute</url-pattern>
     </servlet-mapping>
 
 

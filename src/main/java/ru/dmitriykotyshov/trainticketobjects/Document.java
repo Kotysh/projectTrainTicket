@@ -13,6 +13,9 @@ public class Document {
         Document = document;
     }
 
+    public Document() {
+    }
+
     public int getId() {
         return id;
     }

@@ -24,7 +24,7 @@
             <li><a href="/city">Город(CITY)</a></li>
             <li><a href="/station">Станция(STATION)</a></li>
             <li><a href="/document">Документ(DOCUMENT)</a></li>
-            <li><a href="#">Маршрут(ROUTE)</a></li>
+            <li><a href="/route">Маршрут(ROUTE)</a></li>
             <li><a href="#">Маршруты и станции(ROUTE_STATION)</a></li>
             <li><a href="#">Поезд(TRAIN)</a></li>
             <li><a href="#">Вагон(WAGON)</a></li>

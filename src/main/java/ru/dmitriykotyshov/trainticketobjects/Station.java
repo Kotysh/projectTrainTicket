@@ -18,6 +18,9 @@ public class Station {
                 '}';
     }
 
+    public Station() {
+    }
+
     public Station(int numberStation, String nameStation, City city) {
         this.id = numberStation;
         this.nameStation = nameStation;

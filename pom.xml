@@ -7,12 +7,30 @@
     <groupId>ru.dmitriykotyashov</groupId>
     <artifactId>projecttrainticket</artifactId>
     <version>1.0</version>
+
+
+
+    <properties>
+        <jackson.version>2.7.3</jackson.version>
+    </properties>
+
     <dependencies>
 
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
             <version>2.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
 
     </dependencies>

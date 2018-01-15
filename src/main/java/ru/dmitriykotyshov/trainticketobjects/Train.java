@@ -17,6 +17,9 @@ public class Train {
         this.route = route;
     }
 
+    public Train() {
+    }
+
     @Override
     public String toString() {
         return "Train{" +

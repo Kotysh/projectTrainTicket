@@ -1,6 +1,7 @@
 package ru.dmitriykotyshov;
 
-import ru.dmitriykotyshov.DAO.ConnectionDAO;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import ru.dmitriykotyshov.other.MyDate;
 import ru.dmitriykotyshov.trainticketobjects.City;
 import ru.dmitriykotyshov.trainticketobjects.Route;
@@ -12,7 +13,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.*;
 import java.util.*;
 
 import static ru.dmitriykotyshov.DAO.SelectDAO.*;
@@ -23,7 +23,7 @@ import static ru.dmitriykotyshov.DAO.SelectDAO.*;
 public class GetRoute extends HttpServlet {
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost (HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         req.setCharacterEncoding("UTF-8");
 
@@ -63,7 +63,11 @@ public class GetRoute extends HttpServlet {
 
         }
 
-        req.setAttribute("listTrain", trains);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String str = objectMapper.writeValueAsString(trains);
+        System.out.println(str);
+
+        req.setAttribute("json", str);
         req.getRequestDispatcher("routes.jsp").forward(req, resp);
 
     }

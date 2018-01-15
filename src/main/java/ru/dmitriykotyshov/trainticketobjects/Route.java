@@ -24,6 +24,9 @@ public class Route {
         this.timeDateSecondStation = timeDateSecondStation;
     }
 
+    public Route() {
+    }
+
     @Override
     public String toString() {
         return "Route{" +
