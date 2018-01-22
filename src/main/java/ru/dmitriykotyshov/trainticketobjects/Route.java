@@ -33,7 +33,9 @@ public class Route {
                 "id=" + id +
                 ", nameRoute='" + nameRoute + '\'' +
                 ", firstStation=" + firstStation +
-                ", secondSttaion=" + secondStation +
+                ", secondStation=" + secondStation +
+                ", timeDateFirstStation=" + timeDateFirstStation +
+                ", timeDateSecondStation=" + timeDateSecondStation +
                 '}';
     }
 

@@ -11,14 +11,16 @@ public class Wagon {
     private boolean bioTiolet;
     private boolean airCondition;
     private int order;
+    private int countPlace;
 
-    public Wagon(int wagonId, Train train, String typeWagon, boolean bioTiolet, boolean airCondition, int order) {
+    public Wagon(int wagonId, Train train, String typeWagon, boolean bioTiolet, boolean airCondition, int order, int countPlace) {
         this.wagonId = wagonId;
         this.train = train;
         this.typeWagon = typeWagon;
         this.bioTiolet = bioTiolet;
         this.airCondition = airCondition;
         this.order = order;
+        this.countPlace = countPlace;
     }
 
     public Wagon() {
@@ -30,7 +32,10 @@ public class Wagon {
                 "wagonId=" + wagonId +
                 ", train=" + train +
                 ", typeWagon='" + typeWagon + '\'' +
+                ", bioTiolet=" + bioTiolet +
+                ", airCondition=" + airCondition +
                 ", order=" + order +
+                ", countPlace=" + countPlace +
                 '}';
     }
 
@@ -80,5 +85,13 @@ public class Wagon {
 
     public void setOrder(int order) {
         this.order = order;
+    }
+
+    public int getCountPlace() {
+        return countPlace;
+    }
+
+    public void setCountPlace(int countPlace) {
+        this.countPlace = countPlace;
     }
 }

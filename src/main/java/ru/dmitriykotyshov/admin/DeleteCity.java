@@ -19,11 +19,11 @@ public class DeleteCity extends HttpServlet {
         req.setCharacterEncoding("UTF-8");
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
-        String  document_id = (req.getParameter("document"));
-        connectionDAO.operatorDML("delete from city where city_id = "+document_id);
+        String  city_id = (req.getParameter("city"));
+        connectionDAO.operatorDML("delete from city where city_id = "+city_id);
         connectionDAO.disconnect();
 
-        req.getRequestDispatcher("document").forward(req, resp);
+        req.getRequestDispatcher("city").forward(req, resp);
 
     }
 }

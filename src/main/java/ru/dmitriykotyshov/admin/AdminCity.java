@@ -35,6 +35,8 @@ public class AdminCity extends HttpServlet {
             e.printStackTrace();
         }
 
+        connectionDAO.disconnect();
+
         req.setAttribute("cities", cities);
         req.getRequestDispatcher("admin/city.jsp").forward(req, resp);
 

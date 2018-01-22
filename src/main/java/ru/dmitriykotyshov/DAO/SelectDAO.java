@@ -7,7 +7,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Дмитрий on 10.01.2018.
@@ -236,7 +238,9 @@ public class SelectDAO {
             if (resultSet.next()){
                 do{
                     Wagon wagon = new Wagon(resultSet.getInt(1), train,
-                            resultSet.getString(3), resultSet.getString(4) != null, resultSet.getString(5) != null, resultSet.getInt(2));
+                            resultSet.getString(3), resultSet.getString(4) != null,
+                            resultSet.getString(5) != null, resultSet.getInt(2),
+                            resultSet.getInt(6));
                     System.out.println(wagon);
                     wagons.add(wagon);
                 }while (resultSet.next());
@@ -247,7 +251,51 @@ public class SelectDAO {
             e.printStackTrace();
         }
 
+        connectionDAO.disconnect();
+
         return wagons;
+    }
+
+    public static Set<Integer> getPlaces(Wagon wagon){
+
+        ConnectionDAO connectionDAO = new ConnectionDAO();
+
+        Set<Integer> places = new HashSet<Integer>();
+
+        String sql = "select ticket.place from ticket " +
+                "join route_station routeone on ticket.FIRST_ROUTE_STATION_ID = routeone.ID_ROUTE_STATION " +
+                "join route_station routetwo on ticket.SECOND_ROUTE_STATION_ID = routetwo.ID_ROUTE_STATION " +
+                "where ticket.wagon_id = "+wagon.getWagonId()+" "+
+                "and "+
+                "((routeone.departure_time<=to_timestamp('"+wagon.getTrain().getRoute().getTimeDateFirstStation()+"', 'YYYY-MM-DD HH24:MI:SS.FF') and to_timestamp('"+wagon.getTrain().getRoute().getTimeDateFirstStation()+"', 'YYYY-MM-DD HH24:MI:SS.FF')<=routetwo.arrival_time) " +
+                "or "+
+                "(routeone.departure_time<=to_timestamp('"+wagon.getTrain().getRoute().getTimeDateSecondStation()+"', 'YYYY-MM-DD HH24:MI:SS.FF') and to_timestamp('"+wagon.getTrain().getRoute().getTimeDateSecondStation()+"', 'YYYY-MM-DD HH24:MI:SS.FF')<=routetwo.arrival_time) " +
+                "or "+
+                "(to_timestamp('"+wagon.getTrain().getRoute().getTimeDateFirstStation()+"', 'YYYY-MM-DD HH24:MI:SS.FF')<=routeone.departure_time and routeone.departure_time<=to_timestamp('"+wagon.getTrain().getRoute().getTimeDateSecondStation()+"', 'YYYY-MM-DD HH24:MI:SS.FF')) " +
+                "or "+
+                "(to_timestamp('"+wagon.getTrain().getRoute().getTimeDateFirstStation()+"', 'YYYY-MM-DD HH24:MI:SS.FF')<=routetwo.arrival_time and routetwo.arrival_time<=to_timestamp('"+wagon.getTrain().getRoute().getTimeDateSecondStation()+"', 'YYYY-MM-DD HH24:MI:SS.FF')))";
+
+        ResultSet resultSet = connectionDAO.getSelect(sql);
+
+        try {
+            if (resultSet.next()){
+                do{
+
+                    places.add(resultSet.getInt(1));
+                    System.out.println(resultSet.getInt(1));
+
+                }while (resultSet.next());
+            }else{
+                System.out.println("Все места в вагоне №"+wagon.getOrder()+" свободны");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        connectionDAO.disconnect();
+
+        return places;
+
     }
 
     /**

@@ -76,6 +76,10 @@ body{
     margin: 0px 10px;
 }
 
+.train div{
+    text-align: center;
+}
+
 .train hr{
     text-align: left;
     width: 650px;
@@ -133,4 +137,30 @@ body{
 }
 .adminTable tr, .adminTable td{
     border: 1px solid black;
+}
+
+.backClick{
+    max-width: 250px;
+    padding: 10px;
+    background-color: #acc4ee;
+    border-radius: 15px;
+    text-align: center;
+}
+.backClick a{
+    cursor: pointer;
+    color: blue;
+    text-decoration: underline;
+}
+.noPlace{
+    background-color: crimson;
+}
+.yesPlace{
+    background-color: #cbff75;
+}
+
+.noPlace, .yesPlace{
+    margin: 5px;
+    width: 250px;
+    padding: 5px;
+    border-radius: 5px;
 }

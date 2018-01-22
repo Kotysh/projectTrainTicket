@@ -139,5 +139,14 @@
         <url-pattern>/delRoute</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>GetPlace</servlet-name>
+        <servlet-class>ru.dmitriykotyshov.GetPlace</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GetPlace</servlet-name>
+        <url-pattern>/getplace</url-pattern>
+    </servlet-mapping>
+
 
 </web-app>

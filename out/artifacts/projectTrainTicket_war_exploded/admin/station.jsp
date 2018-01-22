@@ -34,7 +34,7 @@
         <h3>Удаление:</h3>
         <table align="center">
             <tr>
-                <td><label for="station_id"><span class="bold">ИД:</span> </label></td><td><input type="text" id="station_id" name="station_id"></td>
+                <td><label for="station_id"><span class="bold">ID:</span> </label></td><td><input type="text" id="station_id" name="station_id"></td>
                 <td colspan="2"><input type="submit" value="Удалить"></td>
             </tr>
         </table>

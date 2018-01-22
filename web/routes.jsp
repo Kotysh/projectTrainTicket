@@ -33,7 +33,7 @@
             listToHtml.append("<hr>");
             listToHtml.append("<p>Маршрут: "+trainList.get(i).getRoute().getNameRoute()+"</p>");
             listToHtml.append("<p>Поезд №: "+trainList.get(i).getNumberTrain()+"</p>");
-            listToHtml.append("<p>Дата и время отправка: "+trainList.get(i).getRoute().getTimeDateFirstStation()+"</p>");
+            listToHtml.append("<p>Дата и время отправки: "+trainList.get(i).getRoute().getTimeDateFirstStation()+"</p>");
             listToHtml.append("<p>Дата и время прибытия: "+trainList.get(i).getRoute().getTimeDateSecondStation()+"</p>");
             listToHtml.append("<div><a href=\"javascript: goToTrain(jsonParse["+i+"])\">Купить билет</a></div></div>");
             listToHtml.append("\n");
@@ -81,7 +81,7 @@
 </div>
 </body>
 </html>
-<script src="scripts.js" defer>
+<script src="js/scripts.js" defer>
 </script>
 <script defer>
     var jsonParse = JSON.parse('<%=str%>');

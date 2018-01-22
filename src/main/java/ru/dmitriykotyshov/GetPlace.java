@@ -1,6 +1,5 @@
 package ru.dmitriykotyshov;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import ru.dmitriykotyshov.trainticketobjects.*;
 
 import javax.servlet.ServletException;
@@ -10,19 +9,29 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
-import static ru.dmitriykotyshov.DAO.SelectDAO.getWagons;
+import static ru.dmitriykotyshov.DAO.SelectDAO.getPlaces;
 
 /**
- * Created by Дмитрий on 15.01.2018.
+ * Created by Дмитрий on 22.01.2018.
  */
-public class GetTrain extends HttpServlet {
+public class GetPlace extends HttpServlet {
 
     @Override
-    protected void doGet (HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         req.setCharacterEncoding("UTF-8");
+
+        Integer WagonId = Integer.valueOf(req.getParameter("idWagon"));
+        String typeWagon = (String) req.getParameter("typeWagon");
+        Boolean bioTiolet = Boolean.valueOf(req.getParameter("bioTiolet"));
+        Boolean airCondition = Boolean.valueOf(req.getParameter("airCondition"));
+        Integer order = Integer.valueOf(req.getParameter("order"));
+        Integer countPlace = Integer.valueOf(req.getParameter("countPlace"));
+
 
         Integer idTrain = Integer.valueOf(req.getParameter("idTrain"));
         String numberTrain = (String) req.getParameter("numberTrain");
@@ -48,16 +57,19 @@ public class GetTrain extends HttpServlet {
                 new Station(secondStationID, secondNameStation, new City(secondStationCityID, secondStationCityName)),
                 firstStationDate, secondStationDate));
 
-        System.out.println(train);
+        Wagon wagon = new Wagon(WagonId, train, typeWagon, bioTiolet, airCondition, order, countPlace);
+        System.out.println("Конечный результат!");
+        System.out.println(wagon);
+        System.out.println("Ведем поиск...");
+        Set<Integer> places = getPlaces(wagon);
+        System.out.println("Количество--> "+places.size());
+        for (Integer i: places){
+            System.out.println(i);
+        }
 
-        List<Wagon> wagons = getWagons(train);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        String str = objectMapper.writeValueAsString(wagons);
-        System.out.println(str);
-
-        req.setAttribute("json", str);
-        req.getRequestDispatcher("train.jsp").forward(req, resp);
+        req.setAttribute("wagon", wagon);
+        req.setAttribute("listPlaces", places);
+        req.getRequestDispatcher("place.jsp").forward(req, resp);
 
     }
 }

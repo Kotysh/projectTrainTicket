@@ -41,6 +41,8 @@ public class AdminStation extends HttpServlet {
             e.printStackTrace();
         }
 
+        connectionDAO.disconnect();
+
         req.setAttribute("stations", stations);
         req.getRequestDispatcher("admin/station.jsp").forward(req, resp);
 

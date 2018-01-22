@@ -1,5 +1,8 @@
 <%@ page import="ru.dmitriykotyshov.trainticketobjects.Wagon" %>
-<%@ page import="java.util.List" %><%--
+<%@ page import="java.util.List" %>
+<%@ page import="com.fasterxml.jackson.databind.ObjectMapper" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="com.fasterxml.jackson.core.type.TypeReference" %><%--
   Created by IntelliJ IDEA.
   User: Дмитрий
   Date: 15.01.2018
@@ -7,20 +10,25 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%
-    List<Wagon> wagons = (List<Wagon>) request.getAttribute("wagons");
+    ObjectMapper objectMapper = new ObjectMapper();
+    String str = (String) request.getAttribute("json");
+    List<Wagon> wagons = objectMapper.readValue(str, new TypeReference<ArrayList<Wagon>>(){});
 
     StringBuilder train = new StringBuilder();
     StringBuilder wagon = new StringBuilder();
 
     if (wagons.size() != 0) {
         train.append("<div class=\"train\"><h3>");
-        if (wagons.get(0).getTrain().getRoute().getFirstStation().getCity().getNameCity() != null)
+        if (wagons.get(0).getTrain().getRoute().getFirstStation().getCity().getNameCity() != null && !wagons.get(0).getTrain().getRoute().getFirstStation().getCity().getNameCity().equals("null"))
             train.append("("+wagons.get(0).getTrain().getRoute().getFirstStation().getCity().getNameCity()+") ");
         train.append(wagons.get(0).getTrain().getRoute().getFirstStation().getNameStation()+ " - ");
-        if (wagons.get(0).getTrain().getRoute().getSecondStation().getCity().getNameCity() != null)
-            train.append("("+wagons.get(0).getTrain().getRoute().getSecondStation().getCity().getNameCity()+")</h3>");
-        train.append("Имя маршрута: "+wagons.get(0).getTrain().getRoute().getNameRoute()+"<br>");
-        train.append("Поезд №: "+wagons.get(0).getTrain().getNumberTrain()+"<br></div>");
+        if (wagons.get(0).getTrain().getRoute().getSecondStation().getCity().getNameCity() != null && !wagons.get(0).getTrain().getRoute().getSecondStation().getCity().getNameCity().equals("null"))
+            train.append("("+wagons.get(0).getTrain().getRoute().getSecondStation().getCity().getNameCity()+") ");
+        train.append(wagons.get(0).getTrain().getRoute().getSecondStation().getNameStation()+"</h3>");
+        train.append("Маршрута: "+wagons.get(0).getTrain().getRoute().getNameRoute()+"<br>");
+        train.append("Поезд №: "+wagons.get(0).getTrain().getNumberTrain()+"<br>");
+        train.append("Время убытия: "+wagons.get(0).getTrain().getRoute().getTimeDateFirstStation()+"<br>");
+        train.append("Время прибытия: "+wagons.get(0).getTrain().getRoute().getTimeDateSecondStation()+"<br></div>");
         train.append("<hr>");
         train.append("Информация о вагонах:");
 
@@ -31,7 +39,8 @@
             wagon.append("Тип вагона: "+wagons.get(i).getTypeWagon()+"<br>");
             wagon.append("Биотуалет: "+wagons.get(i).isBioTiolet()+"<br>");
             wagon.append("Кондиционер: "+wagons.get(i).isAirCondition()+"<br>");
-            wagon.append("<div><a href=\"javascript: goToTrain(jsonParse["+i+"])\">Выбрать место</a></div>");
+            wagon.append("Количество мест: "+wagons.get(i).getCountPlace()+"<br>");
+            wagon.append("<div><a href=\"javascript: goToPlace(jsonParse[" + i + "])\">Выбрать место</a></div>");
             wagon.append("</div>");
 
         }
@@ -55,6 +64,7 @@
         <h1>Train&Ticket</h1>
     </div>
     <div id="body">
+        <div class="backClick"><a onclick="javascript:history.back(); return false;">Назад к маршрутам</a></div>
         <%=train%>
         <%=wagon%>
     </div>
@@ -65,4 +75,9 @@
 </div>
 </body>
 </html>
+<script src="js/scripts.js" defer>
+</script>
+<script defer>
+    var jsonParse = JSON.parse('<%=str%>');
+</script>
 

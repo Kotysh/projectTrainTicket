@@ -36,6 +36,8 @@ public class AdminDocument extends HttpServlet {
             e.printStackTrace();
         }
 
+        connectionDAO.disconnect();
+
         req.setAttribute("documents", documents);
         req.getRequestDispatcher("admin/document.jsp").forward(req, resp);
 

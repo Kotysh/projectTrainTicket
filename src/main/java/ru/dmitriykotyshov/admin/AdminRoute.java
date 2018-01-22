@@ -34,6 +34,8 @@ public class AdminRoute extends HttpServlet {
             e.printStackTrace();
         }
 
+        connectionDAO.disconnect();
+
         req.setAttribute("cities", cities);
         req.getRequestDispatcher("admin/route.jsp").forward(req, resp);
     }

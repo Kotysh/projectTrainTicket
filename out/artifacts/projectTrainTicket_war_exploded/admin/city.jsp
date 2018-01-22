@@ -33,7 +33,7 @@
         <h3>Удаление:</h3>
         <table align="center">
             <tr>
-                <td><label for="delCity"><span class="bold">ИД:</span> </label></td><td><input type="text" id="delCity" name="city"></td>
+                <td><label for="delCity"><span class="bold">ID:</span> </label></td><td><input type="text" id="delCity" name="city"></td>
                 <td colspan="2"><input type="submit" value="Удалить"></td>
             </tr>
         </table>
