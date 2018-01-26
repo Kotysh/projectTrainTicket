@@ -18,6 +18,8 @@ public class SelectDAO {
 
     private SelectDAO(){};
 
+    private static final String GET_CITY_NAMECITY = "select * from city where city = '%s'";
+
     /**
      *
      * @param nameCity - Название города (name_city)
@@ -27,7 +29,7 @@ public class SelectDAO {
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
 
-        ResultSet resultSet = connectionDAO.getSelect("select * from city where city = '"+nameCity+"'");
+        ResultSet resultSet = connectionDAO.getSelect(String.format(GET_CITY_NAMECITY, nameCity));
 
         City city = new City();
 
@@ -51,6 +53,8 @@ public class SelectDAO {
 
     }
 
+    private static final String GET_CITY_CITYID = "select * from city where city_id = %d";
+
     /**
      *
      * @param i - Идентификатор станции (id_city)
@@ -60,7 +64,7 @@ public class SelectDAO {
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
 
-        ResultSet resultSet = connectionDAO.getSelect("select * from city where city_id = "+i);
+        ResultSet resultSet = connectionDAO.getSelect(String.format(GET_CITY_CITYID,i));
 
         City city = new City();
 
@@ -83,6 +87,8 @@ public class SelectDAO {
 
     }
 
+    private static final String GET_STATIONS = "select * from station where station = '%s' or city_id = %d";
+
     /**
      *
      * @param station - Название станции
@@ -94,7 +100,7 @@ public class SelectDAO {
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
 
-        ResultSet resultSet = connectionDAO.getSelect("select * from station where station = '" + station + "' or city_id = " + city.getId());
+        ResultSet resultSet = connectionDAO.getSelect(String.format(GET_STATIONS, station, city.getId()));
 
         List<Station> stations = new ArrayList<Station>();
 
@@ -125,6 +131,13 @@ public class SelectDAO {
 
     }
 
+    private static final String GET_ROUTES = "select route_station.route_id, route.route, count(route_station.station_id) " +
+            "from route_station " +
+            "join route on route.route_id = route_station.route_id " +
+            "where route_station.station_id in (%d,%d) " +
+            "group by route_station.route_id, route.route " +
+            "having count(route_station.station_id)=2";
+
     /**
      *
      * @param firstStationList - Список станций из пункта А
@@ -142,14 +155,7 @@ public class SelectDAO {
         for (int i=0; i<firstStationList.size(); i++){
             for (int j=0; j<secondStationList.size(); j++){
 
-                String sql = "select route_station.route_id, route.route, count(route_station.station_id) " +
-                        "from route_station " +
-                        "join route on route.route_id = route_station.route_id " +
-                        "where route_station.station_id in ("+firstStationList.get(i).getId()+","+secondStationList.get(j).getId()+") " +
-                        "group by route_station.route_id, route.route " +
-                        "having count(route_station.station_id)=2";
-
-                ResultSet resultSet = connectionDAO.getSelect(sql);
+                ResultSet resultSet = connectionDAO.getSelect(String.format(GET_ROUTES, firstStationList.get(i).getId(), secondStationList.get(j).getId()));
 
                 try {
                     if (resultSet.next()){
@@ -182,6 +188,8 @@ public class SelectDAO {
         return routes;
     }
 
+    private static final String GET_TRAIN = "select * from train where route_id = %d";
+
     /**
      *
      * @param route - Маршрут на котором находятся какое то количество поездов
@@ -191,11 +199,9 @@ public class SelectDAO {
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
 
-        String sql = "select * from train where route_id = "+route.getId();
-
         List<Train> trains = new ArrayList<Train>();
 
-        ResultSet resultSet = connectionDAO.getSelect(sql);
+        ResultSet resultSet = connectionDAO.getSelect(String.format(GET_TRAIN, route.getId()));
 
         try {
             if (resultSet.next()) {
@@ -220,19 +226,19 @@ public class SelectDAO {
 
     }
 
+    private static final String GET_WAGONS = "select wagon.wagon_id, wagon.order_wagon, type_wagon.type_name, type_wagon.bio_tiolet, type_wagon.air_condition, type_wagon.count_place " +
+            "from wagon " +
+            "join type_wagon on wagon.type_wagon_id = type_wagon.type_wagon_id " +
+            "where wagon.train_id = %d "+
+            "order by order_wagon";
+
     public static List<Wagon> getWagons(Train train){
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
 
         List<Wagon> wagons = new ArrayList<Wagon>();
 
-        String sql = "select wagon.wagon_id, wagon.order_wagon, type_wagon.type_name, type_wagon.bio_tiolet, type_wagon.air_condition, type_wagon.count_place " +
-                "from wagon " +
-                "join type_wagon on wagon.type_wagon_id = type_wagon.type_wagon_id " +
-                "where wagon.train_id = "+train.getId()+" "+
-                "order by order_wagon";
-
-        ResultSet resultSet = connectionDAO.getSelect(sql);
+        ResultSet resultSet = connectionDAO.getSelect(String.format(GET_WAGONS, train.getId()));
 
         try {
             if (resultSet.next()){
@@ -256,26 +262,30 @@ public class SelectDAO {
         return wagons;
     }
 
+    private static final String GET_PLACES = "select ticket.place from ticket " +
+            "join route_station routeone on ticket.FIRST_ROUTE_STATION_ID = routeone.ROUTE_STATION_ID " +
+            "join route_station routetwo on ticket.SECOND_ROUTE_STATION_ID = routetwo.ROUTE_STATION_ID " +
+            "where ticket.wagon_id = %d "+
+            "and "+
+            "((routeone.departure_time<=to_timestamp('%s', 'YYYY-MM-DD HH24:MI:SS.FF') and to_timestamp('%s', 'YYYY-MM-DD HH24:MI:SS.FF')<=routetwo.arrival_time) " +
+            "or "+
+            "(routeone.departure_time<=to_timestamp('%s', 'YYYY-MM-DD HH24:MI:SS.FF') and to_timestamp('%s', 'YYYY-MM-DD HH24:MI:SS.FF')<=routetwo.arrival_time) " +
+            "or "+
+            "(to_timestamp('%s', 'YYYY-MM-DD HH24:MI:SS.FF')<=routeone.departure_time and routeone.departure_time<=to_timestamp('%s', 'YYYY-MM-DD HH24:MI:SS.FF')) " +
+            "or "+
+            "(to_timestamp('%s', 'YYYY-MM-DD HH24:MI:SS.FF')<=routetwo.arrival_time and routetwo.arrival_time<=to_timestamp('%s', 'YYYY-MM-DD HH24:MI:SS.FF')))";
+
     public static Set<Integer> getPlaces(Wagon wagon){
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
 
         Set<Integer> places = new HashSet<Integer>();
 
-        String sql = "select ticket.place from ticket " +
-                "join route_station routeone on ticket.FIRST_ROUTE_STATION_ID = routeone.ID_ROUTE_STATION " +
-                "join route_station routetwo on ticket.SECOND_ROUTE_STATION_ID = routetwo.ID_ROUTE_STATION " +
-                "where ticket.wagon_id = "+wagon.getWagonId()+" "+
-                "and "+
-                "((routeone.departure_time<=to_timestamp('"+wagon.getTrain().getRoute().getTimeDateFirstStation()+"', 'YYYY-MM-DD HH24:MI:SS.FF') and to_timestamp('"+wagon.getTrain().getRoute().getTimeDateFirstStation()+"', 'YYYY-MM-DD HH24:MI:SS.FF')<=routetwo.arrival_time) " +
-                "or "+
-                "(routeone.departure_time<=to_timestamp('"+wagon.getTrain().getRoute().getTimeDateSecondStation()+"', 'YYYY-MM-DD HH24:MI:SS.FF') and to_timestamp('"+wagon.getTrain().getRoute().getTimeDateSecondStation()+"', 'YYYY-MM-DD HH24:MI:SS.FF')<=routetwo.arrival_time) " +
-                "or "+
-                "(to_timestamp('"+wagon.getTrain().getRoute().getTimeDateFirstStation()+"', 'YYYY-MM-DD HH24:MI:SS.FF')<=routeone.departure_time and routeone.departure_time<=to_timestamp('"+wagon.getTrain().getRoute().getTimeDateSecondStation()+"', 'YYYY-MM-DD HH24:MI:SS.FF')) " +
-                "or "+
-                "(to_timestamp('"+wagon.getTrain().getRoute().getTimeDateFirstStation()+"', 'YYYY-MM-DD HH24:MI:SS.FF')<=routetwo.arrival_time and routetwo.arrival_time<=to_timestamp('"+wagon.getTrain().getRoute().getTimeDateSecondStation()+"', 'YYYY-MM-DD HH24:MI:SS.FF')))";
-
-        ResultSet resultSet = connectionDAO.getSelect(sql);
+        ResultSet resultSet = connectionDAO.getSelect(String.format(GET_PLACES, wagon.getWagonId(),
+                wagon.getTrain().getRoute().getTimeDateFirstStation(), wagon.getTrain().getRoute().getTimeDateFirstStation(),
+                wagon.getTrain().getRoute().getTimeDateSecondStation(), wagon.getTrain().getRoute().getTimeDateSecondStation(),
+                wagon.getTrain().getRoute().getTimeDateFirstStation(), wagon.getTrain().getRoute().getTimeDateSecondStation(),
+                wagon.getTrain().getRoute().getTimeDateFirstStation(), wagon.getTrain().getRoute().getTimeDateSecondStation()));
 
         try {
             if (resultSet.next()){
@@ -298,6 +308,12 @@ public class SelectDAO {
 
     }
 
+    private static final String GET_NUMBER_ROUTE = "select route_id, count(station_id) "+
+            "from route_station "+
+            "where station_id in (%d,%d) "+
+            "group by route_id "+
+            "having count(station_id)=2";
+
     /**
      *
      * @param i - id первой станции
@@ -308,13 +324,7 @@ public class SelectDAO {
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
 
-        String sql = "select route_id, count(station_id) "+
-                "from route_station "+
-                "where station_id in ("+i+","+j+") "+
-                "group by route_id "+
-                "having count(station_id)=2";
-
-        ResultSet resultSet = connectionDAO.getSelect(sql);
+        ResultSet resultSet = connectionDAO.getSelect(String.format(GET_NUMBER_ROUTE, i, j));
 
         int route = 0;
 
@@ -332,6 +342,18 @@ public class SelectDAO {
 
     }
 
+    private static final String GET_ORDER_ON_ROUTE_OUT = "select order_station " +
+            "from route_station " +
+            "where route_id = %d and station_id = %d " +
+            "and DEPARTURE_TIME>TO_TIMESTAMP('%d/%d/%d', 'YYYY/MM/DD') " +
+            "and DEPARTURE_TIME<TO_TIMESTAMP('%d/%d/%d', 'YYYY/MM/DD')";
+
+    private static final String GET_ORDER_ON_ROUTE_IN = "select order_station "+
+            "from route_station "+
+            "where route_id = %d and station_id = %d "+
+            "and ARRIVAL_TIME>TO_TIMESTAMP('%d/%d/%d', 'YYYY/MM/DD') "+
+            "and ARRIVAL_TIME<TO_TIMESTAMP('%d/%d/%d', 'YYYY/MM/DD')";
+
     /**
      *
      * @param route - Номер маршрута
@@ -343,17 +365,11 @@ public class SelectDAO {
         ConnectionDAO connectionDAO = new ConnectionDAO();
         String sql;
         if (index == 1) {//откуда = 1
-            sql = "select order_station " +
-                    "from route_station " +
-                    "where route_id = " + route + " and station_id = " + i + " " +
-                    "and DEPARTURE_TIME>TO_TIMESTAMP('"+date.getYear()+"/"+date.getMonth()+"/"+date.getDay()+"', 'YYYY/MM/DD') " +
-                    "and DEPARTURE_TIME<TO_TIMESTAMP('"+date.getYear()+"/"+date.getMonth()+"/"+(date.getDay()+1)+"', 'YYYY/MM/DD')";
-        }else{//куда = 2
-            sql = "select order_station "+
-                    "from route_station "+
-                    "where route_id = "+route+" and station_id = "+i+" "+
-                    "and ARRIVAL_TIME>TO_TIMESTAMP('"+date.getYear()+"/"+date.getMonth()+"/"+date.getDay()+"', 'YYYY/MM/DD') "+
-                    "and ARRIVAL_TIME<TO_TIMESTAMP('"+date.getYear()+"/"+date.getMonth()+"/"+(date.getDay()+1)+"', 'YYYY/MM/DD')";
+            sql = String.format(GET_ORDER_ON_ROUTE_OUT, route, i, date.getYear(), date.getMonth(), date.getDay(),
+                    date.getYear(), date.getMonth(), date.getDay()+1);
+        }else{          //куда = 2
+            sql = String.format(GET_ORDER_ON_ROUTE_IN, route, i, date.getYear(), date.getMonth(), date.getDay(),
+                    date.getYear(), date.getMonth(), date.getDay()+1);
         }
 
         int order = 0;
@@ -374,6 +390,18 @@ public class SelectDAO {
 
     }
 
+    private static final String GET_TIMESTAMP_OUT = "select DEPARTURE_TIME " +
+            "from route_station " +
+            "where route_id = %d and station_id = %d " +
+            "and DEPARTURE_TIME>TO_TIMESTAMP('%d/%d/%d', 'YYYY/MM/DD') " +
+            "and DEPARTURE_TIME<TO_TIMESTAMP('%d/%d/%d', 'YYYY/MM/DD')";
+
+    private static final String GET_TIMESTAMP_IN = "select ARRIVAL_TIME "+
+            "from route_station "+
+            "where route_id = %d and station_id = %d "+
+            "and ARRIVAL_TIME>TO_TIMESTAMP('%d/%d/%d', 'YYYY/MM/DD') "+
+            "and ARRIVAL_TIME<TO_TIMESTAMP('%d/%d/%d', 'YYYY/MM/DD')";
+
     public static Timestamp getTimestamp(int route, int station, MyDate date, int index){
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
@@ -381,17 +409,11 @@ public class SelectDAO {
         String sql;
 
         if (index == 1) {//откуда = 1
-            sql = "select DEPARTURE_TIME " +
-                    "from route_station " +
-                    "where route_id = " + route + " and station_id = " + station + " " +
-                    "and DEPARTURE_TIME>TO_TIMESTAMP('"+date.getYear()+"/"+date.getMonth()+"/"+date.getDay()+"', 'YYYY/MM/DD') " +
-                    "and DEPARTURE_TIME<TO_TIMESTAMP('"+date.getYear()+"/"+date.getMonth()+"/"+(date.getDay()+1)+"', 'YYYY/MM/DD')";
-        }else{//куда = 2
-            sql = "select ARRIVAL_TIME "+
-                    "from route_station "+
-                    "where route_id = "+route+" and station_id = "+station+" "+
-                    "and ARRIVAL_TIME>TO_TIMESTAMP('"+date.getYear()+"/"+date.getMonth()+"/"+date.getDay()+"', 'YYYY/MM/DD') "+
-                    "and ARRIVAL_TIME<TO_TIMESTAMP('"+date.getYear()+"/"+date.getMonth()+"/"+(date.getDay()+1)+"', 'YYYY/MM/DD')";
+            sql = String.format(GET_TIMESTAMP_OUT, route, station, date.getYear(), date.getMonth(), date.getDay(),
+                    date.getYear(), date.getMonth(), date.getDay()+1);
+        }else{          //куда = 2
+            sql = String.format(GET_TIMESTAMP_IN, route, station, date.getYear(), date.getMonth(), date.getDay(),
+                    date.getYear(), date.getMonth(), date.getDay()+1);
         }
 
         Timestamp timestamp = null;
@@ -412,6 +434,8 @@ public class SelectDAO {
         return timestamp;
     }
 
+    private static final String GET_NAME_ROUTE = "select route from route where route_id = %d";
+
     /**
      *
      * @param numberRoute - Номер маршрута
@@ -421,11 +445,9 @@ public class SelectDAO {
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
 
-        String sql = "select route from route where route_id = "+numberRoute;
-
         String name = "";
 
-        ResultSet resultSet = connectionDAO.getSelect(sql);
+        ResultSet resultSet = connectionDAO.getSelect(String.format(GET_NAME_ROUTE, numberRoute));
 
         try {
             if (resultSet.next()){

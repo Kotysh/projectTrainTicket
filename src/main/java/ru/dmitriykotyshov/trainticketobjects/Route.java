@@ -24,6 +24,11 @@ public class Route {
         this.timeDateSecondStation = timeDateSecondStation;
     }
 
+    public Route(int id, String nameRoute){
+        this.id = id;
+        this.nameRoute = nameRoute;
+    }
+
     public Route() {
     }
 

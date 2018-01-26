@@ -13,6 +13,8 @@ import java.io.IOException;
  */
 public class AddDocument extends HttpServlet {
 
+    private final static String INSERT_DOCUMENT_SQL = "insert into document (document) values ('%s')";
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
@@ -20,7 +22,8 @@ public class AddDocument extends HttpServlet {
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
         String document = req.getParameter("document");
-        connectionDAO.operatorDML("insert into document (document) values ('"+document+"')");
+        String insert = String.format(INSERT_DOCUMENT_SQL, document);
+        connectionDAO.operatorDML(insert);
         connectionDAO.disconnect();
 
         req.getRequestDispatcher("document").forward(req, resp);

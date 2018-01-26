@@ -24,11 +24,11 @@ public class AdminRoute extends HttpServlet {
 
         ResultSet resultSet = connectionDAO.getSelect("select * from route");
 
-        List<City> cities = new ArrayList<City>();
+        List<City> routes = new ArrayList<City>();
 
         try {
             while (resultSet.next()){
-                cities.add(new City(resultSet.getInt(1), resultSet.getString(2)));
+                routes.add(new City(resultSet.getInt(1), resultSet.getString(2)));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -36,7 +36,7 @@ public class AdminRoute extends HttpServlet {
 
         connectionDAO.disconnect();
 
-        req.setAttribute("cities", cities);
+        req.setAttribute("routes", routes);
         req.getRequestDispatcher("admin/route.jsp").forward(req, resp);
     }
 }

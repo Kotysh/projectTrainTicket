@@ -17,6 +17,11 @@ public class Train {
         this.route = route;
     }
 
+    public Train(int id, String numberTrain){
+        this.id = id;
+        this.numberTrain = numberTrain;
+    }
+
     public Train() {
     }
 

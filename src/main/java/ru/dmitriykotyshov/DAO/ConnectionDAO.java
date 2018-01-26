@@ -30,7 +30,7 @@ public class ConnectionDAO {
             Context envContext = (Context) initContext.lookup("java:/comp/env");
             dataSource = (DataSource) envContext.lookup("jdbc/myoracle");
         } catch (NamingException e) {
-            System.out.println("Error: " + e.getMessage());
+
         }
 
     }
@@ -44,7 +44,7 @@ public class ConnectionDAO {
             resultSet = statement.executeQuery(select);
 
         } catch (SQLException e) {
-            System.out.println("Error: " + e.getMessage());
+
         }
 
         return resultSet;
@@ -60,16 +60,17 @@ public class ConnectionDAO {
             statement.execute(sql);
 
         } catch (SQLException e) {
-            System.out.println("Error: " + e.getMessage());
+            System.out.println("ppc");
         }
 
     }
 
     public void disconnect(){
+
         try {
             if (connection != null) connection.close();
         } catch (SQLException e) {
-            System.out.println("Error: " + e.getMessage());
+
         }
     }
 

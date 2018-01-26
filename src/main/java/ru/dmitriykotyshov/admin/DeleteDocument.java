@@ -13,14 +13,17 @@ import java.io.IOException;
  */
 public class DeleteDocument extends HttpServlet {
 
+    private final static String DELETE_DOCUMENT = "delete from document where document_id = %s";
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         req.setCharacterEncoding("UTF-8");
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
-        String  document_id = (req.getParameter("document"));
-        connectionDAO.operatorDML("delete from document where document_id = "+document_id);
+        String  documentID = (req.getParameter("document"));
+        String delete = String.format(DELETE_DOCUMENT, documentID);
+        connectionDAO.operatorDML(delete);
         connectionDAO.disconnect();
 
         req.getRequestDispatcher("document").forward(req, resp);

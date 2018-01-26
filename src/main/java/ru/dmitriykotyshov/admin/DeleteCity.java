@@ -13,14 +13,17 @@ import java.io.IOException;
  */
 public class DeleteCity extends HttpServlet {
 
+    private final static String DELETE_CITY = "delete from city where city_id = %s";
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         req.setCharacterEncoding("UTF-8");
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
-        String  city_id = (req.getParameter("city"));
-        connectionDAO.operatorDML("delete from city where city_id = "+city_id);
+        String  cityID = (req.getParameter("city"));
+        String delete = String.format(DELETE_CITY, cityID);
+        connectionDAO.operatorDML(delete);
         connectionDAO.disconnect();
 
         req.getRequestDispatcher("city").forward(req, resp);

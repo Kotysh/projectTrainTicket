@@ -13,6 +13,8 @@ import java.io.IOException;
  */
 public class AddCity extends HttpServlet {
 
+    private final static String INSERT_CITY_SQL = "insert into city (city) values ('%s')";
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
@@ -20,7 +22,8 @@ public class AddCity extends HttpServlet {
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
         String city = req.getParameter("city");
-        connectionDAO.operatorDML("insert into city (city) values ('"+city+"')");
+        String insert = String.format(INSERT_CITY_SQL, city);
+        connectionDAO.operatorDML(insert);
         connectionDAO.disconnect();
 
         req.getRequestDispatcher("city").forward(req, resp);

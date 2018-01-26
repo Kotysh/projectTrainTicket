@@ -27,6 +27,11 @@ public class Station {
         this.city = city;
     }
 
+    public Station(int id, String nameStation) {
+        this.id = id;
+        this.nameStation = nameStation;
+    }
+
     public int getId() {
         return id;
     }

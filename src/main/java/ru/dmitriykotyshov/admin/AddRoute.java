@@ -13,6 +13,8 @@ import java.io.IOException;
  */
 public class AddRoute extends HttpServlet {
 
+    private final static String INSERT_ROUTE_SQL = "insert into route (route) values ('%s')";
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
@@ -20,7 +22,8 @@ public class AddRoute extends HttpServlet {
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
         String route = req.getParameter("route");
-        connectionDAO.operatorDML("insert into route (route) values ('"+route+"')");
+        String insert = String.format(INSERT_ROUTE_SQL, route);
+        connectionDAO.operatorDML(insert);
         connectionDAO.disconnect();
 
         req.getRequestDispatcher("route").forward(req, resp);
