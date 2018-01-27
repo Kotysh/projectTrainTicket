@@ -31,6 +31,15 @@
         <url-pattern>/getplace</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>Buy</servlet-name>
+        <servlet-class>ru.dmitriykotyshov.Buy</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Buy</servlet-name>
+        <url-pattern>/buy</url-pattern>
+    </servlet-mapping>
+
 
 
 

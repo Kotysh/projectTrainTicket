@@ -48,3 +48,54 @@ function goToPlace(json){
 
 }
 
+function goBuy(){
+
+    var arrayGender = document.getElementsByName('gender');
+    var gender;
+    for (var i=0; i<arrayGender.length; i++){
+        if (arrayGender[i].checked){
+            gender = arrayGender[i].value
+            break;
+        }
+    }
+
+    var arrayDoc = document.getElementsByName('document');
+    var doc;
+    for (var i=0; i<arrayDoc.length; i++){
+        if (arrayDoc[i].checked){
+            doc = arrayDoc[i].value;
+            break;
+        }
+    }
+
+    var arrayPlace = document.getElementsByName('place');
+    var place;
+    for (var i=0; i<arrayPlace.length; i++){
+        if (arrayPlace[i].checked){
+            place = arrayPlace[i].value;
+            break;
+        }
+    }
+
+    var parameters = "firstName="+document.getElementById('firstName').value+"&"+
+        "middleName="+document.getElementById('middleName').value+"&"+
+        "lastName="+document.getElementById('lastName').value+"&"+
+        "year="+document.getElementById('year').value+"&"+
+        "month="+document.getElementById('month').value+"&"+
+        "day="+document.getElementById('day').value+"&"+
+        "gender="+gender+"&"+
+        "document="+doc+"&"+
+        "docNumber="+document.getElementById('docNumber').value+"&"+
+        "email="+document.getElementById('email').value+"&"+
+        "telephone="+document.getElementById('telephone').value+"&"+
+        "route="+document.getElementById('route').innerHTML+"&"+
+        "numberTrain="+document.getElementById('numberTrain').innerHTML+"&"+
+        "orderWagon="+document.getElementById('orderWagon').innerHTML+"&"+
+        "firstRouteStation="+document.getElementById('firstRouteStation').innerHTML+"&"+
+        "secondRouteStation="+document.getElementById('secondRouteStation').innerHTML+"&"+
+        "place="+place;
+
+    document.location.href = "/buy?"+parameters
+
+}
+

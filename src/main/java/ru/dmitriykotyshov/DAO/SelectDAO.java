@@ -463,4 +463,91 @@ public class SelectDAO {
 
     }
 
+    private final static String GET_CUSTOMER_ID = "select customer_id from customer \n" +
+            "where doc_number = '%s' and document_id = %s";
+
+    public static int getCustomerId(String documentNumber, String documentId){
+
+        ConnectionDAO connectionDAO = new ConnectionDAO();
+
+        ResultSet resultSet = connectionDAO.getSelect(String.format(GET_CUSTOMER_ID, documentNumber, documentId));
+
+        int customerId = 0;
+
+        try {
+            if (resultSet.next()){
+                customerId = resultSet.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.out.println("getCustomerId - " + e.getMessage());
+        }
+
+        connectionDAO.disconnect();
+
+        return customerId;
+    }
+
+    private final static String GET_ROUTE_STATION_OUT = "select route_station_id from route_station " +
+            "join route on route_station.route_id = route.route_id " +
+            "where route = '%s' and departure_time = to_timestamp('%s', 'YYYY-MM-DD HH24:MI:SS.FF')";
+
+    private final static String GET_ROUTE_STATION_IN = "select route_station_id from route_station " +
+            "join route on route_station.route_id = route.route_id " +
+            "where route = '%s' and arrival_time = to_timestamp('%s', 'YYYY-MM-DD HH24:MI:SS.FF')";
+
+    public static int getRouteStationId(String route, String timestamp, int index){
+
+        ConnectionDAO connectionDAO = new ConnectionDAO();
+
+        int routeStationId = 0;
+
+        String sql = "";
+
+        if (index == 1){
+            sql = String.format(GET_ROUTE_STATION_OUT, route, timestamp);
+        }else{
+            sql = String.format(GET_ROUTE_STATION_IN, route, timestamp);
+        }
+
+        System.out.println(sql);
+
+        ResultSet resultSet = connectionDAO.getSelect(sql);
+
+        try {
+            if (resultSet.next()) {
+                routeStationId = resultSet.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return routeStationId;
+
+    }
+
+    private final static String GET_WAGON_ID = "select wagon.wagon_id from wagon "+
+            "join train on train.train_id = wagon.train_id "+
+            "where train.number_train = '%s' and wagon.order_wagon = %s";
+
+    public static int getWagonId(String numberTrain, String orderWagon){
+
+        ConnectionDAO connectionDAO = new ConnectionDAO();
+
+        ResultSet resultSet = connectionDAO.getSelect(String.format(GET_WAGON_ID, numberTrain, orderWagon));
+
+        int wagonId = 0;
+
+        try {
+            if (resultSet.next()){
+                wagonId = resultSet.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.out.println("getWagonId - " + e.getMessage());
+        }
+
+        connectionDAO.disconnect();
+
+        return wagonId;
+    }
+
 }
