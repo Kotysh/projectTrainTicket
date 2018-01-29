@@ -1,5 +1,6 @@
 package ru.dmitriykotyshov;
 
+import ru.dmitriykotyshov.mail.Message;
 import ru.dmitriykotyshov.other.MyDate;
 
 import javax.servlet.ServletException;
@@ -8,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 import static ru.dmitriykotyshov.DAO.InsertDAO.insertCustomer;
@@ -33,17 +33,11 @@ public class Buy extends HttpServlet {
         Integer month = Integer.valueOf(req.getParameter("month"));
         Integer day = Integer.valueOf(req.getParameter("day"));
 
-        MyDate birthday = new MyDate(year, month, day);
-
         String document = req.getParameter("document");
         String gender = req.getParameter("gender");
         String docNumber = req.getParameter("docNumber");
         String email = req.getParameter("email");
         String telephone = req.getParameter("telephone");
-
-        insertCustomer(firstName, middleName, lastName, birthday, gender, document, docNumber, email, telephone);
-        int customerId = getCustomerId(docNumber, document);
-
 
         String route = req.getParameter("route");
         String numberTrain = req.getParameter("numberTrain");
@@ -51,6 +45,24 @@ public class Buy extends HttpServlet {
         String firstRouteStation = req.getParameter("firstRouteStation");
         String secondRouteStation = req.getParameter("secondRouteStation");
         String place = req.getParameter("place");
+
+
+        MyDate birthday = new MyDate(year, month, day);
+
+
+        int customerId = getCustomerId(docNumber, document);
+        if (customerId == 0) {
+            insertCustomer(firstName, middleName, lastName, birthday, gender, document, docNumber, email, telephone);
+            customerId = getCustomerId(docNumber, document);
+        }
+
+        String date = new SimpleDateFormat("YYYY-MM-DD").format(new Date());
+
+        int firstRouteStationId = getRouteStationId(route, firstRouteStation, 1);
+        int secondRouteStationId = getRouteStationId(route, secondRouteStation, 2);
+        int wagonId = getWagonId(numberTrain, orderWagon);
+
+        insertTicket(customerId, wagonId, place, date, firstRouteStationId, secondRouteStationId);
 
         //-------------------------------------------------------------------------------------------------------------
         System.out.println(firstName);
@@ -69,21 +81,24 @@ public class Buy extends HttpServlet {
         System.out.println(firstRouteStation);
         System.out.println(secondRouteStation);
         System.out.println(place);
-
-        int firstRouteStationId = getRouteStationId(route, firstRouteStation, 1);
-        int secondRouteStationId = getRouteStationId(route, secondRouteStation, 2);
-        int wagonId = getWagonId(numberTrain, orderWagon);
-
         System.out.println("------------------------------------------------------------------------");
         System.out.println(customerId);
         System.out.println(firstRouteStationId);
         System.out.println(secondRouteStationId);
         System.out.println(wagonId);
-        String date = new SimpleDateFormat("YYYY-MM-DD").format(new Date());
-
-        insertTicket(customerId, wagonId, place, date, firstRouteStationId, secondRouteStationId);
+        //-------------------------------------------------------------------------------------------------------------
 
 
+
+        String text = "Здравствуйте, "+firstName+" "+middleName+", "+
+                "Вы приобрели билет на нашем сайте, теперь вам его нужно оплатить по указанным реквезитам.";
+
+        Message message = new Message(email, "Train&Ticket", text);
+        message.sendMessage();
+
+        req.setAttribute("firstName", firstName);
+        req.setAttribute("middleName", middleName);
+        req.getRequestDispatcher("buy.jsp").forward(req, resp);
 
     }
 }

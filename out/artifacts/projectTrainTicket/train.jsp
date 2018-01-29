@@ -37,8 +37,8 @@
             wagon.append("<div class=\"wagon\">");
             wagon.append("Номер вагона: "+wagons.get(i).getOrder()+"<br>");
             wagon.append("Тип вагона: "+wagons.get(i).getTypeWagon()+"<br>");
-            wagon.append("Биотуалет: "+wagons.get(i).isBioTiolet()+"<br>");
-            wagon.append("Кондиционер: "+wagons.get(i).isAirCondition()+"<br>");
+            wagon.append("Биотуалет: "+(wagons.get(i).isBioTiolet()?"да":"нет")+"<br>");
+            wagon.append("Кондиционер: "+(wagons.get(i).isAirCondition()?"да":"нет")+"<br>");
             wagon.append("Количество мест: "+wagons.get(i).getCountPlace()+"<br>");
             wagon.append("<div><a href=\"javascript: goToPlace(jsonParse[" + i + "])\">Выбрать место</a></div>");
             wagon.append("</div>");

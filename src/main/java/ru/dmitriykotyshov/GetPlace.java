@@ -27,8 +27,8 @@ public class GetPlace extends HttpServlet {
 
         Integer WagonId = Integer.valueOf(req.getParameter("idWagon"));
         String typeWagon = (String) req.getParameter("typeWagon");
-        Boolean bioTiolet = Boolean.valueOf(req.getParameter("bioTiolet"));
-        Boolean airCondition = Boolean.valueOf(req.getParameter("airCondition"));
+        Boolean bioTiolet = ((String)req.getParameter("bioTiolet")).equals("true")?true:false;
+        Boolean airCondition = ((String)req.getParameter("airCondition")).equals("true")?true:false;
         Integer order = Integer.valueOf(req.getParameter("order"));
         Integer countPlace = Integer.valueOf(req.getParameter("countPlace"));
 

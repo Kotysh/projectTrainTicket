@@ -16,6 +16,7 @@
   <div id="wrap">
     <div id="header">
       <h1>Train&Ticket</h1>
+      <a href="/">На главную</a>
     </div>
     <div id="body">
       <h2>Добро пожаловать!</h2>

@@ -28,8 +28,8 @@
     placeToHtml.append("<p>Дата и время прибытия: <span id=\"secondRouteStation\">"+wagon.getTrain().getRoute().getTimeDateSecondStation()+"</span></p>");
     placeToHtml.append("<p>Номер вагона: <span id=\"orderWagon\">"+wagon.getOrder()+"</span></p>");
     placeToHtml.append("<p>Тип вагона: "+wagon.getTypeWagon()+"</p>");
-    placeToHtml.append("<p>Туалет: "+wagon.isBioTiolet()+"</p>");
-    placeToHtml.append("<p>Кондиционер: "+wagon.isBioTiolet()+"</p>");
+    placeToHtml.append("<p>Туалет: "+(wagon.isBioTiolet()?"да":"нет")+"</p>");
+    placeToHtml.append("<p>Кондиционер: "+(wagon.isAirCondition()?"да":"нет")+"</p>");
     placeToHtml.append("<p>Общее количество мест: "+wagon.getCountPlace()+"</p>");
     placeToHtml.append("<p>Свободное количество мест: "+(wagon.getCountPlace()-setPlace.size())+"</p>");
     placeToHtml.append("<hr>");

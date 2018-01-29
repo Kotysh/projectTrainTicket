@@ -30,7 +30,7 @@ public class ConnectionDAO {
             Context envContext = (Context) initContext.lookup("java:/comp/env");
             dataSource = (DataSource) envContext.lookup("jdbc/myoracle");
         } catch (NamingException e) {
-
+            System.out.println("ConnectionDAO: " + e.getMessage());
         }
 
     }
@@ -44,7 +44,7 @@ public class ConnectionDAO {
             resultSet = statement.executeQuery(select);
 
         } catch (SQLException e) {
-
+            System.out.println("getSelect: " + e.getMessage());
         }
 
         return resultSet;
@@ -60,7 +60,7 @@ public class ConnectionDAO {
             statement.execute(sql);
 
         } catch (SQLException e) {
-            System.out.println("ppc");
+            System.out.println("operatorDML: " + e.getMessage());
         }
 
     }
@@ -70,7 +70,7 @@ public class ConnectionDAO {
         try {
             if (connection != null) connection.close();
         } catch (SQLException e) {
-
+            System.out.println("disconnect: " + e.getMessage());
         }
     }
 
