@@ -1,6 +1,8 @@
 package ru.dmitriykotyshov.admin;
 
-import ru.dmitriykotyshov.DAO.ConnectionDAO;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import ru.dmitriykotyshov.DAO.InsertDAO;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -13,26 +15,20 @@ import java.io.IOException;
  */
 public class AddStation extends HttpServlet {
 
-    private final static String INSERT_STATION_SQL = "insert into station (station) values ('%s')";
-    private final static String INSERT_STATION_CITYID_SQL = "insert into station (station, city_id) values ('%s', '%s')";
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         req.setCharacterEncoding("UTF-8");
 
-        ConnectionDAO connectionDAO = new ConnectionDAO();
+        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("springContext.xml");
+
+        InsertDAO insertDAO = applicationContext.getBean("InsertDAO", InsertDAO.class);
+
         String station = req.getParameter("station");
-        String cityID = req.getParameter("cityID");
-        String insert;
-        if (cityID.length() == 0){
-            insert = String.format(INSERT_STATION_SQL, station);
-            connectionDAO.operatorDML(insert);
-        }else{
-            insert = String.format(INSERT_STATION_CITYID_SQL, station, cityID);
-            connectionDAO.operatorDML(insert);
-        }
-        connectionDAO.disconnect();
+        String cityId = req.getParameter("cityId");
+
+        insertDAO.insertStation(station, cityId);
 
         req.getRequestDispatcher("station").forward(req, resp);
 

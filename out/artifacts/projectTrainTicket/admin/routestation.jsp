@@ -23,10 +23,10 @@
             <h3>Добавление:</h3>
             <table align="center">
                 <tr>
-                    <td><label for="routeID"><span class="bold">ID маршрута:</span> </label></td><td colspan="3"><input type="text" id="routeID" name="routeID"></td>
+                    <td><label for="routeId"><span class="bold">ID маршрута:</span> </label></td><td colspan="3"><input type="text" id="routeId" name="routeId"></td>
                 </tr>
                 <tr>
-                    <td><label for="stationID"><span class="bold">ID станции:</span> </label></td><td colspan="3"><input type="text" id="stationID" name="stationID"></td>
+                    <td><label for="stationId"><span class="bold">ID станции:</span> </label></td><td colspan="3"><input type="text" id="stationId" name="stationId"></td>
                 </tr>
                 <tr>
                     <td><label for="orderStation"><span class="bold">Порядковый номер станции:</span> </label></td><td colspan="3"><input type="text" id="orderStation" name="orderStation"></td>
@@ -46,6 +46,9 @@
                     <td><input type="text" id="departureDay" name="departureDay"></td>
                     <td><input type="text" id="departureHour" name="departureHour"></td>
                     <td><input type="text" id="departureMinute" name="departureMinute"></td>
+                </tr>
+                <tr>
+                    <td><label for="distance"><span class="bold">Дистанция от место убытия:</span> </label></td><td colspan="3"><input type="text" id="distance" name="distance"></td>
                 </tr>
                 <tr>
                     <td></td>
@@ -72,6 +75,7 @@
                 <td>ORDER_STATION</td>
                 <td>ARRIVAL_TIME</td>
                 <td>DEPARTURE_TIME</td>
+                <td>DISTANCE</td>
             </tr>
             <%
                 List<RouteStation> routeStations = (List<RouteStation>) request.getAttribute("routeStations");
@@ -83,7 +87,8 @@
                     writeRouteStations.append("<td>"+r.getStationId().getId()+"("+r.getStationId().getNameStation()+")</td>");
                     writeRouteStations.append("<td>"+r.getOrderStation()+"</td>");
                     writeRouteStations.append("<td>"+r.getArrivalTime()+"</td>");
-                    writeRouteStations.append("<td>"+r.getDepartureTime()+"</td></tr>");
+                    writeRouteStations.append("<td>"+r.getDepartureTime()+"</td>");
+                    writeRouteStations.append("<td>"+r.getDistance()+"</td></tr>");
                 }
             %>
             <%=writeRouteStations%>

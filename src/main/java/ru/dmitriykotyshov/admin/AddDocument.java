@@ -1,6 +1,8 @@
 package ru.dmitriykotyshov.admin;
 
-import ru.dmitriykotyshov.DAO.ConnectionDAO;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import ru.dmitriykotyshov.DAO.InsertDAO;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -13,18 +15,18 @@ import java.io.IOException;
  */
 public class AddDocument extends HttpServlet {
 
-    private final static String INSERT_DOCUMENT_SQL = "insert into document (document) values ('%s')";
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         req.setCharacterEncoding("UTF-8");
 
-        ConnectionDAO connectionDAO = new ConnectionDAO();
+        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("springContext.xml");
+
+        InsertDAO insertDAO = applicationContext.getBean("InsertDAO", InsertDAO.class);
+
         String document = req.getParameter("document");
-        String insert = String.format(INSERT_DOCUMENT_SQL, document);
-        connectionDAO.operatorDML(insert);
-        connectionDAO.disconnect();
+
+        insertDAO.insertDocument(document);
 
         req.getRequestDispatcher("document").forward(req, resp);
 

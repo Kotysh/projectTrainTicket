@@ -24,10 +24,10 @@
             <h3>Добавление:</h3>
             <table align="center">
                 <tr>
-                    <td><label for="trainID"><span class="bold">ID поезда:</span> </label></td><td><input type="text" id="trainID" name="trainID"></td>
+                    <td><label for="trainId"><span class="bold">ID поезда:</span> </label></td><td><input type="text" id="trainId" name="trainId"></td>
                 </tr>
                 <tr>
-                    <td><label for="typeWagonID"><span class="bold">ID типа вагона:</span> </label></td><td><input type="text" id="typeWagonID" name="typeWagonID"></td>
+                    <td><label for="typeWagonId"><span class="bold">ID типа вагона:</span> </label></td><td><input type="text" id="typeWagonId" name="typeWagonId"></td>
                 </tr>
                 <tr>
                     <td><label for="orderWagon"><span class="bold">Порядковый номер вагона:</span> </label></td><td><input type="text" id="orderWagon" name="orderWagon"></td>

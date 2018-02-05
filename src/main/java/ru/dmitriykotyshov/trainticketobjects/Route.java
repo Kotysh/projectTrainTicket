@@ -1,7 +1,8 @@
 package ru.dmitriykotyshov.trainticketobjects;
 
+import ru.dmitriykotyshov.other.Price;
+
 import java.sql.Timestamp;
-import java.util.List;
 
 /**
  * Created by Дмитрий on 09.01.2018.
@@ -14,12 +15,26 @@ public class Route {
     private Station secondStation;
     private Timestamp timeDateFirstStation;
     private Timestamp timeDateSecondStation;
+    private int distance;
+    private int price;
 
-    public Route(int id, String nameRoute, Station firstStation, Station secondSttaion, Timestamp timeDateFirstStation, Timestamp timeDateSecondStation) {
+    public Route(int id, String nameRoute, Station firstStation, Station secondSttaion,
+                 Timestamp timeDateFirstStation, Timestamp timeDateSecondStation,int distanceFirstStation, int distanceSecondStation) {
         this.id = id;
         this.nameRoute = nameRoute;
         this.firstStation = firstStation;
         this.secondStation = secondSttaion;
+        this.timeDateFirstStation = timeDateFirstStation;
+        this.timeDateSecondStation = timeDateSecondStation;
+        this.distance = distanceSecondStation - distanceFirstStation;
+        this.price = (int)((distanceSecondStation - distanceFirstStation)*Price.COEFFICIENT_PRICE);
+    }
+
+    public Route(int id, String nameRoute, Station firstStation, Station secondStation, Timestamp timeDateFirstStation, Timestamp timeDateSecondStation) {
+        this.id = id;
+        this.nameRoute = nameRoute;
+        this.firstStation = firstStation;
+        this.secondStation = secondStation;
         this.timeDateFirstStation = timeDateFirstStation;
         this.timeDateSecondStation = timeDateSecondStation;
     }
@@ -41,6 +56,8 @@ public class Route {
                 ", secondStation=" + secondStation +
                 ", timeDateFirstStation=" + timeDateFirstStation +
                 ", timeDateSecondStation=" + timeDateSecondStation +
+                ", distanec=" + distance+
+                ", price=" + price +
                 '}';
     }
 
@@ -88,7 +105,23 @@ public class Route {
         return timeDateSecondStation;
     }
 
-    public void setGetTimeDateSecondStation(Timestamp getTimeDateSecondStation) {
-        this.timeDateSecondStation = getTimeDateSecondStation;
+    public void setTimeDateSecondStation(Timestamp timeDateSecondStation) {
+        this.timeDateSecondStation = timeDateSecondStation;
+    }
+
+    public int getDistance() {
+        return distance;
+    }
+
+    public void setDistance(int distance) {
+        this.distance = distance;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
     }
 }

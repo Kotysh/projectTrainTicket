@@ -25,7 +25,7 @@
         <table align="center">
             <tr>
                 <td><label for="station"><span class="bold">Станция:</span> </label></td><td><input type="text" id="station" name="station"></td>
-                <td><label for="cityID"><span class="bold">ID города:</span> </label></td><td><input type="text" id="cityID" name="cityID"></td>
+                <td><label for="cityId"><span class="bold">ID города:</span> </label></td><td><input type="text" id="cityId" name="cityId"></td>
                 <td colspan="2"><input type="submit" value="Добавить"></td>
             </tr>
         </table>

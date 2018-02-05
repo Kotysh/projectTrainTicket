@@ -32,6 +32,7 @@
     placeToHtml.append("<p>Кондиционер: "+(wagon.isAirCondition()?"да":"нет")+"</p>");
     placeToHtml.append("<p>Общее количество мест: "+wagon.getCountPlace()+"</p>");
     placeToHtml.append("<p>Свободное количество мест: "+(wagon.getCountPlace()-setPlace.size())+"</p>");
+    placeToHtml.append("<p>Цена: <span id=\"price\">"+wagon.getPrice()+"</span>р.</p>");
     placeToHtml.append("<hr>");
     placeToHtml.append("<p>Заполните анкету, выберите место и нажмите купить</p>");
     placeToHtml.append("<br>");
@@ -129,5 +130,5 @@
 </div>
 </body>
 </html>
-<script src="js/scripts.js" defer>
+<script src="js/script.js" defer>
 </script>

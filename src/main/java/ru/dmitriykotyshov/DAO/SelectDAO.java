@@ -1,6 +1,8 @@
 package ru.dmitriykotyshov.DAO;
 
+import org.apache.log4j.Logger;
 import ru.dmitriykotyshov.other.MyDate;
+import ru.dmitriykotyshov.other.PairTimestampDistance;
 import ru.dmitriykotyshov.trainticketobjects.*;
 
 import java.sql.ResultSet;
@@ -11,25 +13,58 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static ru.dmitriykotyshov.DAO.sql.SelectSQL.*;
+
 /**
  * Created by Дмитрий on 10.01.2018.
  */
 public class SelectDAO {
 
-    private SelectDAO(){};
+    private final static Logger logger = Logger.getLogger(SelectDAO.class);
 
-    private static final String GET_CITY_NAMECITY = "select * from city where city = '%s'";
+    private static SelectDAO instanceSelectDAO;
 
-    /**
-     *
-     * @param nameCity - Название города (name_city)
-     * @return - Возвращает город по переменной city
-     */
-    public static City getCity(String nameCity){
+    public static synchronized SelectDAO getInstanceSelectDAO(){
+
+        if (instanceSelectDAO == null){
+            instanceSelectDAO = new SelectDAO();
+        }
+
+        return instanceSelectDAO;
+
+    }
+
+    private SelectDAO(){}
+
+
+
+    public List<City> getCities(){
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
 
-        ResultSet resultSet = connectionDAO.getSelect(String.format(GET_CITY_NAMECITY, nameCity));
+        ResultSet resultSet = connectionDAO.getSelect(getSqlGetCities());
+
+        List<City> cities = new ArrayList<City>();
+
+        try {
+            while (resultSet.next()){
+                cities.add(new City(resultSet.getInt(1), resultSet.getString(2)));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        connectionDAO.disconnect();
+
+        return cities;
+
+    }
+
+    public City getCity(String nameCity){
+
+        ConnectionDAO connectionDAO = new ConnectionDAO();
+
+        ResultSet resultSet = connectionDAO.getSelect(getSqlGetCityByNameCity(nameCity));
 
         City city = new City();
 
@@ -38,13 +73,12 @@ public class SelectDAO {
             if (resultSet.next()){
                 city.setId(resultSet.getInt(1));
                 city.setNameCity(resultSet.getString(2));
-                System.out.println(city);
             }else{
-                System.out.println("Город "+city+" отсутствует");
+                logger.trace("город c именем "+nameCity+" не найден");
             }
 
         } catch (SQLException e) {
-            System.out.println("getCity() - " + e.getMessage());
+            logger.debug("getCity() - SQLException: ", e);
         }
 
         connectionDAO.disconnect();
@@ -53,32 +87,25 @@ public class SelectDAO {
 
     }
 
-    private static final String GET_CITY_CITYID = "select * from city where city_id = %d";
-
-    /**
-     *
-     * @param i - Идентификатор станции (id_city)
-     * @return - Возвращает станцию по переменной i
-     */
-    public static City getCity(int i){
+    public City getCity(int cityId){
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
 
-        ResultSet resultSet = connectionDAO.getSelect(String.format(GET_CITY_CITYID,i));
+        ResultSet resultSet = connectionDAO.getSelect(getSqlGetCityByCityId(cityId));
 
         City city = new City();
 
         try {
 
             if (resultSet.next()){
-                city = new City(resultSet.getInt(1), resultSet.getString(2));
-                System.out.println(city);
+                city.setId(resultSet.getInt(1));
+                city.setNameCity(resultSet.getString(2));
             }else{
-                System.out.println("Город c идентификатором "+i+" отсутствует");
+                logger.trace("город по идентификатору "+cityId+" не найден");
             }
 
         } catch (SQLException e) {
-            System.out.println("getCity() - " + e.getMessage());
+            logger.debug("getCity() - SQLException: ", e);
         }
 
         connectionDAO.disconnect();
@@ -87,20 +114,11 @@ public class SelectDAO {
 
     }
 
-    private static final String GET_STATIONS = "select * from station where station = '%s' or city_id = %d";
-
-    /**
-     *
-     * @param station - Название станции
-     * @param city - Город в котором находятся станции
-     * @return - Возвращает все станции расположенные в указанном городе и станции
-     * у которых имя совпадает с полем station
-     */
-    public static List<Station> getStations(String station, City city){
+    public List<Station> getStations(String nameStation, City city){
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
 
-        ResultSet resultSet = connectionDAO.getSelect(String.format(GET_STATIONS, station, city.getId()));
+        ResultSet resultSet = connectionDAO.getSelect(getSqlGetStationsByNameStationAndCityId(nameStation, city));
 
         List<Station> stations = new ArrayList<Station>();
 
@@ -112,17 +130,15 @@ public class SelectDAO {
                         city = getCity(resultSet.getInt(3));
                     }
                     Station newStation = new Station(resultSet.getInt(1), resultSet.getString(2), city);
-                    System.out.println(newStation);
                     stations.add(newStation);
 
                 } while (resultSet.next());
             }else{
-                System.out.println("Станции с именем "+station+" отсутствуют");
+                logger.trace("Станции с названием "+nameStation+" отсутствуют");
             }
 
-
         }catch (SQLException e){
-            System.out.println("getStation() - " + e.getMessage());
+            logger.debug("getStations() - SQLException: ", e);
         }
 
         connectionDAO.disconnect();
@@ -131,20 +147,7 @@ public class SelectDAO {
 
     }
 
-    private static final String GET_ROUTES = "select route_station.route_id, route.route, count(route_station.station_id) " +
-            "from route_station " +
-            "join route on route.route_id = route_station.route_id " +
-            "where route_station.station_id in (%d,%d) " +
-            "group by route_station.route_id, route.route " +
-            "having count(route_station.station_id)=2";
-
-    /**
-     *
-     * @param firstStationList - Список станций из пункта А
-     * @param secondStationList - Список станций в пункт Б
-     * @return  Возвращает количество маршрутов из пунка А в пункт Б
-     */
-    public static List<Route> getRoutes (List<Station> firstStationList, List<Station> secondStationList, MyDate date){
+    public List<Route> getRoutes (List<Station> firstStationList, List<Station> secondStationList, MyDate date){
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
 
@@ -155,29 +158,32 @@ public class SelectDAO {
         for (int i=0; i<firstStationList.size(); i++){
             for (int j=0; j<secondStationList.size(); j++){
 
-                ResultSet resultSet = connectionDAO.getSelect(String.format(GET_ROUTES, firstStationList.get(i).getId(), secondStationList.get(j).getId()));
+                ResultSet resultSet = connectionDAO.getSelect(getSqlGetCountRoutes(firstStationList.get(i).getId(), secondStationList.get(j).getId()));
 
                 try {
                     if (resultSet.next()){
                         do{
 
-                            orderFirstStation = getOrderOnRoute(resultSet.getInt(1), firstStationList.get(i).getId(), date, 1);
-                            orderSecondStation = getOrderOnRoute(resultSet.getInt(1), secondStationList.get(j).getId(), date, 2);
+                            orderFirstStation = getOrderStationOnRoute(resultSet.getInt(1), firstStationList.get(i).getId(), date, 1);
+                            orderSecondStation = getOrderStationOnRoute(resultSet.getInt(1), secondStationList.get(j).getId(), date, 2);
 
                             if (orderFirstStation<orderSecondStation){
 
-                                Timestamp timestampFirstStation = getTimestamp(resultSet.getInt(1), firstStationList.get(i).getId(), date, 1);
-                                Timestamp timestampSecondStation = getTimestamp(resultSet.getInt(1), secondStationList.get(j).getId(), date, 2);
+                                PairTimestampDistance timestampFirstStation = getTimestampStation(resultSet.getInt(1), firstStationList.get(i).getId(), date, 1);
+                                PairTimestampDistance timestampSecondStation = getTimestampStation(resultSet.getInt(1), secondStationList.get(j).getId(), date, 2);
 
-                                routes.add(new Route(resultSet.getInt(1), resultSet.getString(2),
-                                        firstStationList.get(i), secondStationList.get(j), timestampFirstStation, timestampSecondStation));
+                                Route newRoute = new Route(resultSet.getInt(1), resultSet.getString(2),
+                                        firstStationList.get(i), secondStationList.get(j),
+                                        timestampFirstStation.getTimestamp(), timestampSecondStation.getTimestamp(),
+                                        timestampFirstStation.getDistance(), timestampSecondStation.getDistance());
+                                routes.add(newRoute);
 
                             }
 
                         }while(resultSet.next());
                     }
                 } catch (SQLException e) {
-                    System.out.println("getRoute() - "+e.getMessage());
+                    logger.debug("getRoutes() - SQLException: ", e);
                 }
 
             }
@@ -188,36 +194,27 @@ public class SelectDAO {
         return routes;
     }
 
-    private static final String GET_TRAIN = "select * from train where route_id = %d";
-
-    /**
-     *
-     * @param route - Маршрут на котором находятся какое то количество поездов
-     * @return - Возвращает List<Train> поездов, которые находятся на данном маршруте
-     */
-    public static List<Train> getTrain(Route route){
+    public List<Train> getTrain(Route route){
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
 
         List<Train> trains = new ArrayList<Train>();
 
-        ResultSet resultSet = connectionDAO.getSelect(String.format(GET_TRAIN, route.getId()));
+        ResultSet resultSet = connectionDAO.getSelect(getSqlGetTrainByRouteId(route.getId()));
 
         try {
             if (resultSet.next()) {
                 do {
 
-                    Train newTrain = new Train(resultSet.getInt(1), resultSet.getString(2),
-                            route);
+                    Train newTrain = new Train(resultSet.getInt(1), resultSet.getString(2), route);
                     trains.add(newTrain);
-                    System.out.println(newTrain);
 
                 } while (resultSet.next());
             }else{
-                System.out.println("Поезда на маршруте "+route.getNameRoute()+" отсутствуют");
+                logger.trace("Поезда на маршруте "+route.getNameRoute()+" отсутствуют");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.debug("getTrain() - SQLException: ", e);
         }
 
         connectionDAO.disconnect();
@@ -226,35 +223,28 @@ public class SelectDAO {
 
     }
 
-    private static final String GET_WAGONS = "select wagon.wagon_id, wagon.order_wagon, type_wagon.type_name, type_wagon.bio_tiolet, type_wagon.air_condition, type_wagon.count_place " +
-            "from wagon " +
-            "join type_wagon on wagon.type_wagon_id = type_wagon.type_wagon_id " +
-            "where wagon.train_id = %d "+
-            "order by order_wagon";
-
-    public static List<Wagon> getWagons(Train train){
+    public List<Wagon> getWagons(Train train){
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
 
         List<Wagon> wagons = new ArrayList<Wagon>();
 
-        ResultSet resultSet = connectionDAO.getSelect(String.format(GET_WAGONS, train.getId()));
+        ResultSet resultSet = connectionDAO.getSelect(getSqlGetWagonsByTrainId(train.getId()));
 
         try {
             if (resultSet.next()){
                 do{
-                    Wagon wagon = new Wagon(resultSet.getInt(1), train,
+                    Wagon newWagon = new Wagon(resultSet.getInt(1), train,
                             resultSet.getString(3), resultSet.getString(4) != null,
                             resultSet.getString(5) != null, resultSet.getInt(2),
                             resultSet.getInt(6));
-                    System.out.println(wagon);
-                    wagons.add(wagon);
+                    wagons.add(newWagon);
                 }while (resultSet.next());
             }else{
-                System.out.println("У поезда "+train.getNumberTrain()+" нет вагонов");
+                logger.trace("У поезда "+train.getNumberTrain()+" нет вагонов");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.debug("getWagons() - SQLException: ", e);
         }
 
         connectionDAO.disconnect();
@@ -262,44 +252,26 @@ public class SelectDAO {
         return wagons;
     }
 
-    private static final String GET_PLACES = "select ticket.place from ticket " +
-            "join route_station routeone on ticket.FIRST_ROUTE_STATION_ID = routeone.ROUTE_STATION_ID " +
-            "join route_station routetwo on ticket.SECOND_ROUTE_STATION_ID = routetwo.ROUTE_STATION_ID " +
-            "where ticket.wagon_id = %d "+
-            "and "+
-            "((routeone.departure_time<=to_timestamp('%s', 'YYYY-MM-DD HH24:MI:SS.FF') and to_timestamp('%s', 'YYYY-MM-DD HH24:MI:SS.FF')<=routetwo.arrival_time) " +
-            "or "+
-            "(routeone.departure_time<=to_timestamp('%s', 'YYYY-MM-DD HH24:MI:SS.FF') and to_timestamp('%s', 'YYYY-MM-DD HH24:MI:SS.FF')<=routetwo.arrival_time) " +
-            "or "+
-            "(to_timestamp('%s', 'YYYY-MM-DD HH24:MI:SS.FF')<=routeone.departure_time and routeone.departure_time<=to_timestamp('%s', 'YYYY-MM-DD HH24:MI:SS.FF')) " +
-            "or "+
-            "(to_timestamp('%s', 'YYYY-MM-DD HH24:MI:SS.FF')<=routetwo.arrival_time and routetwo.arrival_time<=to_timestamp('%s', 'YYYY-MM-DD HH24:MI:SS.FF')))";
-
-    public static Set<Integer> getPlaces(Wagon wagon){
+    public Set<Integer> getPlaces(Wagon wagon){
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
 
         Set<Integer> places = new HashSet<Integer>();
 
-        ResultSet resultSet = connectionDAO.getSelect(String.format(GET_PLACES, wagon.getWagonId(),
-                wagon.getTrain().getRoute().getTimeDateFirstStation(), wagon.getTrain().getRoute().getTimeDateFirstStation(),
-                wagon.getTrain().getRoute().getTimeDateSecondStation(), wagon.getTrain().getRoute().getTimeDateSecondStation(),
-                wagon.getTrain().getRoute().getTimeDateFirstStation(), wagon.getTrain().getRoute().getTimeDateSecondStation(),
-                wagon.getTrain().getRoute().getTimeDateFirstStation(), wagon.getTrain().getRoute().getTimeDateSecondStation()));
+        ResultSet resultSet = connectionDAO.getSelect(getSqlGetBuyPlacesForWagon(wagon));
 
         try {
             if (resultSet.next()){
                 do{
 
                     places.add(resultSet.getInt(1));
-                    System.out.println(resultSet.getInt(1));
 
                 }while (resultSet.next());
             }else{
-                System.out.println("Все места в вагоне №"+wagon.getOrder()+" свободны");
+                logger.trace("Все места в вагоне №"+wagon.getOrder()+" свободны");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.debug("getPlaces() - SQLException: ", e);
         }
 
         connectionDAO.disconnect();
@@ -308,23 +280,11 @@ public class SelectDAO {
 
     }
 
-    private static final String GET_NUMBER_ROUTE = "select route_id, count(station_id) "+
-            "from route_station "+
-            "where station_id in (%d,%d) "+
-            "group by route_id "+
-            "having count(station_id)=2";
-
-    /**
-     *
-     * @param i - id первой станции
-     * @param j - id второй станции
-     * @return - Возвращает идентификатор маршрута route_id на котором находятся обе станции
-     */
-    public static int getNumberRoute (int i, int j){
+    public int getNumberRoute (int firstStationdId, int secondStationId){
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
 
-        ResultSet resultSet = connectionDAO.getSelect(String.format(GET_NUMBER_ROUTE, i, j));
+        ResultSet resultSet = connectionDAO.getSelect(getSqlGetNumberRouteByFirstStationIdAndSecondStationId(firstStationdId, secondStationId));
 
         int route = 0;
 
@@ -333,7 +293,7 @@ public class SelectDAO {
                 route = resultSet.getInt(1);
             }
         } catch (SQLException e) {
-            System.out.println("getNumberRoute() - " + e.getMessage());
+            logger.debug("getNumberRoute() - SQLException: ", e);
         }
 
         connectionDAO.disconnect();
@@ -342,34 +302,15 @@ public class SelectDAO {
 
     }
 
-    private static final String GET_ORDER_ON_ROUTE_OUT = "select order_station " +
-            "from route_station " +
-            "where route_id = %d and station_id = %d " +
-            "and DEPARTURE_TIME>TO_TIMESTAMP('%d/%d/%d', 'YYYY/MM/DD') " +
-            "and DEPARTURE_TIME<TO_TIMESTAMP('%d/%d/%d', 'YYYY/MM/DD')";
-
-    private static final String GET_ORDER_ON_ROUTE_IN = "select order_station "+
-            "from route_station "+
-            "where route_id = %d and station_id = %d "+
-            "and ARRIVAL_TIME>TO_TIMESTAMP('%d/%d/%d', 'YYYY/MM/DD') "+
-            "and ARRIVAL_TIME<TO_TIMESTAMP('%d/%d/%d', 'YYYY/MM/DD')";
-
-    /**
-     *
-     * @param route - Номер маршрута
-     * @param i - Номер станции
-     * @return - Возвращает порядковый номер станции на маршруте(order_station)
-     */
-    public static int getOrderOnRoute (int route, int i, MyDate date, int index){
+    public int getOrderStationOnRoute (int route, int i, MyDate date, int index){
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
         String sql;
-        if (index == 1) {//откуда = 1
-            sql = String.format(GET_ORDER_ON_ROUTE_OUT, route, i, date.getYear(), date.getMonth(), date.getDay(),
-                    date.getYear(), date.getMonth(), date.getDay()+1);
-        }else{          //куда = 2
-            sql = String.format(GET_ORDER_ON_ROUTE_IN, route, i, date.getYear(), date.getMonth(), date.getDay(),
-                    date.getYear(), date.getMonth(), date.getDay()+1);
+
+        if (index == 1) {//OUT = 1
+            sql = getSqlGetOrderStationOnRouteOut(route, i, date);
+        }else{          //IN = 2
+            sql = getSqlGetOrderStationOnRouteIn(route, i, date);
         }
 
         int order = 0;
@@ -381,7 +322,7 @@ public class SelectDAO {
                 order = resultSet.getInt(1);
             }
         } catch (SQLException e) {
-            System.out.println("getOrderRoute - " + e.getMessage());
+            logger.debug("getOrderStaionOnRoute() - SQLException: ", e);
         }
 
         connectionDAO.disconnect();
@@ -390,87 +331,64 @@ public class SelectDAO {
 
     }
 
-    private static final String GET_TIMESTAMP_OUT = "select DEPARTURE_TIME " +
-            "from route_station " +
-            "where route_id = %d and station_id = %d " +
-            "and DEPARTURE_TIME>TO_TIMESTAMP('%d/%d/%d', 'YYYY/MM/DD') " +
-            "and DEPARTURE_TIME<TO_TIMESTAMP('%d/%d/%d', 'YYYY/MM/DD')";
-
-    private static final String GET_TIMESTAMP_IN = "select ARRIVAL_TIME "+
-            "from route_station "+
-            "where route_id = %d and station_id = %d "+
-            "and ARRIVAL_TIME>TO_TIMESTAMP('%d/%d/%d', 'YYYY/MM/DD') "+
-            "and ARRIVAL_TIME<TO_TIMESTAMP('%d/%d/%d', 'YYYY/MM/DD')";
-
-    public static Timestamp getTimestamp(int route, int station, MyDate date, int index){
+    public PairTimestampDistance getTimestampStation(int routeId, int stationId, MyDate date, int index){
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
 
         String sql;
 
-        if (index == 1) {//откуда = 1
-            sql = String.format(GET_TIMESTAMP_OUT, route, station, date.getYear(), date.getMonth(), date.getDay(),
-                    date.getYear(), date.getMonth(), date.getDay()+1);
-        }else{          //куда = 2
-            sql = String.format(GET_TIMESTAMP_IN, route, station, date.getYear(), date.getMonth(), date.getDay(),
-                    date.getYear(), date.getMonth(), date.getDay()+1);
+        if (index == 1) {//OUT = 1
+            sql = getSqlGetTimestampStationOut(routeId, stationId, date);
+        }else{          //IN = 2
+            sql = getSqlGetTimestampStationIn(routeId, stationId, date);
         }
 
-        Timestamp timestamp = null;
+        PairTimestampDistance pairTimestampDistance = new PairTimestampDistance();
 
         ResultSet resultSet = connectionDAO.getSelect(sql);
 
         try {
             if (resultSet.next()){
-                timestamp = resultSet.getTimestamp(1);
+                pairTimestampDistance.setTimestamp(resultSet.getTimestamp(1));
+                pairTimestampDistance.setDistance(resultSet.getInt(2));
             }
         } catch (SQLException e) {
-            System.out.println("getOrderRoute - " + e.getMessage());
+            logger.debug("getTimestampStation() - SQLException: ", e);
         }
 
         connectionDAO.disconnect();
 
 
-        return timestamp;
+        return pairTimestampDistance;
     }
 
-    private static final String GET_NAME_ROUTE = "select route from route where route_id = %d";
-
-    /**
-     *
-     * @param numberRoute - Номер маршрута
-     * @return - По указанному id_route(идентификатору) возвращает name_route(имя маршрута)
-     */
-    public static String getNameRoute(int numberRoute) {
+    public String getNameRoute(int routeId) {
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
 
-        String name = "";
+        String nameRoute = "";
 
-        ResultSet resultSet = connectionDAO.getSelect(String.format(GET_NAME_ROUTE, numberRoute));
+        ResultSet resultSet = connectionDAO.getSelect(getSqlGetNameRoute(routeId));
 
         try {
             if (resultSet.next()){
-                name = resultSet.getString(1);
+                nameRoute = resultSet.getString(1);
             }
         } catch (SQLException e) {
-            System.out.println("getOrderRoute - " + e.getMessage());
+            logger.debug("getNameRoute() - SQLException: ", e);
         }
 
         connectionDAO.disconnect();
 
-        return name;
+        return nameRoute;
 
     }
 
-    private final static String GET_CUSTOMER_ID = "select customer_id from customer \n" +
-            "where doc_number = '%s' and document_id = %s";
-
-    public static int getCustomerId(String documentNumber, String documentId){
+    public int getCustomerId(String documentNumber, String documentId){
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
 
-        ResultSet resultSet = connectionDAO.getSelect(String.format(GET_CUSTOMER_ID, documentNumber, documentId));
+        ResultSet resultSet = connectionDAO.getSelect(getSqlGetCustomerId(documentNumber, documentId));
 
         int customerId = 0;
 
@@ -479,7 +397,7 @@ public class SelectDAO {
                 customerId = resultSet.getInt(1);
             }
         } catch (SQLException e) {
-            System.out.println("getCustomerId - " + e.getMessage());
+            logger.debug("getCustomerId() - SQLException: ", e);
         }
 
         connectionDAO.disconnect();
@@ -487,15 +405,7 @@ public class SelectDAO {
         return customerId;
     }
 
-    private final static String GET_ROUTE_STATION_OUT = "select route_station_id from route_station " +
-            "join route on route_station.route_id = route.route_id " +
-            "where route = '%s' and departure_time = to_timestamp('%s', 'YYYY-MM-DD HH24:MI:SS.FF')";
-
-    private final static String GET_ROUTE_STATION_IN = "select route_station_id from route_station " +
-            "join route on route_station.route_id = route.route_id " +
-            "where route = '%s' and arrival_time = to_timestamp('%s', 'YYYY-MM-DD HH24:MI:SS.FF')";
-
-    public static int getRouteStationId(String route, String timestamp, int index){
+    public int getRouteStationId(String nameRoute, String timestamp, int index){
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
 
@@ -503,13 +413,11 @@ public class SelectDAO {
 
         String sql = "";
 
-        if (index == 1){
-            sql = String.format(GET_ROUTE_STATION_OUT, route, timestamp);
-        }else{
-            sql = String.format(GET_ROUTE_STATION_IN, route, timestamp);
+        if (index == 1){//OUT = 1
+            sql = getGetRouteStationIdOutStationByRouteNameAndDepartureTime(nameRoute, timestamp);
+        }else{          //IN = 2
+            sql = getGetRouteStationIdInStationByRouteNameAndDepartureTime(nameRoute, timestamp);
         }
-
-        System.out.println(sql);
 
         ResultSet resultSet = connectionDAO.getSelect(sql);
 
@@ -518,22 +426,18 @@ public class SelectDAO {
                 routeStationId = resultSet.getInt(1);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.debug("getRouteStationId() - SQLException: ", e);
         }
 
         return routeStationId;
 
     }
 
-    private final static String GET_WAGON_ID = "select wagon.wagon_id from wagon "+
-            "join train on train.train_id = wagon.train_id "+
-            "where train.number_train = '%s' and wagon.order_wagon = %s";
-
-    public static int getWagonId(String numberTrain, String orderWagon){
+    public int getWagonId(String numberTrain, String orderWagon){
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
 
-        ResultSet resultSet = connectionDAO.getSelect(String.format(GET_WAGON_ID, numberTrain, orderWagon));
+        ResultSet resultSet = connectionDAO.getSelect(getSqlGetWagonIdByNumberTrainAndOrderWagon(numberTrain, orderWagon));
 
         int wagonId = 0;
 
@@ -542,12 +446,229 @@ public class SelectDAO {
                 wagonId = resultSet.getInt(1);
             }
         } catch (SQLException e) {
-            System.out.println("getWagonId - " + e.getMessage());
+            logger.debug("getWagonId() - SQLException: ", e);
         }
 
         connectionDAO.disconnect();
 
         return wagonId;
+    }
+
+    public List<Customer> getCustomersJoinDocument(){
+
+        ConnectionDAO connectionDAO = new ConnectionDAO();
+
+        ResultSet resultSet = connectionDAO.getSelect(getSqlGetCustomersJoinDocument());
+
+        List<Customer> customers = new ArrayList<Customer>();
+
+        try {
+            while (resultSet.next()){
+                customers.add(new Customer(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4),
+                        resultSet.getDate(5), resultSet.getString(6), new Document(resultSet.getInt(7), resultSet.getString(8)),
+                        resultSet.getString(9), resultSet.getString(10), resultSet.getString(11)));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return customers;
+
+    }
+
+    public List<Document> getDocuments(){
+
+        ConnectionDAO connectionDAO = new ConnectionDAO();
+
+        ResultSet resultSet = connectionDAO.getSelect(getSqlGetDocuments());
+
+        List<Document> documents = new ArrayList<Document>();
+
+        try {
+            while (resultSet.next()){
+                documents.add(new Document(resultSet.getInt(1), resultSet.getString(2)));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        connectionDAO.disconnect();
+
+        return documents;
+
+    }
+
+    public List<RouteDB> getRoutes(){
+
+        ConnectionDAO connectionDAO = new ConnectionDAO();
+
+        ResultSet resultSet = connectionDAO.getSelect(getSqlGetRoutes());
+
+        List<RouteDB> routes = new ArrayList<RouteDB>();
+
+        try {
+            while (resultSet.next()){
+                routes.add(new RouteDB(resultSet.getInt(1), resultSet.getString(2)));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        connectionDAO.disconnect();
+
+        return routes;
+
+    }
+
+    public List<RouteStation> getRouteStationsJoinRouteAndStation(){
+
+        ConnectionDAO connectionDAO = new ConnectionDAO();
+
+        ResultSet resultSet = connectionDAO.getSelect(getSqlGetRouteStationsJoinRouteAndStation());
+
+        List<RouteStation> routeStations = new ArrayList<RouteStation>();
+
+        try {
+            while (resultSet.next()){
+                routeStations.add(new RouteStation(resultSet.getInt(1),
+                        new Route(resultSet.getInt(2), resultSet.getString(3)),
+                        new Station(resultSet.getInt(4), resultSet.getString(5)),
+                        resultSet.getInt(6),
+                        resultSet.getTimestamp(7), resultSet.getTimestamp(8), resultSet.getInt(9)));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        connectionDAO.disconnect();
+
+        return routeStations;
+
+    }
+
+    public List<Station> getStationsJoinCity(){
+
+        ConnectionDAO connectionDAO = new ConnectionDAO();
+
+        ResultSet resultSet = connectionDAO.getSelect(getSqlGetStationsJoinCity());
+
+        List<Station> stations = new ArrayList<Station>();
+
+        try {
+            while (resultSet.next()){
+
+                stations.add(new Station(resultSet.getInt(1), resultSet.getString(2),
+                        new City(resultSet.getInt(3) == 0 ? 0 : resultSet.getInt(3),
+                                resultSet.getString(4) == null ? "null" : resultSet.getString(4))));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        connectionDAO.disconnect();
+
+        return stations;
+
+    }
+
+
+    public List<Ticket> getTicketsJoinCustomer(){
+
+        ConnectionDAO connectionDAO = new ConnectionDAO();
+
+        ResultSet resultSet = connectionDAO.getSelect(sqlGetTicketsJoinCustomer());
+
+        List<Ticket> tickets = new ArrayList<Ticket>();
+
+        try {
+            while (resultSet.next()){
+                tickets.add(new Ticket(resultSet.getInt(1),
+                        new Customer(resultSet.getInt(2), resultSet.getString(3),
+                                resultSet.getString(4), resultSet.getString(5)),
+                        new WagonDB(resultSet.getInt(6)), resultSet.getInt(7),resultSet.getDate(8),
+                        new RouteStation(resultSet.getInt(9)),
+                        new RouteStation(resultSet.getInt(10)), resultSet.getInt(11)));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        connectionDAO.disconnect();
+
+        return tickets;
+
+    }
+
+
+    public List<Train> getTrainsJoinRoute(){
+
+        ConnectionDAO connectionDAO = new ConnectionDAO();
+
+        ResultSet resultSet = connectionDAO.getSelect(getSqlGetTrainsJoinRoute());
+
+        List<Train> trains = new ArrayList<Train>();
+
+        try {
+            while (resultSet.next()){
+                trains.add(new Train(resultSet.getInt(1), resultSet.getString(2),
+                        new Route(resultSet.getInt(3), resultSet.getString(4))));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        connectionDAO.disconnect();
+
+        return trains;
+
+    }
+
+    public List<TypeWagon> getTypeWagons(){
+
+        ConnectionDAO connectionDAO = new ConnectionDAO();
+
+        ResultSet resultSet = connectionDAO.getSelect(getSqlGetTypeWagons());
+
+        List<TypeWagon> typeWagons = new ArrayList<TypeWagon>();
+
+        try {
+            while (resultSet.next()){
+                typeWagons.add(new TypeWagon(resultSet.getInt(1), resultSet.getString(2),
+                        resultSet.getString(3), resultSet.getString(4),
+                        resultSet.getInt(5)));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        connectionDAO.disconnect();
+
+        return typeWagons;
+
+    }
+
+
+    public List<WagonDB> getWagonsJoinTypeWagonAndTrain(){
+
+        ConnectionDAO connectionDAO = new ConnectionDAO();
+
+        ResultSet resultSet = connectionDAO.getSelect(getSqlGetWagonIdByNumberTrainAndOrderWagon());
+
+        List<WagonDB> wagons = new ArrayList<WagonDB>();
+
+        try {
+            while (resultSet.next()){
+                wagons.add(new WagonDB(resultSet.getInt(1), new Train(resultSet.getInt(2),resultSet.getString(3)),
+                        new TypeWagon(resultSet.getInt(4), resultSet.getString(5)), resultSet.getInt(6)));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        connectionDAO.disconnect();
+
+        return wagons;
+
     }
 
 }

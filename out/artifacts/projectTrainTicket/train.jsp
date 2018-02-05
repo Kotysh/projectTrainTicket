@@ -2,7 +2,8 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.fasterxml.jackson.databind.ObjectMapper" %>
 <%@ page import="java.util.ArrayList" %>
-<%@ page import="com.fasterxml.jackson.core.type.TypeReference" %><%--
+<%@ page import="com.fasterxml.jackson.core.type.TypeReference" %>
+<%@ page import="ru.dmitriykotyshov.other.Price" %><%--
   Created by IntelliJ IDEA.
   User: Дмитрий
   Date: 15.01.2018
@@ -28,7 +29,8 @@
         train.append("Маршрута: "+wagons.get(0).getTrain().getRoute().getNameRoute()+"<br>");
         train.append("Поезд №: "+wagons.get(0).getTrain().getNumberTrain()+"<br>");
         train.append("Время убытия: "+wagons.get(0).getTrain().getRoute().getTimeDateFirstStation()+"<br>");
-        train.append("Время прибытия: "+wagons.get(0).getTrain().getRoute().getTimeDateSecondStation()+"<br></div>");
+        train.append("Время прибытия: "+wagons.get(0).getTrain().getRoute().getTimeDateSecondStation()+"<br>");
+        train.append("Расстояние: "+wagons.get(0).getTrain().getRoute().getDistance()+"км<br></div>");
         train.append("<hr>");
         train.append("Информация о вагонах:");
 
@@ -40,6 +42,7 @@
             wagon.append("Биотуалет: "+(wagons.get(i).isBioTiolet()?"да":"нет")+"<br>");
             wagon.append("Кондиционер: "+(wagons.get(i).isAirCondition()?"да":"нет")+"<br>");
             wagon.append("Количество мест: "+wagons.get(i).getCountPlace()+"<br>");
+            wagon.append("Цена: "+wagons.get(i).getPrice()+"р.<br>");
             wagon.append("<div><a href=\"javascript: goToPlace(jsonParse[" + i + "])\">Выбрать место</a></div>");
             wagon.append("</div>");
 
@@ -75,7 +78,7 @@
 </div>
 </body>
 </html>
-<script src="js/scripts.js" defer>
+<script src="js/script.js" defer>
 </script>
 <script defer>
     var jsonParse = JSON.parse('<%=str%>');

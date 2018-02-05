@@ -12,6 +12,7 @@ public class Wagon {
     private boolean airCondition;
     private int order;
     private int countPlace;
+    private int price;
 
     public Wagon(int wagonId, Train train, String typeWagon, boolean bioTiolet, boolean airCondition, int order, int countPlace) {
         this.wagonId = wagonId;
@@ -21,6 +22,17 @@ public class Wagon {
         this.airCondition = airCondition;
         this.order = order;
         this.countPlace = countPlace;
+    }
+
+    public Wagon(int wagonId, Train train, String typeWagon, boolean bioTiolet, boolean airCondition, int order, int countPlace, int price) {
+        this.wagonId = wagonId;
+        this.train = train;
+        this.typeWagon = typeWagon;
+        this.bioTiolet = bioTiolet;
+        this.airCondition = airCondition;
+        this.order = order;
+        this.countPlace = countPlace;
+        this.price = price;
     }
 
     public Wagon() {
@@ -36,7 +48,16 @@ public class Wagon {
                 ", airCondition=" + airCondition +
                 ", order=" + order +
                 ", countPlace=" + countPlace +
+                ", price=" + price +
                 '}';
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
     }
 
     public boolean isBioTiolet() {

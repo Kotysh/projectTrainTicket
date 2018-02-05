@@ -1,5 +1,10 @@
 package ru.dmitriykotyshov;
 
+import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import ru.dmitriykotyshov.DAO.InsertDAO;
+import ru.dmitriykotyshov.DAO.SelectDAO;
 import ru.dmitriykotyshov.mail.Message;
 import ru.dmitriykotyshov.other.MyDate;
 
@@ -11,33 +16,52 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static ru.dmitriykotyshov.DAO.InsertDAO.insertCustomer;
-import static ru.dmitriykotyshov.DAO.InsertDAO.insertTicket;
-import static ru.dmitriykotyshov.DAO.SelectDAO.getCustomerId;
-import static ru.dmitriykotyshov.DAO.SelectDAO.getRouteStationId;
-import static ru.dmitriykotyshov.DAO.SelectDAO.getWagonId;
-
 /**
  * Created by Дмитрий on 26.01.2018.
  */
 public class Buy extends HttpServlet {
 
+    private final static Logger logger = Logger.getLogger(Buy.class);
+
+    private final static String textMessage = "Здравствуйте, %s %s "+
+            "Вы приобрели билет на нашем сайте, теперь вам его нужно оплатить по указанным реквезитам.";
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+        req.setCharacterEncoding("UTF-8");
+
+        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("springContext.xml");
+
+        SelectDAO selectDAO = applicationContext.getBean("SelectDAO", SelectDAO.class);
+        InsertDAO insertDAO = applicationContext.getBean("InsertDAO", InsertDAO.class);
+
+
+
+        logger.trace("buy ticket...");
         String firstName = req.getParameter("firstName");
         String middleName = req.getParameter("middleName");
         String lastName = req.getParameter("lastName");
+        logger.trace("firstName - "+firstName);
+        logger.trace("middleName - "+middleName);
+        logger.trace("lastName - "+lastName);
 
         Integer year = Integer.valueOf(req.getParameter("year"));
         Integer month = Integer.valueOf(req.getParameter("month"));
         Integer day = Integer.valueOf(req.getParameter("day"));
+        MyDate birthday = new MyDate(year, month, day);
+        logger.trace("birthday - "+birthday);
 
         String document = req.getParameter("document");
-        String gender = req.getParameter("gender");
         String docNumber = req.getParameter("docNumber");
+        String gender = req.getParameter("gender");
         String email = req.getParameter("email");
         String telephone = req.getParameter("telephone");
+        logger.trace("document - "+document);
+        logger.trace("docNumber - "+docNumber);
+        logger.trace("gender - "+gender);
+        logger.trace("email - "+email);
+        logger.trace("telephone - "+telephone);
 
         String route = req.getParameter("route");
         String numberTrain = req.getParameter("numberTrain");
@@ -45,53 +69,47 @@ public class Buy extends HttpServlet {
         String firstRouteStation = req.getParameter("firstRouteStation");
         String secondRouteStation = req.getParameter("secondRouteStation");
         String place = req.getParameter("place");
+        int price = Integer.valueOf(req.getParameter("price"));
+        logger.trace("route - "+route);
+        logger.trace("numberTrain - "+numberTrain);
+        logger.trace("orderWagon - "+orderWagon);
+        logger.trace("firstRouteStation - "+firstRouteStation);
+        logger.trace("secondRouteStation - "+secondRouteStation);
+        logger.trace("place - "+place);
+        logger.trace("price - "+price);
 
 
-        MyDate birthday = new MyDate(year, month, day);
 
-
-        int customerId = getCustomerId(docNumber, document);
+        logger.trace("get customerId...");
+        int customerId = selectDAO.getCustomerId(docNumber, document);
         if (customerId == 0) {
-            insertCustomer(firstName, middleName, lastName, birthday, gender, document, docNumber, email, telephone);
-            customerId = getCustomerId(docNumber, document);
+            logger.trace("customerId = 0, (new)insertCustomer");
+            insertDAO.insertCustomer(firstName, middleName, lastName, birthday, gender, document, docNumber, email, telephone);
+            customerId = selectDAO.getCustomerId(docNumber, document);
         }
-
-        String date = new SimpleDateFormat("YYYY-MM-DD").format(new Date());
-
-        int firstRouteStationId = getRouteStationId(route, firstRouteStation, 1);
-        int secondRouteStationId = getRouteStationId(route, secondRouteStation, 2);
-        int wagonId = getWagonId(numberTrain, orderWagon);
-
-        insertTicket(customerId, wagonId, place, date, firstRouteStationId, secondRouteStationId);
-
-        //-------------------------------------------------------------------------------------------------------------
-        System.out.println(firstName);
-        System.out.println(middleName);
-        System.out.println(lastName);
-        System.out.println(birthday);
-        System.out.println(document);
-        System.out.println(docNumber);
-        System.out.println(gender);
-        System.out.println(email);
-        System.out.println(telephone);
-        System.out.println("------------------------------------------------------------------------");
-        System.out.println(route);
-        System.out.println(numberTrain);
-        System.out.println(orderWagon);
-        System.out.println(firstRouteStation);
-        System.out.println(secondRouteStation);
-        System.out.println(place);
-        System.out.println("------------------------------------------------------------------------");
-        System.out.println(customerId);
-        System.out.println(firstRouteStationId);
-        System.out.println(secondRouteStationId);
-        System.out.println(wagonId);
-        //-------------------------------------------------------------------------------------------------------------
+        logger.trace("customerId = "+customerId);
 
 
+        String date = new SimpleDateFormat("YYYY-MM-dd").format(new Date());
+        logger.trace("todays date - "+date);
 
-        String text = "Здравствуйте, "+firstName+" "+middleName+", "+
-                "Вы приобрели билет на нашем сайте, теперь вам его нужно оплатить по указанным реквезитам.";
+
+        int firstRouteStationId = selectDAO.getRouteStationId(route, firstRouteStation, 1);
+        logger.trace("firstRouteStationId - "+firstRouteStationId);
+        int secondRouteStationId = selectDAO.getRouteStationId(route, secondRouteStation, 2);
+        logger.trace("secondRouteStationId - "+secondRouteStationId);
+        int wagonId = selectDAO.getWagonId(numberTrain, orderWagon);
+        logger.trace("wagonId - "+wagonId);
+
+
+        logger.trace("insert ticket...");
+        insertDAO.insertTicket(customerId, wagonId, place, date, firstRouteStationId, secondRouteStationId, price);
+
+
+        String text = String.format(textMessage, firstName, middleName);
+        logger.trace("text message - "+text);
+
+
 
         Message message = new Message(email, "Train&Ticket", text);
         message.sendMessage();
@@ -101,4 +119,5 @@ public class Buy extends HttpServlet {
         req.getRequestDispatcher("buy.jsp").forward(req, resp);
 
     }
+
 }

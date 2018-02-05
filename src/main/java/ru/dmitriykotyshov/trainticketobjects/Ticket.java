@@ -14,6 +14,18 @@ public class Ticket {
     private Date dateBuy;
     private RouteStation firstStation;
     private RouteStation secondStation;
+    private int price;
+
+    public Ticket(int ticketId, Customer customer, WagonDB wagon, int place, Date dateBuy, RouteStation firstStation, RouteStation secondStation, int price) {
+        this.ticketId = ticketId;
+        this.customer = customer;
+        this.wagon = wagon;
+        this.place = place;
+        this.dateBuy = dateBuy;
+        this.firstStation = firstStation;
+        this.secondStation = secondStation;
+        this.price = price;
+    }
 
     public Ticket(int ticketId, Customer customer, WagonDB wagon, int place, Date dateBuy, RouteStation firstStation, RouteStation secondStation) {
         this.ticketId = ticketId;
@@ -23,6 +35,20 @@ public class Ticket {
         this.dateBuy = dateBuy;
         this.firstStation = firstStation;
         this.secondStation = secondStation;
+    }
+
+    @Override
+    public String toString() {
+        return "Ticket{" +
+                "ticketId=" + ticketId +
+                ", customer=" + customer +
+                ", wagon=" + wagon +
+                ", place=" + place +
+                ", dateBuy=" + dateBuy +
+                ", firstStation=" + firstStation +
+                ", secondStation=" + secondStation +
+                ", price=" + price +
+                '}';
     }
 
     public int getTicketId() {
@@ -79,5 +105,13 @@ public class Ticket {
 
     public void setSecondStation(RouteStation secondStation) {
         this.secondStation = secondStation;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
     }
 }

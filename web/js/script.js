@@ -16,7 +16,9 @@ function goToTrain(json){
         "secondStationCityID="+json.route.secondStation.city.id+"&"+
         "secondStationCityName="+json.route.secondStation.city.nameCity+"&"+
         "firstStationDate="+json.route.timeDateFirstStation+"&"+
-        "secondStationDate="+json.route.timeDateSecondStation;
+        "secondStationDate="+json.route.timeDateSecondStation+"&"+
+        "price="+json.route.price+"&"+
+        "distance="+json.route.distance;
     document.location.href = "/gettrain?"+parametrs;
 
 }
@@ -43,7 +45,8 @@ function goToPlace(json){
         "secondStationCityID="+json.train.route.secondStation.city.id+"&"+
         "secondStationCityName="+json.train.route.secondStation.city.nameCity+"&"+
         "firstStationDate="+json.train.route.timeDateFirstStation+"&"+
-        "secondStationDate="+json.train.route.timeDateSecondStation;
+        "secondStationDate="+json.train.route.timeDateSecondStation+"&"+
+        "price="+json.price;
     document.location.href = "/getplace?"+parametrs;
 
 }
@@ -93,7 +96,8 @@ function goBuy(){
         "orderWagon="+document.getElementById('orderWagon').innerHTML+"&"+
         "firstRouteStation="+document.getElementById('firstRouteStation').innerHTML+"&"+
         "secondRouteStation="+document.getElementById('secondRouteStation').innerHTML+"&"+
-        "place="+place;
+        "place="+place+"&"+
+        "price="+document.getElementById('price').innerHTML;
 
     document.location.href = "/buy?"+parameters
 

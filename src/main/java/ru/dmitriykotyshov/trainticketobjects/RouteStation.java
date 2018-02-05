@@ -13,14 +13,16 @@ public class RouteStation {
     private int orderStation;
     private Timestamp arrivalTime;
     private Timestamp departureTime;
+    private int distance;
 
-    public RouteStation(int routeStationId, Route routeId, Station stationId, int orderStation, Timestamp arrivalTime, Timestamp departureTime) {
+    public RouteStation(int routeStationId, Route routeId, Station stationId, int orderStation, Timestamp arrivalTime, Timestamp departureTime, int distance) {
         this.routeStationId = routeStationId;
         this.routeId = routeId;
         this.stationId = stationId;
         this.orderStation = orderStation;
         this.arrivalTime = arrivalTime;
         this.departureTime = departureTime;
+        this.distance = distance;
     }
 
     public RouteStation(int routeStationId) {
@@ -73,5 +75,13 @@ public class RouteStation {
 
     public void setDepartureTime(Timestamp departureTime) {
         this.departureTime = departureTime;
+    }
+
+    public int getDistance() {
+        return distance;
+    }
+
+    public void setDistance(int distance) {
+        this.distance = distance;
     }
 }

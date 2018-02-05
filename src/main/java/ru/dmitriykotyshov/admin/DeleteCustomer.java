@@ -1,6 +1,9 @@
 package ru.dmitriykotyshov.admin;
 
-import ru.dmitriykotyshov.DAO.ConnectionDAO;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import ru.dmitriykotyshov.DAO.DeleteDAO;
+import ru.dmitriykotyshov.DAO.SelectDAO;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -13,19 +16,18 @@ import java.io.IOException;
  */
 public class DeleteCustomer extends HttpServlet {
 
-    private final static String DELETE_CUSTOMER = "delete from customer where customer_id = %s";
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         req.setCharacterEncoding("UTF-8");
 
-        ConnectionDAO connectionDAO = new ConnectionDAO();
-        String  customerID = (req.getParameter("customer"));
-        String delete = String.format(DELETE_CUSTOMER, customerID);
-        System.out.println(delete);
-        connectionDAO.operatorDML(delete);
-        connectionDAO.disconnect();
+        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("springContext.xml");
+
+        DeleteDAO deleteDAO = applicationContext.getBean("DeleteDAO", DeleteDAO.class);
+
+        String  customerId = req.getParameter("customer");
+
+        deleteDAO.deleteCustomer(customerId);
 
         req.getRequestDispatcher("customer").forward(req, resp);
 

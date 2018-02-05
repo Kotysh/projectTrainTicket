@@ -1,6 +1,9 @@
 package ru.dmitriykotyshov.admin;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.dmitriykotyshov.DAO.ConnectionDAO;
+import ru.dmitriykotyshov.DAO.DeleteDAO;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -8,23 +11,25 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static ru.dmitriykotyshov.DAO.sql.DeleteSQL.getSqlDeleteTicket;
+
 /**
  * Created by Дмитрий on 26.01.2018.
  */
 public class DeleteTicket extends HttpServlet {
-
-    private final static String DELETE_TICKET = "delete from ticket where ticket_id = %s";
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         req.setCharacterEncoding("UTF-8");
 
-        ConnectionDAO connectionDAO = new ConnectionDAO();
-        String ticketID = (req.getParameter("ticket"));
-        String delete = String.format(DELETE_TICKET, ticketID);
-        connectionDAO.operatorDML(delete);
-        connectionDAO.disconnect();
+        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("springContext.xml");
+
+        DeleteDAO deleteDAO = applicationContext.getBean("DeleteDAO", DeleteDAO.class);
+
+        String ticketId = (req.getParameter("ticket"));
+
+        deleteDAO.deleteTicket(ticketId);
 
         req.getRequestDispatcher("ticket").forward(req, resp);
 

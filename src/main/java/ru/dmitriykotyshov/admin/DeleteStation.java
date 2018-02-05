@@ -1,7 +1,8 @@
 package ru.dmitriykotyshov.admin;
 
-import ru.dmitriykotyshov.DAO.ConnectionDAO;
-import sun.security.jgss.HttpCaller;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import ru.dmitriykotyshov.DAO.DeleteDAO;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -9,23 +10,25 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static ru.dmitriykotyshov.DAO.sql.DeleteSQL.getSqlDeleteStation;
+
 /**
  * Created by Дмитрий on 13.01.2018.
  */
 public class DeleteStation extends HttpServlet{
-
-    private final static String DELETE_STATION = "delete from station where station_id = %s";
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         req.setCharacterEncoding("UTF-8");
 
-        ConnectionDAO connectionDAO = new ConnectionDAO();
-        String stationID = (req.getParameter("station"));
-        String delete = String.format(DELETE_STATION, stationID);
-        connectionDAO.operatorDML(delete);
-        connectionDAO.disconnect();
+        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("springContext.xml");
+
+        DeleteDAO deleteDAO = applicationContext.getBean("DeleteDAO", DeleteDAO.class);
+
+        String stationId = req.getParameter("station");
+
+        deleteDAO.deleteStation(stationId);
 
         req.getRequestDispatcher("station").forward(req, resp);
 

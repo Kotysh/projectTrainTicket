@@ -1,6 +1,8 @@
 package ru.dmitriykotyshov.admin;
 
-import ru.dmitriykotyshov.DAO.ConnectionDAO;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import ru.dmitriykotyshov.DAO.InsertDAO;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -13,22 +15,19 @@ import java.io.IOException;
  */
 public class AddTrain extends HttpServlet {
 
-    private final static String INSERT_WAGON = "INSERT INTO \"DIMA\".\"TRAIN\" (NUMBER_TRAIN, ROUTE_ID) VALUES ('%s', '%s')";
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         req.setCharacterEncoding("UTF-8");
 
-        ConnectionDAO connectionDAO = new ConnectionDAO();
+        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("springContext.xml");
+
+        InsertDAO insertDAO = applicationContext.getBean("InsertDAO", InsertDAO.class);
+
         String numberTrain = req.getParameter("numberTrain");
-        String routeID = req.getParameter("routeID");
+        String routeId = req.getParameter("routeId");
 
-
-        String insert = String.format(INSERT_WAGON, numberTrain, routeID);
-
-        connectionDAO.operatorDML(insert);
-        connectionDAO.disconnect();
+        insertDAO.insertTrain(numberTrain, routeId);
 
         req.getRequestDispatcher("train").forward(req, resp);
 

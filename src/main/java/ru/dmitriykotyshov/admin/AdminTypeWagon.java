@@ -1,6 +1,8 @@
 package ru.dmitriykotyshov.admin;
 
-import ru.dmitriykotyshov.DAO.ConnectionDAO;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import ru.dmitriykotyshov.DAO.SelectDAO;
 import ru.dmitriykotyshov.trainticketobjects.TypeWagon;
 
 import javax.servlet.ServletException;
@@ -8,9 +10,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,23 +20,11 @@ public class AdminTypeWagon extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        ConnectionDAO connectionDAO = new ConnectionDAO();
+        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("springContext.xml");
 
-        ResultSet resultSet = connectionDAO.getSelect("select * from type_wagon");
+        SelectDAO selectDAO = applicationContext.getBean("SelectDAO", SelectDAO.class);
 
-        List<TypeWagon> typeWagons = new ArrayList<TypeWagon>();
-
-        try {
-            while (resultSet.next()){
-                typeWagons.add(new TypeWagon(resultSet.getInt(1), resultSet.getString(2),
-                        resultSet.getString(3), resultSet.getString(4),
-                        resultSet.getInt(5)));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        connectionDAO.disconnect();
+        List<TypeWagon> typeWagons = selectDAO.getTypeWagons();
 
         req.setAttribute("typeWagons", typeWagons);
         req.getRequestDispatcher("admin/typewagon.jsp").forward(req, resp);

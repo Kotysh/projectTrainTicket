@@ -1,5 +1,6 @@
 <%@ page import="ru.dmitriykotyshov.trainticketobjects.City" %>
-<%@ page import="java.util.List" %><%--
+<%@ page import="java.util.List" %>
+<%@ page import="ru.dmitriykotyshov.trainticketobjects.RouteDB" %><%--
   Created by IntelliJ IDEA.
   User: Дмитрий
   Date: 16.01.2018
@@ -47,12 +48,12 @@
                 <td>ROUTE</td>
             </tr>
             <%
-                List<City> routes = (List<City>) request.getAttribute("routes");
+                List<RouteDB> routes = (List<RouteDB>) request.getAttribute("routes");
                 StringBuilder writeRoutes = new StringBuilder();
-                for(City r: routes){
+                for(RouteDB r: routes){
                     writeRoutes.append("<tr><td>");
-                    writeRoutes.append(r.getId()+"</td>");
-                    writeRoutes.append("<td>"+r.getNameCity()+"</td></tr>");
+                    writeRoutes.append(r.getRouteId()+"</td>");
+                    writeRoutes.append("<td>"+r.getNameRoute()+"</td></tr>");
                 }
             %>
             <%=writeRoutes%>

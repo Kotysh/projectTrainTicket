@@ -35,6 +35,8 @@
             listToHtml.append("<p>Поезд №: "+trainList.get(i).getNumberTrain()+"</p>");
             listToHtml.append("<p>Дата и время отправки: "+trainList.get(i).getRoute().getTimeDateFirstStation()+"</p>");
             listToHtml.append("<p>Дата и время прибытия: "+trainList.get(i).getRoute().getTimeDateSecondStation()+"</p>");
+            listToHtml.append("<p>Расстояние: "+trainList.get(i).getRoute().getDistance()+" км</p>");
+            listToHtml.append("<p>Цена от: "+trainList.get(i).getRoute().getPrice()+" р.</p>");
             listToHtml.append("<div><a href=\"javascript: goToTrain(jsonParse["+i+"])\">Купить билет</a></div></div>");
             listToHtml.append("\n");
         }
@@ -48,6 +50,9 @@
     <title>TrainTicket</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="css/style.css">
+    <link href="css/datepicker.min.css" rel="stylesheet" type="text/css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="js/datepicker.js"></script>
 </head>
 <body>
 <div id="wrap">
@@ -64,10 +69,8 @@
                         <td><label for="stationTwo"><span class="bold">Куда:</span> </label></td><td><input type="text" id="stationTwo" name="stationTwo"></td>
                     </tr>
                     <tr>
-                        <td><label for="year"><span class="bold">Год:</span> </label></td><td><input type="text" id="year" name="year"></td>
-                        <td><label for="month"><span class="bold">Месяц:</span> </label></td><td><input type="text" id="month" name="month"></td>
-                        <td><label for="day"><span class="bold">День:</span> </label></td><td><input type="text" id="day" name="day"></td>
-                        <td colspan="2"><input type="submit" value="Найти"></td>
+                        <td><label for="date"><span class="bold">Дата: </span></label></td><td><input type="text" class="datepicker-here" id="date" name="date"></td>
+                        <td colspan="4" align="center"><input type="submit" value="Найти"></td>
                     </tr>
                 </table>
             </form>
@@ -81,7 +84,7 @@
 </div>
 </body>
 </html>
-<script src="js/scripts.js" defer>
+<script src="js/script.js" defer>
 </script>
 <script defer>
     var jsonParse = JSON.parse('<%=str%>');

@@ -1,7 +1,8 @@
 package ru.dmitriykotyshov.admin;
 
-import ru.dmitriykotyshov.DAO.ConnectionDAO;
-import ru.dmitriykotyshov.trainticketobjects.City;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import ru.dmitriykotyshov.DAO.SelectDAO;
 import ru.dmitriykotyshov.trainticketobjects.Document;
 
 import javax.servlet.ServletException;
@@ -9,9 +10,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,21 +20,11 @@ public class AdminDocument extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        ConnectionDAO connectionDAO = new ConnectionDAO();
+        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("springContext.xml");
 
-        ResultSet resultSet = connectionDAO.getSelect("select * from document");
+        SelectDAO selectDAO = applicationContext.getBean("SelectDAO", SelectDAO.class);
 
-        List<Document> documents = new ArrayList<Document>();
-
-        try {
-            while (resultSet.next()){
-                documents.add(new Document(resultSet.getInt(1), resultSet.getString(2)));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        connectionDAO.disconnect();
+        List<Document> documents = selectDAO.getDocuments();
 
         req.setAttribute("documents", documents);
         req.getRequestDispatcher("admin/document.jsp").forward(req, resp);

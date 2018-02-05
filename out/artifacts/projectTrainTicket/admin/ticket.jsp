@@ -23,10 +23,10 @@
             <h3>Добавление:</h3>
             <table align="center">
                 <tr>
-                    <td><label for="customerID"><span class="bold">ID пользователя:</span> </label></td><td colspan="3"><input type="text" id="customerID" name="customerID"></td>
+                    <td><label for="customerId"><span class="bold">ID пользователя:</span> </label></td><td colspan="3"><input type="text" id="customerId" name="customerId"></td>
                 </tr>
                 <tr>
-                    <td><label for="wagonID"><span class="bold">ID вагона:</span> </label></td><td colspan="3"><input type="text" id="wagonID" name="wagonID"></td>
+                    <td><label for="wagonId"><span class="bold">ID вагона:</span> </label></td><td colspan="3"><input type="text" id="wagonId" name="wagonId"></td>
                 </tr>
                 <tr>
                     <td><label for="place"><span class="bold">Место:</span> </label></td><td colspan="3"><input type="text" id="place" name="place"></td>
@@ -38,10 +38,10 @@
                     <td><input type="text" id="day" name="day"></td>
                 </tr>
                 <tr>
-                    <td><label for="firstRouteStationID"><span class="bold">ID первой станции на маршруте:</span> </label></td><td colspan="3"><input type="text" id="firstRouteStationID" name="firstRouteStationID"></td>
+                    <td><label for="firstRouteStationId"><span class="bold">ID первой станции на маршруте:</span> </label></td><td colspan="3"><input type="text" id="firstRouteStationId" name="firstRouteStationId"></td>
                 </tr>
                 <tr>
-                    <td><label for="secondRouteStationID"><span class="bold">ID первой станции на маршруте станции:</span> </label></td><td colspan="3"><input type="text" id="secondROuteStationID" name="secondRouteStationID"></td>
+                    <td><label for="secondRouteStationId"><span class="bold">ID первой станции на маршруте станции:</span> </label></td><td colspan="3"><input type="text" id="secondROuteStationId" name="secondRouteStationId"></td>
                 </tr>
                 <tr>
                     <td></td>
@@ -69,6 +69,7 @@
                 <td>DATE_BUY</td>
                 <td>FIRST_ROUTE_STATION_ID</td>
                 <td>SECOND_ROUTE_STATION_ID</td>
+                <td>PRICE</td>
             </tr>
             <%
                 List<Ticket> tickets = (List<Ticket>) request.getAttribute("tickets");
@@ -84,7 +85,8 @@
                     writeTickets.append("<td>"+t.getPlace()+"</td>");
                     writeTickets.append("<td>"+t.getDateBuy()+"</td>");
                     writeTickets.append("<td>"+t.getFirstStation().getRouteStationId()+"</td>");
-                    writeTickets.append("<td>"+t.getSecondStation().getRouteStationId()+"</td><tr>");
+                    writeTickets.append("<td>"+t.getSecondStation().getRouteStationId()+"</td>");
+                    writeTickets.append("<td>"+t.getPrice()+"</td><tr>");
 
                 }
             %>

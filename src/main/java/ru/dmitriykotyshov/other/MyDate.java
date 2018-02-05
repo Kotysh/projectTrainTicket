@@ -15,6 +15,19 @@ public class MyDate {
         this.day = day;
     }
 
+    public MyDate(String date){
+
+        this.day = Integer.valueOf(date.substring(0,2));
+        this.month = Integer.valueOf(date.substring(3,5));
+        this.year = Integer.valueOf(date.substring(6,10));
+
+    }
+
+    @Override
+    public String toString() {
+        return year+"-"+month+"-"+day;
+    }
+
     public int getYear() {
         return year;
     }
@@ -37,10 +50,5 @@ public class MyDate {
 
     public void setDay(int day) {
         this.day = day;
-    }
-
-    @Override
-    public String toString() {
-        return year+"-"+month+"-"+day;
     }
 }

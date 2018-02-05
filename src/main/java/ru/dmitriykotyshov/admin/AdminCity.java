@@ -1,6 +1,8 @@
 package ru.dmitriykotyshov.admin;
 
-import ru.dmitriykotyshov.DAO.ConnectionDAO;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import ru.dmitriykotyshov.DAO.SelectDAO;
 import ru.dmitriykotyshov.trainticketobjects.City;
 
 import javax.servlet.ServletException;
@@ -8,9 +10,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,21 +20,11 @@ public class AdminCity extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        ConnectionDAO connectionDAO = new ConnectionDAO();
+        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("springContext.xml");
 
-        ResultSet resultSet = connectionDAO.getSelect("select * from city");
+        SelectDAO selectDAO = applicationContext.getBean("SelectDAO", SelectDAO.class);
 
-        List<City> cities = new ArrayList<City>();
-
-        try {
-            while (resultSet.next()){
-                cities.add(new City(resultSet.getInt(1), resultSet.getString(2)));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        connectionDAO.disconnect();
+        List<City> cities = selectDAO.getCities();
 
         req.setAttribute("cities", cities);
         req.getRequestDispatcher("admin/city.jsp").forward(req, resp);

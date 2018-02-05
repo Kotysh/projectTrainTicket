@@ -27,7 +27,7 @@
                     <td><label for="numberTrain"><span class="bold">Номер поезда:</span> </label></td><td><input type="text" id="numberTrain" name="numberTrain"></td>
                 </tr>
                 <tr>
-                    <td><label for="routeID"><span class="bold">ID маршрута:</span> </label></td><td><input type="text" id="routeID" name="routeID"></td>
+                    <td><label for="routeId"><span class="bold">ID маршрута:</span> </label></td><td><input type="text" id="routeId" name="routeId"></td>
                 </tr>
                 <tr>
                     <td colspan="2"><input type="submit" value="Добавить"></td>

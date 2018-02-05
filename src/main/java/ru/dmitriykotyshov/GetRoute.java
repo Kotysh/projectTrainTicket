@@ -2,6 +2,10 @@ package ru.dmitriykotyshov;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import ru.dmitriykotyshov.DAO.SelectDAO;
 import ru.dmitriykotyshov.other.MyDate;
 import ru.dmitriykotyshov.trainticketobjects.City;
 import ru.dmitriykotyshov.trainticketobjects.Route;
@@ -15,57 +19,67 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
 
-import static ru.dmitriykotyshov.DAO.SelectDAO.*;
 
 /**
  * Created by Дмитрий on 08.01.2018.
  */
 public class GetRoute extends HttpServlet {
 
+    private final static Logger logger = Logger.getLogger(GetRoute.class);
+
     @Override
     protected void doPost (HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         req.setCharacterEncoding("UTF-8");
 
+        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("springContext.xml");
+
+        SelectDAO selectDAO = applicationContext.getBean("SelectDAO", SelectDAO.class);
+
+
+
+        logger.trace("fields...");
         String fieldOne = new String(req.getParameter("stationOne")).toLowerCase();
         String fieldTwo = new String(req.getParameter("stationTwo")).toLowerCase();
+        logger.trace("first field= "+fieldOne + " second field= " + fieldTwo);
 
-        Integer year = Integer.valueOf(req.getParameter("year"));
-        Integer month = Integer.valueOf(req.getParameter("month"));
-        Integer day = Integer.valueOf(req.getParameter("day"));
-
-        MyDate myDate = new MyDate(year, month, day);
-
-        System.out.println(fieldOne + " " + fieldTwo);
-
-        System.out.println("Поиск городов");
-
-        City cityOne = getCity(fieldOne);
-        City cityTwo = getCity(fieldTwo);
+        String date = req.getParameter("date");
+        logger.trace("date = "+date);
+        MyDate myDate = new MyDate(date);
+        logger.trace("myDate = "+myDate);
 
 
-        System.out.println("Поиск станций");
+        logger.trace("search cities...");
+        City cityOne = selectDAO.getCity(fieldOne);
+        City cityTwo = selectDAO.getCity(fieldTwo);
+        logger.trace(cityOne);
+        logger.trace(cityTwo);
 
-        List<Station> stationsCityOne = getStations(fieldOne, cityOne);
-        List<Station> stationsCityTwo = getStations(fieldTwo, cityTwo);
+        logger.trace("search stations...");
+        List<Station> stationsCityOne = selectDAO.getStations(fieldOne, cityOne);
+        List<Station> stationsCityTwo = selectDAO.getStations(fieldTwo, cityTwo);
+        logger.trace(stationsCityOne);
+        logger.trace(stationsCityTwo);
 
-        System.out.println("Поиск маршрутов");
+        logger.trace("search routes...");
+        List<Route> routes = selectDAO.getRoutes(stationsCityOne, stationsCityTwo, myDate);
 
-        List<Route> routes = getRoutes(stationsCityOne, stationsCityTwo, myDate);
+        for (Route r : routes) {
+            logger.trace(r);
+        }
 
-        System.out.println("Поиск поездов");
-
+        logger.trace("search trains...");
         List<Train> trains = new ArrayList<Train>();
 
         for (int i=0; i<routes.size(); i++){
 
-            trains.addAll(getTrain(routes.get(i)));
+            trains.addAll(selectDAO.getTrain(routes.get(i)));
 
         }
 
         ObjectMapper objectMapper = new ObjectMapper();
         String str = objectMapper.writeValueAsString(trains);
-        System.out.println(str);
+        logger.trace("send json - "+str);
 
         req.setAttribute("json", str);
         req.getRequestDispatcher("routes.jsp").forward(req, resp);
