@@ -149,7 +149,6 @@ public class SelectDAO {
 
     public List<Route> getRoutes (List<Station> firstStationList, List<Station> secondStationList, MyDate date){
 
-        ConnectionDAO connectionDAO = new ConnectionDAO();
 
         List<Route> routes = new ArrayList<Route>();
         int orderFirstStation = 0;
@@ -157,6 +156,8 @@ public class SelectDAO {
 
         for (int i=0; i<firstStationList.size(); i++){
             for (int j=0; j<secondStationList.size(); j++){
+
+                ConnectionDAO connectionDAO = new ConnectionDAO();
 
                 ResultSet resultSet = connectionDAO.getSelect(getSqlGetCountRoutes(firstStationList.get(i).getId(), secondStationList.get(j).getId()));
 
@@ -186,10 +187,11 @@ public class SelectDAO {
                     logger.debug("getRoutes() - SQLException: ", e);
                 }
 
+
+                connectionDAO.disconnect();
+
             }
         }
-
-        connectionDAO.disconnect();
 
         return routes;
     }
@@ -304,6 +306,7 @@ public class SelectDAO {
 
     public int getOrderStationOnRoute (int route, int i, MyDate date, int index){
 
+        logger.debug("открываем соеденение в орденонроут");
         ConnectionDAO connectionDAO = new ConnectionDAO();
         String sql;
 
@@ -314,10 +317,11 @@ public class SelectDAO {
         }
 
         int order = 0;
-
+        logger.debug("делаем результсет");
         ResultSet resultSet = connectionDAO.getSelect(sql);
 
         try {
+            logger.debug("проверяем результсет");
             if (resultSet.next()){
                 order = resultSet.getInt(1);
             }
@@ -325,8 +329,10 @@ public class SelectDAO {
             logger.debug("getOrderStaionOnRoute() - SQLException: ", e);
         }
 
+        logger.debug("закрываем конекшен");
         connectionDAO.disconnect();
 
+        logger.debug("возвращаем порядковый номер");
         return order;
 
     }
@@ -428,6 +434,8 @@ public class SelectDAO {
         } catch (SQLException e) {
             logger.debug("getRouteStationId() - SQLException: ", e);
         }
+
+        connectionDAO.disconnect();
 
         return routeStationId;
 

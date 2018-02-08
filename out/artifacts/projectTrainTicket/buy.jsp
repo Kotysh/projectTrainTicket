@@ -10,13 +10,13 @@
 <head>
     <title>TrainTicket</title>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/styles.css">
     <link href="css/datepicker.min.css" rel="stylesheet" type="text/css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="js/datepicker.js"></script>
+    <script src="js/valid.routes.js"></script>
 </head>
 <body>
-<div id="wrap">
     <div id="header">
         <h1>Train&Ticket</h1>
     </div>
@@ -26,15 +26,18 @@
         <hr>
         <div id="form">
             <h2>Укажите маршрут и дату поездки</h2>
-            <form action="/getroute" method="post">
+            <form action="/getroute" onsubmit="return validRoute()" method="post">
                 <table align="center">
                     <tr>
                         <td><label for="stationOne"><span class="bold">Откуда:</span> </label></td><td><input type="text" id="stationOne" name="stationOne"></td>
                         <td><label for="stationTwo"><span class="bold">Куда:</span> </label></td><td><input type="text" id="stationTwo" name="stationTwo"></td>
                     </tr>
                     <tr>
-                        <td><label for="date"><span class="bold">Дата: </span></label></td><td><input type="text" class="datepicker-here" id="date" name="date"></td>
+                        <td><label for="date"><span class="bold">Дата: </span></label></td><td><input type="text" class="datepicker-here" id="date" name="date" readonly></td>
                         <td colspan="2" align="center"><input type="submit" value="Найти"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" align="left" id="message">&nbsp;</td>
                     </tr>
                 </table>
             </form>
@@ -49,7 +52,6 @@
             С уважением Ваш Train&Ticket.
         </div>
     </div>
-</div>
 <div id="footer">
     <p>Дмитрий Котяшов 2к18<br>
         kotyshok@yandex.ru</p>

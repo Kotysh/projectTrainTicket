@@ -21,6 +21,9 @@ public class ConnectionDAO {
     private Connection connection = null;
     private Statement statement = null;
     private ResultSet resultSet = null;
+    private Context initContext = null;
+    private Context envContext = null;
+
 
     public ConnectionDAO(){
 
@@ -69,8 +72,15 @@ public class ConnectionDAO {
 
         try {
             if (connection != null) connection.close();
+            if (resultSet != null) resultSet.close();
+            if (statement != null) statement.close();
+            if (initContext != null) initContext.close();
+            if (envContext != null) envContext.close();
+
         } catch (SQLException e) {
-            System.out.println("disconnect: " + e.getMessage());
+            e.printStackTrace();
+        } catch (NamingException e) {
+            e.printStackTrace();
         }
     }
 

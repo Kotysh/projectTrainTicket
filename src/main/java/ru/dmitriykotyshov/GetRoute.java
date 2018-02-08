@@ -28,7 +28,7 @@ public class GetRoute extends HttpServlet {
     private final static Logger logger = Logger.getLogger(GetRoute.class);
 
     @Override
-    protected void doPost (HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet (HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         req.setCharacterEncoding("UTF-8");
 

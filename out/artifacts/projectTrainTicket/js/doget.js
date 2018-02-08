@@ -83,9 +83,7 @@ function goBuy(){
     var parameters = "firstName="+document.getElementById('firstName').value+"&"+
         "middleName="+document.getElementById('middleName').value+"&"+
         "lastName="+document.getElementById('lastName').value+"&"+
-        "year="+document.getElementById('year').value+"&"+
-        "month="+document.getElementById('month').value+"&"+
-        "day="+document.getElementById('day').value+"&"+
+        "birthday="+document.getElementById('birthday').value+"&"+
         "gender="+gender+"&"+
         "document="+doc+"&"+
         "docNumber="+document.getElementById('docNumber').value+"&"+

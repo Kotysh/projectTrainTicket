@@ -46,17 +46,17 @@ public class Buy extends HttpServlet {
         logger.trace("middleName - "+middleName);
         logger.trace("lastName - "+lastName);
 
-        Integer year = Integer.valueOf(req.getParameter("year"));
-        Integer month = Integer.valueOf(req.getParameter("month"));
-        Integer day = Integer.valueOf(req.getParameter("day"));
-        MyDate birthday = new MyDate(year, month, day);
+        String birthdayCustomer = req.getParameter("birthday");
+        MyDate birthday = new MyDate(birthdayCustomer);
         logger.trace("birthday - "+birthday);
 
         String document = req.getParameter("document");
         String docNumber = req.getParameter("docNumber");
         String gender = req.getParameter("gender");
+        if(gender == null) gender = "null";
         String email = req.getParameter("email");
         String telephone = req.getParameter("telephone");
+        if(telephone == null) telephone = "null";
         logger.trace("document - "+document);
         logger.trace("docNumber - "+docNumber);
         logger.trace("gender - "+gender);

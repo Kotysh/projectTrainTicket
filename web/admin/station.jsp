@@ -11,7 +11,7 @@
 <head>
     <title>Administrator</title>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
 <div id="header">
