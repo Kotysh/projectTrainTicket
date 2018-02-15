@@ -10,6 +10,14 @@ public class Train {
     private int id;
     private String numberTrain;
     private Route route;
+    private boolean express;
+
+    public Train(int id, String numberTrain, Route route, boolean express) {
+        this.id = id;
+        this.numberTrain = numberTrain;
+        this.route = route;
+        this.express = express;
+    }
 
     public Train(int id, String numberTrain, Route route) {
         this.id = id;
@@ -30,8 +38,17 @@ public class Train {
         return "Train{" +
                 "id=" + id +
                 ", numberTrain='" + numberTrain + '\'' +
-                ", route='" + route +
+                ", route=" + route +
+                ", express=" + express +
                 '}';
+    }
+
+    public boolean isExpress() {
+        return express;
+    }
+
+    public void setExpress(boolean express) {
+        this.express = express;
     }
 
     public int getId() {

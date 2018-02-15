@@ -1,0 +1,40 @@
+
+#header a:link {
+    color: black;
+    background-color:white;
+    border-radius:10px;
+    padding: 8px;
+    margin:5px;
+    border: 1px white solid;
+    text-decoration:none;
+
+}
+#header a:visited {
+    color: black;
+    background-color:white;
+    border-radius:10px;
+    padding: 8px;
+    margin:5px;
+    border: 1px white solid;
+    text-decoration:none;
+}
+#header a:hover {
+    color: black;
+    background-color:#E9EEEB;
+    border-radius:10px;
+    padding: 8px;
+    margin:5px;
+    border: 1px black solid;
+    text-decoration:none;
+}
+#header a:active {
+    color: black;
+    background-color:white;
+    border-radius:10px;
+    background-color:#EFEEFF;
+    padding: 8px;
+    margin:5px;
+    border: 1px black solid;
+    text-decoration:none;
+
+}

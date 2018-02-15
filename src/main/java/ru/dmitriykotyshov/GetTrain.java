@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.List;
 
+import static ru.dmitriykotyshov.other.MyDate.get5Minute;
+
 /**
  * Created by Дмитрий on 15.01.2018.
  */
@@ -95,12 +97,19 @@ public class GetTrain extends HttpServlet {
             logger.trace(w);
         }
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        String str = objectMapper.writeValueAsString(wagons);
-        logger.trace("send json - "+str);
+        logger.trace("проверка на оставшее время до завершения покупки билета");
+        if (!get5Minute(wagons.get(0).getTrain().getRoute().getTimeDateFirstStation())){
+            req.setAttribute("message",
+                    "Извините, но на данный поезд покупка билетов приостановлена");
+            req.getRequestDispatcher("messagepage.jsp").forward(req, resp);
+        }else{
+            ObjectMapper objectMapper = new ObjectMapper();
+            String str = objectMapper.writeValueAsString(wagons);
+            logger.trace("send json - "+str);
 
-        req.setAttribute("json", str);
-        req.getRequestDispatcher("train.jsp").forward(req, resp);
+            req.setAttribute("json", str);
+            req.getRequestDispatcher("train.jsp").forward(req, resp);
+        }
 
     }
 }

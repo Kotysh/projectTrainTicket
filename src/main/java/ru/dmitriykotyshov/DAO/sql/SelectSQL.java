@@ -1,5 +1,7 @@
 package ru.dmitriykotyshov.DAO.sql;
 
+import org.apache.log4j.Logger;
+import ru.dmitriykotyshov.DAO.SelectDAO;
 import ru.dmitriykotyshov.other.MyDate;
 import ru.dmitriykotyshov.trainticketobjects.City;
 import ru.dmitriykotyshov.trainticketobjects.Wagon;
@@ -8,6 +10,9 @@ import ru.dmitriykotyshov.trainticketobjects.Wagon;
  * Created by Дмитрий on 01.02.2018.
  */
 public class SelectSQL {
+
+
+    private final static Logger logger = Logger.getLogger(SelectDAO.class);
 
     private SelectSQL() {}
 
@@ -27,7 +32,9 @@ public class SelectSQL {
 
     public static String getSqlGetCityByNameCity(String nameCity) {
 
-        return String.format(SQL_GET_CITY_BY_NAME_CITY, nameCity);
+        String sql = String.format(SQL_GET_CITY_BY_NAME_CITY, nameCity);
+        logger.trace(sql);
+        return sql;
 
     }
 
@@ -37,7 +44,9 @@ public class SelectSQL {
 
     public static String getSqlGetCityByCityId(int cityId) {
 
-        return String.format(SQL_GET_CITY_BY_CITY_ID, cityId);
+        String sql = String.format(SQL_GET_CITY_BY_CITY_ID, cityId);
+        logger.trace(sql);
+        return sql;
 
     }
 
@@ -47,7 +56,9 @@ public class SelectSQL {
 
     public static String getSqlGetStationsByNameStationAndCityId(String nameStation, City city) {
 
-        return String.format(SQL_GET_STATIONS_BY_NAME_STATION_AND_CITY_ID, nameStation, city.getId());
+        String sql = String.format(SQL_GET_STATIONS_BY_NAME_STATION_AND_CITY_ID, nameStation, city.getId());
+        logger.trace(sql);
+        return sql;
 
     }
 
@@ -58,11 +69,13 @@ public class SelectSQL {
             "join route on route.route_id = route_station.route_id " +
             "where route_station.station_id in (%d,%d) " +
             "group by route_station.route_id, route.route " +
-            "having count(route_station.station_id)=2";
+            "having count(route_station.station_id)>=2";
 
     public static String getSqlGetCountRoutes(int firstStationId, int secondStationId) {
 
-        return String.format(SQL_GET_COUNT_ROUTES, firstStationId, secondStationId);
+        String sql = String.format(SQL_GET_COUNT_ROUTES, firstStationId, secondStationId);
+        logger.trace(sql);
+        return sql;
 
     }
 
@@ -72,7 +85,9 @@ public class SelectSQL {
 
     public static String getSqlGetTrainByRouteId(int routeId) {
 
-        return String.format(SQL_GET_TRAIN_BY_ROUTE_ID, routeId);
+        String sql = String.format(SQL_GET_TRAIN_BY_ROUTE_ID, routeId);
+        logger.trace(sql);
+        return sql;
 
     }
 
@@ -86,7 +101,9 @@ public class SelectSQL {
 
     public static String getSqlGetWagonsByTrainId(int trainId) {
 
-        return String.format(SQL_GET_WAGONS_BY_TRAIN_ID, trainId);
+        String sql = String.format(SQL_GET_WAGONS_BY_TRAIN_ID, trainId);
+        logger.trace(sql);
+        return sql;
 
     }
 
@@ -107,11 +124,13 @@ public class SelectSQL {
 
     public static String getSqlGetBuyPlacesForWagon(Wagon wagon) {
 
-        return String.format(SQL_GET_BUY_PLACES_FOR_WAGON, wagon.getWagonId(),
+        String sql = String.format(SQL_GET_BUY_PLACES_FOR_WAGON, wagon.getWagonId(),
                 wagon.getTrain().getRoute().getTimeDateFirstStation(), wagon.getTrain().getRoute().getTimeDateFirstStation(),
                 wagon.getTrain().getRoute().getTimeDateSecondStation(), wagon.getTrain().getRoute().getTimeDateSecondStation(),
                 wagon.getTrain().getRoute().getTimeDateFirstStation(), wagon.getTrain().getRoute().getTimeDateSecondStation(),
                 wagon.getTrain().getRoute().getTimeDateFirstStation(), wagon.getTrain().getRoute().getTimeDateSecondStation());
+        logger.trace(sql);
+        return sql;
 
     }
 
@@ -125,7 +144,9 @@ public class SelectSQL {
 
     public static String getSqlGetNumberRouteByFirstStationIdAndSecondStationId(int firstStationdId, int secondStationId) {
 
-        return String.format(SQL_GET_NUMBER_ROUTE_BY_FIRST_STATION_ID_AND_SECOND_STATION_ID, firstStationdId, secondStationId);
+        String sql = String.format(SQL_GET_NUMBER_ROUTE_BY_FIRST_STATION_ID_AND_SECOND_STATION_ID, firstStationdId, secondStationId);
+        logger.trace(sql);
+        return sql;
 
     }
 
@@ -139,8 +160,10 @@ public class SelectSQL {
 
     public static String getSqlGetOrderStationOnRouteOut(int route, int i, MyDate date) {
 
-        return String.format(SQL_GET_ORDER_STATION_ON_ROUTE_OUT, route, i, date.getYear(), date.getMonth(), date.getDay(),
+        String sql = String.format(SQL_GET_ORDER_STATION_ON_ROUTE_OUT, route, i, date.getYear(), date.getMonth(), date.getDay(),
                 date.getYear(), date.getMonth(), date.getDay() + 1);
+        logger.trace(sql);
+        return sql;
 
     }
 
@@ -154,8 +177,10 @@ public class SelectSQL {
 
     public static String getSqlGetOrderStationOnRouteIn(int route, int i, MyDate date) {
 
-        return String.format(SQL_GET_ORDER_STATION_ON_ROUTE_IN, route, i, date.getYear(), date.getMonth(), date.getDay(),
+        String sql = String.format(SQL_GET_ORDER_STATION_ON_ROUTE_IN, route, i, date.getYear(), date.getMonth(), date.getDay(),
                 date.getYear(), date.getMonth(), date.getDay() + 1);
+        logger.trace(sql);
+        return sql;
 
     }
 
@@ -169,8 +194,10 @@ public class SelectSQL {
 
     public static String getSqlGetTimestampStationOut(int routeId, int stationId, MyDate date) {
 
-        return String.format(SQL_GET_TIMESTAMP_STATION_OUT, routeId, stationId, date.getYear(), date.getMonth(), date.getDay(),
+        String sql = String.format(SQL_GET_TIMESTAMP_STATION_OUT, routeId, stationId, date.getYear(), date.getMonth(), date.getDay(),
                 date.getYear(), date.getMonth(), date.getDay() + 1);
+        logger.trace(sql);
+        return sql;
 
     }
 
@@ -184,8 +211,10 @@ public class SelectSQL {
 
     public static String getSqlGetTimestampStationIn(int routeId, int stationId, MyDate date) {
 
-        return String.format(SQL_GET_TIMESTAMP_STATION_IN, routeId, stationId, date.getYear(), date.getMonth(), date.getDay(),
+        String sql = String.format(SQL_GET_TIMESTAMP_STATION_IN, routeId, stationId, date.getYear(), date.getMonth(), date.getDay(),
                 date.getYear(), date.getMonth(), date.getDay() + 1);
+        logger.trace(sql);
+        return sql;
 
     }
 
@@ -195,7 +224,9 @@ public class SelectSQL {
 
     public static String getSqlGetNameRoute(int routeId){
 
-        return String.format(SQL_GET_NAME_ROUTE, routeId);
+        String sql = String.format(SQL_GET_NAME_ROUTE, routeId);
+        logger.trace(sql);
+        return sql;
 
     }
 
@@ -206,7 +237,9 @@ public class SelectSQL {
 
     public static String getSqlGetCustomerId(String documentNumber, String documentId){
 
-        return String.format(SQL_GET_CUSTOMER_ID, documentNumber, documentId);
+        String sql = String.format(SQL_GET_CUSTOMER_ID, documentNumber, documentId);
+        logger.trace(sql);
+        return sql;
 
     }
 
@@ -218,7 +251,9 @@ public class SelectSQL {
 
     public static String getGetRouteStationIdOutStationByRouteNameAndDepartureTime(String nameRoute, String timestamp){
 
-        return String.format(GET_ROUTE_STATION_ID_OUT_STATION_BY_ROUTE_NAME_AND_DEPARTURE_TIME, nameRoute, timestamp);
+        String sql = String.format(GET_ROUTE_STATION_ID_OUT_STATION_BY_ROUTE_NAME_AND_DEPARTURE_TIME, nameRoute, timestamp);
+        logger.trace(sql);
+        return sql;
 
     }
 
@@ -230,7 +265,9 @@ public class SelectSQL {
 
     public static String getGetRouteStationIdInStationByRouteNameAndDepartureTime(String nameRoute, String timestamp){
 
-        return String.format(GET_ROUTE_STATION_ID_IN_STATION_BY_ROUTE_NAME_AND_DEPARTURE_TIME, nameRoute, timestamp);
+        String sql = String.format(GET_ROUTE_STATION_ID_IN_STATION_BY_ROUTE_NAME_AND_DEPARTURE_TIME, nameRoute, timestamp);
+        logger.trace(sql);
+        return sql;
 
     }
 
@@ -242,7 +279,9 @@ public class SelectSQL {
 
     public static String getSqlGetWagonIdByNumberTrainAndOrderWagon(String numberTrain, String orderWagon){
 
-        return String.format(SQL_GET_WAGON_ID_BY_NUMBER_TRAIN_AND_ORDER_WAGON, numberTrain, orderWagon);
+        String sql = String.format(SQL_GET_WAGON_ID_BY_NUMBER_TRAIN_AND_ORDER_WAGON, numberTrain, orderWagon);
+        logger.trace(sql);
+        return sql;
 
     }
 
@@ -305,8 +344,8 @@ public class SelectSQL {
 
 
 
-    private final static String SQL_GET_TICKETS_JOIN_CUSTOMER = "select ticket.ticket_id, customer.customer_id, customer.first_name, customer.middle_name, customer.last_name, ticket.wagon_id, ticket.price " +
-            "ticket.place, ticket.date_buy, ticket.first_route_station_id, ticket.second_route_station_id from ticket " +
+    private final static String SQL_GET_TICKETS_JOIN_CUSTOMER = "select ticket.ticket_id, customer.customer_id, customer.first_name, customer.middle_name, customer.last_name, ticket.wagon_id, " +
+            "ticket.place, ticket.date_buy, ticket.first_route_station_id, ticket.second_route_station_id, ticket.price from ticket " +
             "join customer on ticket.customer_id = customer.customer_id";
 
     public static String sqlGetTicketsJoinCustomer(){
@@ -317,7 +356,7 @@ public class SelectSQL {
 
 
 
-    private final static String SQL_GET_TRAINS_JOIN_ROUTE = "select train.train_id, train.number_train, route.route_id, route.ROUTE from train " +
+    private final static String SQL_GET_TRAINS_JOIN_ROUTE = "select train.train_id, train.number_train, route.route_id, route.ROUTE, train.express from train " +
             "join route on train.route_id = route.route_id";
 
     public static String getSqlGetTrainsJoinRoute(){

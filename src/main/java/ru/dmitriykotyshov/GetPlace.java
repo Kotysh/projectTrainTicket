@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Set;
 
+import static ru.dmitriykotyshov.other.MyDate.get5Minute;
+
 
 /**
  * Created by Дмитрий on 22.01.2018.
@@ -31,6 +33,8 @@ public class GetPlace extends HttpServlet {
 
         SelectDAO selectDAO = applicationContext.getBean("SelectDAO", SelectDAO.class);
 
+
+
         logger.trace("get info about places...");
         Integer wagonId = Integer.valueOf(req.getParameter("idWagon"));
         String typeWagon = req.getParameter("typeWagon");
@@ -44,7 +48,6 @@ public class GetPlace extends HttpServlet {
         logger.trace("airCondition - "+airCondition);
         logger.trace("order - "+order);
         logger.trace("countPlace - "+countPlace);
-
 
         Integer idTrain = Integer.valueOf(req.getParameter("idTrain"));
         String numberTrain = req.getParameter("numberTrain");
@@ -97,9 +100,16 @@ public class GetPlace extends HttpServlet {
             logger.trace("place #"+i);
         }
 
-        req.setAttribute("wagon", wagon);
-        req.setAttribute("listPlaces", places);
-        req.getRequestDispatcher("place.jsp").forward(req, resp);
+        logger.trace("проверка на оставшее время до завершения покупки билета");
+        if (!get5Minute(firstStationDate)){
+            req.setAttribute("message",
+                    "Извините, но на данный поезд покупка билетов приостановлена");
+            req.getRequestDispatcher("messagepage.jsp").forward(req, resp);
+        }else {
+            req.setAttribute("wagon", wagon);
+            req.setAttribute("listPlaces", places);
+            req.getRequestDispatcher("place.jsp").forward(req, resp);
+        }
 
     }
 }

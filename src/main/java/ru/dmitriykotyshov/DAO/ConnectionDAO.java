@@ -1,5 +1,7 @@
 package ru.dmitriykotyshov.DAO;
 
+import org.apache.log4j.Logger;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -24,6 +26,8 @@ public class ConnectionDAO {
     private Context initContext = null;
     private Context envContext = null;
 
+    private final static Logger logger = Logger.getLogger(ConnectionDAO.class);
+
 
     public ConnectionDAO(){
 
@@ -33,7 +37,7 @@ public class ConnectionDAO {
             Context envContext = (Context) initContext.lookup("java:/comp/env");
             dataSource = (DataSource) envContext.lookup("jdbc/myoracle");
         } catch (NamingException e) {
-            System.out.println("ConnectionDAO: " + e.getMessage());
+            logger.error("ConnectionDAO: " + e.getMessage());
         }
 
     }
@@ -47,7 +51,7 @@ public class ConnectionDAO {
             resultSet = statement.executeQuery(select);
 
         } catch (SQLException e) {
-            System.out.println("getSelect: " + e.getMessage());
+            logger.error("getSelect: " + e.getMessage());
         }
 
         return resultSet;
@@ -63,7 +67,7 @@ public class ConnectionDAO {
             statement.execute(sql);
 
         } catch (SQLException e) {
-            System.out.println("operatorDML: " + e.getMessage());
+            logger.error("operatorDML: " + e.getMessage());
         }
 
     }
@@ -78,9 +82,9 @@ public class ConnectionDAO {
             if (envContext != null) envContext.close();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         } catch (NamingException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
     }
 

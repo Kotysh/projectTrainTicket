@@ -7,7 +7,6 @@ import ru.dmitriykotyshov.trainticketobjects.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -49,9 +48,10 @@ public class SelectDAO {
         try {
             while (resultSet.next()){
                 cities.add(new City(resultSet.getInt(1), resultSet.getString(2)));
+                logger.trace("найден город - "+cities.get(cities.size()-1));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.debug("getCities() - SQLException: ", e);
         }
 
         connectionDAO.disconnect();
@@ -73,6 +73,7 @@ public class SelectDAO {
             if (resultSet.next()){
                 city.setId(resultSet.getInt(1));
                 city.setNameCity(resultSet.getString(2));
+                logger.trace("найден город - "+city);
             }else{
                 logger.trace("город c именем "+nameCity+" не найден");
             }
@@ -100,6 +101,7 @@ public class SelectDAO {
             if (resultSet.next()){
                 city.setId(resultSet.getInt(1));
                 city.setNameCity(resultSet.getString(2));
+                logger.trace("найден город - "+city);
             }else{
                 logger.trace("город по идентификатору "+cityId+" не найден");
             }
@@ -130,6 +132,7 @@ public class SelectDAO {
                         city = getCity(resultSet.getInt(3));
                     }
                     Station newStation = new Station(resultSet.getInt(1), resultSet.getString(2), city);
+                    logger.trace("Найдена станция "+newStation);
                     stations.add(newStation);
 
                 } while (resultSet.next());
@@ -177,6 +180,7 @@ public class SelectDAO {
                                         firstStationList.get(i), secondStationList.get(j),
                                         timestampFirstStation.getTimestamp(), timestampSecondStation.getTimestamp(),
                                         timestampFirstStation.getDistance(), timestampSecondStation.getDistance());
+                                logger.trace("найден маршрут - "+newRoute);
                                 routes.add(newRoute);
 
                             }
@@ -208,7 +212,9 @@ public class SelectDAO {
             if (resultSet.next()) {
                 do {
 
-                    Train newTrain = new Train(resultSet.getInt(1), resultSet.getString(2), route);
+                    Train newTrain = new Train(resultSet.getInt(1), resultSet.getString(2), route,
+                            (resultSet.getString(4) == null ? false : true));
+                    logger.trace("найен поезд - "+newTrain);
                     trains.add(newTrain);
 
                 } while (resultSet.next());
@@ -240,6 +246,7 @@ public class SelectDAO {
                             resultSet.getString(3), resultSet.getString(4) != null,
                             resultSet.getString(5) != null, resultSet.getInt(2),
                             resultSet.getInt(6));
+                    logger.trace("наден вагон - "+newWagon);
                     wagons.add(newWagon);
                 }while (resultSet.next());
             }else{
@@ -293,6 +300,7 @@ public class SelectDAO {
         try {
             if (resultSet.next()){
                 route = resultSet.getInt(1);
+                logger.trace("номер маршрута между двумя станциями - "+route);
             }
         } catch (SQLException e) {
             logger.debug("getNumberRoute() - SQLException: ", e);
@@ -306,7 +314,6 @@ public class SelectDAO {
 
     public int getOrderStationOnRoute (int route, int i, MyDate date, int index){
 
-        logger.debug("открываем соеденение в орденонроут");
         ConnectionDAO connectionDAO = new ConnectionDAO();
         String sql;
 
@@ -317,22 +324,18 @@ public class SelectDAO {
         }
 
         int order = 0;
-        logger.debug("делаем результсет");
         ResultSet resultSet = connectionDAO.getSelect(sql);
 
         try {
-            logger.debug("проверяем результсет");
             if (resultSet.next()){
                 order = resultSet.getInt(1);
             }
         } catch (SQLException e) {
-            logger.debug("getOrderStaionOnRoute() - SQLException: ", e);
+            logger.debug("getOrderStationOnRoute() - SQLException: ", e);
         }
 
-        logger.debug("закрываем конекшен");
         connectionDAO.disconnect();
 
-        logger.debug("возвращаем порядковый номер");
         return order;
 
     }
@@ -477,7 +480,7 @@ public class SelectDAO {
                         resultSet.getString(9), resultSet.getString(10), resultSet.getString(11)));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.debug("getCustomersJoinDocument() - SQLException: ", e);
         }
 
         return customers;
@@ -497,7 +500,7 @@ public class SelectDAO {
                 documents.add(new Document(resultSet.getInt(1), resultSet.getString(2)));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.debug("getDocuments() - SQLException: ", e);
         }
 
         connectionDAO.disconnect();
@@ -519,7 +522,7 @@ public class SelectDAO {
                 routes.add(new RouteDB(resultSet.getInt(1), resultSet.getString(2)));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.debug("getRoutes() - SQLException: ", e);
         }
 
         connectionDAO.disconnect();
@@ -545,7 +548,7 @@ public class SelectDAO {
                         resultSet.getTimestamp(7), resultSet.getTimestamp(8), resultSet.getInt(9)));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.debug("getRouteStationsJoinRouteAndStation() - SQLException: ", e);
         }
 
         connectionDAO.disconnect();
@@ -570,7 +573,7 @@ public class SelectDAO {
                                 resultSet.getString(4) == null ? "null" : resultSet.getString(4))));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.debug("getStationsJoinCity() - SQLException: ", e);
         }
 
         connectionDAO.disconnect();
@@ -598,7 +601,7 @@ public class SelectDAO {
                         new RouteStation(resultSet.getInt(10)), resultSet.getInt(11)));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.debug("getTicketsJoinCustomer() - SQLException: ", e);
         }
 
         connectionDAO.disconnect();
@@ -619,10 +622,11 @@ public class SelectDAO {
         try {
             while (resultSet.next()){
                 trains.add(new Train(resultSet.getInt(1), resultSet.getString(2),
-                        new Route(resultSet.getInt(3), resultSet.getString(4))));
+                        new Route(resultSet.getInt(3), resultSet.getString(4)),
+                        resultSet.getString(5) == null? false : true));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.debug("getTrainsJoinRoute() - SQLException: ", e);
         }
 
         connectionDAO.disconnect();
@@ -646,7 +650,7 @@ public class SelectDAO {
                         resultSet.getInt(5)));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.debug("getTypeWagons() - SQLException: ", e);
         }
 
         connectionDAO.disconnect();
@@ -670,7 +674,7 @@ public class SelectDAO {
                         new TypeWagon(resultSet.getInt(4), resultSet.getString(5)), resultSet.getInt(6)));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.debug("getWagonsJoinTypeWagonAndTrain() - SQLException: ", e);
         }
 
         connectionDAO.disconnect();

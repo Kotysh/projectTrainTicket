@@ -1,5 +1,7 @@
 package ru.dmitriykotyshov.trainticketobjects;
 
+import java.sql.Timestamp;
+
 /**
  * Created by Дмитрий on 15.01.2018.
  */
@@ -33,6 +35,16 @@ public class Wagon {
         this.order = order;
         this.countPlace = countPlace;
         this.price = price;
+    }
+
+    public Wagon(int wagonId, Timestamp firstTimestamp, Timestamp secondTimestamp){
+        this.wagonId = wagonId;
+
+        this.train = new Train();
+        this.train.setRoute(new Route());
+
+        this.train.getRoute().setTimeDateFirstStation(firstTimestamp);
+        this.train.getRoute().setTimeDateSecondStation(secondTimestamp);
     }
 
     public Wagon() {

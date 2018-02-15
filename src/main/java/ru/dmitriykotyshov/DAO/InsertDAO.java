@@ -81,9 +81,9 @@ public class InsertDAO {
 
     }
 
-    public void insertTrain(String numberTrain, String routeId){
+    public void insertTrain(String numberTrain, String routeId, String express){
 
-        this.insert(getSqlInsertTrain(numberTrain, routeId));
+        this.insert(getSqlInsertTrain(numberTrain, routeId, express));
 
     }
 

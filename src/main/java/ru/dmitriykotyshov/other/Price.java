@@ -8,5 +8,6 @@ public class Price {
     public static double COEFFICIENT_PRICE = 2.3;
     public static double BIO_TIOLET = 1.02;
     public static double AIR_CONDITION = 1.03;
+    public static double EXPRESS = 1.25;
 
 }

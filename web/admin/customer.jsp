@@ -7,15 +7,27 @@
   Time: 17:53
   To change this template use File | Settings | File Templates.
 --%>
+<%
+
+    String login = (String) request.getSession().getAttribute("login");
+    String password = (String) request.getSession().getAttribute("password");
+
+    if (login == null || password == null){
+        request.getRequestDispatcher("inputAdmin.jsp").forward(request, response);
+    }
+
+
+%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <head>
     <title>Administrator</title>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/new_style.css">
 </head>
 <body>
 <div id="header">
     <h1>Пользователи</h1>
+    <div id="myAdmin">Вы зашли как, <%=login%> <a href="/exitAdmin">Выйти</a></div>
 </div>
 <div id="wrap">
     <div id="bodyAdmin">

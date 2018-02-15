@@ -26,8 +26,9 @@ public class AddTrain extends HttpServlet {
 
         String numberTrain = req.getParameter("numberTrain");
         String routeId = req.getParameter("routeId");
+        String express = req.getParameter("express");
 
-        insertDAO.insertTrain(numberTrain, routeId);
+        insertDAO.insertTrain(numberTrain, routeId, express);
 
         req.getRequestDispatcher("train").forward(req, resp);
 

@@ -10,7 +10,8 @@
   <head>
     <title>TrainTicket</title>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="css/style_index.css">
+    <link rel="stylesheet" href="css/new_style.css">
+    <link rel="stylesheet" href="css/linkMenu.css">
     <link href="css/datepicker.min.css" rel="stylesheet" type="text/css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="js/datepicker.js"></script>
@@ -33,7 +34,7 @@
     <hr>
     <h3>Укажите маршрут и дату поездки</h3>
     <div id="form">
-      <form action="/getroute" onsubmit="return validRoute()" method="get">
+      <form action="/getroute" onsubmit="return validRoute()" method="post">
         <table align="center">
           <tr>
             <td><label for="stationOne"><span class="bold">Откуда:</span> </label></td><td><input type="text" id="stationOne" name="stationOne"></td>

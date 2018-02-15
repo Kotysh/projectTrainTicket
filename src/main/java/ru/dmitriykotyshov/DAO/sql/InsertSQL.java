@@ -102,11 +102,13 @@ public class InsertSQL {
 
 
 
-    private final static String SQL_INSERT_TRAIN = "INSERT INTO TRAIN (NUMBER_TRAIN, ROUTE_ID) VALUES ('%s', '%s')";
+    private final static String SQL_INSERT_TRAIN = "INSERT INTO TRAIN (NUMBER_TRAIN, ROUTE_ID, EXPRESS) VALUES ('%s', '%s', %s)";
 
-    public static String getSqlInsertTrain (String numberTrain, String routeId){
+    public static String getSqlInsertTrain (String numberTrain, String routeId, String express){
 
-        return String.format(SQL_INSERT_TRAIN, numberTrain, routeId);
+        if (express.length() == 0) express = "null"; else express = "'"+express+"'";
+
+        return String.format(SQL_INSERT_TRAIN, numberTrain, routeId, express);
 
     }
 

@@ -62,7 +62,8 @@
     <title>TrainTicket</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="css/styles_place.css">
-    <link rel="stylesheet" href="css/style_index.css">
+    <link rel="stylesheet" href="css/new_style.css">
+    <link rel="stylesheet" href="css/linkMenu.css">
     <link href="css/datepicker.min.css" rel="stylesheet" type="text/css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="js/datepicker.js"></script>

@@ -2,7 +2,8 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.fasterxml.jackson.databind.ObjectMapper" %>
 <%@ page import="com.fasterxml.jackson.core.type.TypeReference" %>
-<%@ page import="java.util.ArrayList" %><%--
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="static ru.dmitriykotyshov.other.MyDate.get5Minute" %><%--
   Created by IntelliJ IDEA.
   User: Дмитрий
   Date: 09.01.2018
@@ -22,7 +23,8 @@
     }else {
         for (int i = 0; i < trainList.size(); i++) {
 
-            listToHtml.append("<div class = \"train\">");
+            if (get5Minute(trainList.get(i).getRoute().getTimeDateFirstStation()))listToHtml.append("<div class = \"train\">");
+            else listToHtml.append("<div class = \"notrain\">");
             listToHtml.append("<h3>");
             if (trainList.get(i).getRoute().getFirstStation().getCity().getNameCity() != null)
                 listToHtml.append("("+trainList.get(i).getRoute().getFirstStation().getCity().getNameCity()+") ");
@@ -39,7 +41,10 @@
             listToHtml.append("<tr><td>Расстояние:</td><td>"+trainList.get(i).getRoute().getDistance()+" км</td></tr>");
             listToHtml.append("<tr><td>Цена от:</td><td>"+trainList.get(i).getRoute().getPrice()+" р.</td></tr>");
             listToHtml.append("</table>");
-            listToHtml.append("<div><a href=\"javascript: goToTrain(jsonParse["+i+"])\">Купить билет</a></div></div>");
+            if (get5Minute(trainList.get(i).getRoute().getTimeDateFirstStation()))
+                listToHtml.append("<div><a href=\"javascript: goToTrain(jsonParse["+i+"])\">Купить билет</a></div></div>");
+            else
+                listToHtml.append("<div><a>Билеты не продаются</a></div></div>");
             listToHtml.append("\n");
         }
     }
@@ -51,8 +56,9 @@
 <head>
     <title>TrainTicket</title>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="css/style_index.css">
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/new_style.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/linkMenu.css">
     <link href="css/datepicker.min.css" rel="stylesheet" type="text/css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="js/datepicker.js"></script>

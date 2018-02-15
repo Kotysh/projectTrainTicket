@@ -7,6 +7,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.dmitriykotyshov.DAO.SelectDAO;
 import ru.dmitriykotyshov.other.MyDate;
+import ru.dmitriykotyshov.other.Price;
 import ru.dmitriykotyshov.trainticketobjects.City;
 import ru.dmitriykotyshov.trainticketobjects.Route;
 import ru.dmitriykotyshov.trainticketobjects.Station;
@@ -28,7 +29,7 @@ public class GetRoute extends HttpServlet {
     private final static Logger logger = Logger.getLogger(GetRoute.class);
 
     @Override
-    protected void doGet (HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost (HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         req.setCharacterEncoding("UTF-8");
 
@@ -58,6 +59,7 @@ public class GetRoute extends HttpServlet {
         logger.trace("search stations...");
         List<Station> stationsCityOne = selectDAO.getStations(fieldOne, cityOne);
         List<Station> stationsCityTwo = selectDAO.getStations(fieldTwo, cityTwo);
+        logger.trace("Найденные станции:");
         logger.trace(stationsCityOne);
         logger.trace(stationsCityTwo);
 
@@ -76,6 +78,19 @@ public class GetRoute extends HttpServlet {
             trains.addAll(selectDAO.getTrain(routes.get(i)));
 
         }
+
+        logger.trace("устанавливаем цену поездам экспрессам");
+        for (int i=0 ; i<trains.size(); i++){
+            if (trains.get(i).isExpress())
+                trains.get(i).getRoute().setPrice((int)(trains.get(i).getRoute().getPrice() * Price.EXPRESS));
+        }
+
+        logger.trace("сортировка поездов");
+        Collections.sort(trains, new Comparator<Train>() {
+            public int compare(Train o1, Train o2) {
+                return o1.getRoute().getTimeDateFirstStation().compareTo(o2.getRoute().getTimeDateFirstStation());
+            }
+        });
 
         ObjectMapper objectMapper = new ObjectMapper();
         String str = objectMapper.writeValueAsString(trains);

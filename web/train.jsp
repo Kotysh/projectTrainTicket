@@ -62,8 +62,9 @@
 <head>
     <title>TrainTicket</title>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/style_index.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/new_style.css">
+    <link rel="stylesheet" href="css/linkMenu.css">
 </head>
 <body>
 
