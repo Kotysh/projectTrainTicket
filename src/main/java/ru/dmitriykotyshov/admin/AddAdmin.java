@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Locale;
 
 import static ru.dmitriykotyshov.other.HashAdmin.getHashCode;
+import static ru.dmitriykotyshov.other.Message.nameAlreadyExists;
+import static ru.dmitriykotyshov.other.Message.noSuperAdmin;
 
 /**
  * Created by Дмитрий on 12.02.2018.
@@ -27,39 +29,53 @@ public class AddAdmin extends HttpServlet {
 
         req.setCharacterEncoding("UTF-8");
 
-        String name = req.getParameter("name");
+        String name = req.getParameter("name").trim();
         String password = String.valueOf(getHashCode(req.getParameter("password")));
         int type = Integer.valueOf(req.getParameter("typeAdmin"));
-        int boss = Integer.valueOf(req.getParameter("boss"));
+        if (type == 1) noSuperAdmin(req, resp);
+        else {
+            int boss = Integer.valueOf(req.getParameter("boss"));
 
-        Locale.setDefault(Locale.ENGLISH);
+            Locale.setDefault(Locale.ENGLISH);
 
-        SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
+            SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
 
-        Session session = sessionFactory.openSession();
+            Session session = sessionFactory.openSession();
 
-        Transaction transaction = session.beginTransaction();
+            Transaction transaction = session.beginTransaction();
 
-        Query query = session.createQuery("from TypeAdmin where id = :paramId");
-        query.setParameter("paramId", type);
-        TypeAdmin typeAdmin = (TypeAdmin) query.getResultList().get(0);
+            Query query = session.createQuery("from TypeAdmin where id = :paramId");
+            query.setParameter("paramId", type);
+            TypeAdmin typeAdmin = (TypeAdmin) query.getResultList().get(0);
 
-        transaction.commit();
+            query = session.createQuery("from Admin");
+            List<ru.dmitriykotyshov.entity.Admin> adminSet = query.getResultList();
+            boolean nameAlreadyExist = false;
 
-        session.beginTransaction();
+            for(ru.dmitriykotyshov.entity.Admin a: adminSet)
+                if (a.getName().equals(name)) nameAlreadyExist = true;
 
-        ru.dmitriykotyshov.entity.Admin admin = new ru.dmitriykotyshov.entity.Admin();
-        admin.setName(name);
-        admin.setPass(password);
-        admin.setBoss(boss);
-        admin.setTypeAdmin(typeAdmin);
-        session.save(admin);
+            if (nameAlreadyExist){
 
-        transaction.commit();
-        session.close();
-        sessionFactory.close();
+                nameAlreadyExists(req, resp, name);
 
-        req.getRequestDispatcher("admins").forward(req, resp);
+            }else {
+
+                ru.dmitriykotyshov.entity.Admin admin = new ru.dmitriykotyshov.entity.Admin();
+                admin.setName(name);
+                admin.setPass(password);
+                admin.setBoss(boss);
+                admin.setTypeAdmin(typeAdmin);
+                session.save(admin);
+
+                req.getRequestDispatcher("admins").forward(req, resp);
+
+            }
+
+            transaction.commit();
+            session.close();
+            sessionFactory.close();
+        }
 
     }
 }

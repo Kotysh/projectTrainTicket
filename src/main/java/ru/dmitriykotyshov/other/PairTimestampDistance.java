@@ -10,11 +10,6 @@ public class PairTimestampDistance {
     Timestamp timestamp;
     int distance;
 
-    public PairTimestampDistance(Timestamp timestamp, int distance) {
-        this.timestamp = timestamp;
-        this.distance = distance;
-    }
-
     public PairTimestampDistance() {
     }
 

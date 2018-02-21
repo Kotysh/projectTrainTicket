@@ -1,6 +1,8 @@
 <%@ page import="ru.dmitriykotyshov.trainticketobjects.Wagon" %>
 <%@ page import="java.util.Set" %>
-<%@ page import="static ru.dmitriykotyshov.other.PrintWagon.printWagonSit" %><%--
+<%@ page import="static ru.dmitriykotyshov.other.PrintWagon.printWagonSit" %>
+<%@ page import="java.util.List" %>
+<%@ page import="ru.dmitriykotyshov.trainticketobjects.Document" %><%--
   Created by IntelliJ IDEA.
   User: Дмитрий
   Date: 22.01.2018
@@ -9,36 +11,53 @@
 --%>
 <%
 
-    Wagon wagon = (Wagon) request.getAttribute("wagon");
-    Set<Integer> setPlace = (Set<Integer>) request.getAttribute("listPlaces");
+    Wagon wagon = (Wagon) request.getSession().getAttribute("wagon");
+    Set<Integer> setPlace = (Set<Integer>) request.getSession().getAttribute("places");
 
     StringBuilder placeToHtml = new StringBuilder();
 
-    placeToHtml.append("<div class = \"train\">");
-    placeToHtml.append("<h3>");
+    placeToHtml.append("<div class = \"train\">\n"
+                        +"<h3>");
     if (wagon.getTrain().getRoute().getFirstStation().getCity().getNameCity() != null && !wagon.getTrain().getRoute().getFirstStation().getCity().getNameCity().equals("null"))
         placeToHtml.append("("+wagon.getTrain().getRoute().getFirstStation().getCity().getNameCity()+") ");
     placeToHtml.append(wagon.getTrain().getRoute().getFirstStation().getNameStation()+ " - ");
     if (wagon.getTrain().getRoute().getSecondStation().getCity().getNameCity() != null && !wagon.getTrain().getRoute().getSecondStation().getCity().getNameCity().equals("null"))
         placeToHtml.append("("+wagon.getTrain().getRoute().getSecondStation().getCity().getNameCity()+") ");
-    placeToHtml.append(wagon.getTrain().getRoute().getSecondStation().getNameStation()+"</h3>");
-    placeToHtml.append("<hr>");
-    placeToHtml.append("<table>");
-    placeToHtml.append("<tr><td>Маршрут:</td><td><span id=\"route\">"+wagon.getTrain().getRoute().getNameRoute()+"</span></td></tr>");
-    placeToHtml.append("<tr><td>Поезд №:</td><td><span id=\"numberTrain\">"+wagon.getTrain().getNumberTrain()+"</span></td></tr>");
-    placeToHtml.append("<tr><td>Дата и время отправки:</td><td><span id=\"firstRouteStation\">"+wagon.getTrain().getRoute().getTimeDateFirstStation()+"</span></td></tr>");
-    placeToHtml.append("<tr><td>Дата и время прибытия:</td><td><span id=\"secondRouteStation\">"+wagon.getTrain().getRoute().getTimeDateSecondStation()+"</span></td></tr>");
-    placeToHtml.append("<tr><td>Номер вагона:</td><td><span id=\"orderWagon\">"+wagon.getOrder()+"</span></td></tr>");
-    placeToHtml.append("<tr><td>Тип вагона:</td><td>"+wagon.getTypeWagon()+"</td></tr>");
-    placeToHtml.append("<tr><td>Туалет:</td><td>"+(wagon.isBioTiolet()?"да":"нет")+"</td></tr>");
-    placeToHtml.append("<tr><td>Кондиционер:</td><td>"+(wagon.isAirCondition()?"да":"нет")+"</td></tr>");
-    placeToHtml.append("<tr><td>Общее количество мест:</td><td>"+wagon.getCountPlace()+"</td></tr>");
-    placeToHtml.append("<tr><td>Свободное количество мест:</td><td>"+(wagon.getCountPlace()-setPlace.size())+"</td></tr>");
-    placeToHtml.append("<tr><td>Цена:</td><td><span id=\"price\">"+wagon.getPrice()+"</span>р.</td></tr>");
-    placeToHtml.append("</table>");
-    placeToHtml.append("<hr>");
-    placeToHtml.append("<p>Заполните анкету, выберите место и нажмите купить</p>");
-    placeToHtml.append("<br>");
+    placeToHtml.append(wagon.getTrain().getRoute().getSecondStation().getNameStation()+"</h3>\n"
+                        +"<hr>\n"
+                        +"<table>\n"
+                        +"<tr><td>Маршрут:</td><td><span id=\"route\">"+wagon.getTrain().getRoute().getNameRoute()+"</span></td></tr>\n"
+                        +"<tr><td>Поезд №:</td><td><span id=\"numberTrain\">"+wagon.getTrain().getNumberTrain()+"</span></td></tr>\n"
+                        +"<tr><td>Дата и время отправки:</td><td><span id=\"firstRouteStation\">"+wagon.getTrain().getRoute().getTimeDateFirstStation()+"</span></td></tr>\n"
+                        +"<tr><td>Дата и время прибытия:</td><td><span id=\"secondRouteStation\">"+wagon.getTrain().getRoute().getTimeDateSecondStation()+"</span></td></tr>\n"
+                        +"<tr><td>Номер вагона:</td><td><span id=\"orderWagon\">"+wagon.getOrder()+"</span></td></tr>\n"
+                        +"<tr><td>Тип вагона:</td><td>"+wagon.getTypeWagon()+"</td></tr>\n"
+                        +"<tr><td>Туалет:</td><td>"+(wagon.isBioTiolet()?"да":"нет")+"</td></tr>\n"
+                        +"<tr><td>Кондиционер:</td><td>"+(wagon.isAirCondition()?"да":"нет")+"</td></tr>\n"
+                        +"<tr><td>Общее количество мест:</td><td>"+wagon.getCountPlace()+"</td></tr>\n"
+                        +"<tr><td>Свободное количество мест:</td><td>"+(wagon.getCountPlace()-setPlace.size())+"</td></tr>\n"
+                        +"<tr><td>Цена:</td><td><span id=\"price\">"+wagon.getPrice()+"</span>р.</td></tr>\n"
+                        +"</table>\n"
+                        +"<hr>\n"
+                        +"<p>Заполните анкету, выберите место и нажмите купить</p>\n"
+                        +"<br>");
+
+    List<Document> documents = (List<Document>) request.getSession().getAttribute("documents");
+
+    StringBuilder documentsBuilder = new StringBuilder();
+
+
+
+
+    for (int i = 0 ; i<documents.size(); i++){
+
+        documentsBuilder.append("<tr>\n"+
+                                "<td colspan=\"3\"><input name = \"document\" type=\"radio\""+
+                                "value=\""+documents.get(i).getId()+"\">"+documents.get(i).getDocument()+"</td>\n"+
+                                "</tr>\n");
+
+    }
+
 
     StringBuilder placeRadioButtons = new StringBuilder();
     if (wagon.getTypeWagon().equals("сидячий")) placeRadioButtons = printWagonSit(wagon, setPlace, wagon.isBioTiolet());
@@ -68,7 +87,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="js/datepicker.js"></script>
     <script src="js/valid.place.js"></script>
-    <script src="js/doget.js" defer></script>
     <style>
         #wagonPlaces{
             border: 1px solid black;
@@ -84,15 +102,15 @@
         <h1>Train&Ticket</h1>
         <div id="menu">
             <a href="/">Главная</a>
-            <a href="/">Контакты</a>
-            <a href="/">О нас</a>
+            <a href="/contacts">Контакты</a>
+            <a href="/aboutus">О нас</a>
         </div>
     </div>
 
     <div id="body">
         <div class="backClick"><a onclick="javascript:history.back(); return false;">Назад к выбору вагона</a></div>
         <%=placeToHtml%>
-        <form action="javascript: goBuy();" onsubmit="return validPlace()" method="get">
+        <form action="/buy" onsubmit="return validPlace()" method="post">
             <table>
                 <tr>
                     <td><label for="firstName"><span class="bold">*Имя:</span> </label></td><td colspan="2"><input type="text" id="firstName" name="firstName"></td>
@@ -120,23 +138,9 @@
             <table>
                 <tr>
                     <td><span class="bold">*Выберите тип документа: </span></td>
-                    <td colspan="2"><span id="noDocument">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
+                    <td colspan="2"><span id="noDocument">&nbsp;</span></td>
                 </tr>
-                <tr>
-                    <td colspan="3"><input name="document" type="radio" value="1">паспорт</td>
-                </tr>
-                <tr>
-                    <td colspan="3"><input name="document" type="radio" value="2">загранпаспорт</td>
-                </tr>
-                <tr>
-                    <td colspan="3"><input name="document" type="radio" value="3">военный билет</td>
-                </tr>
-                <tr>
-                    <td colspan="3"><input name="document" type="radio" value="4">свидетельство о рождении</td>
-                </tr>
-                <tr>
-                    <td colspan="3"><input name="document" type="radio" value="5">паспорт иностранного гражданина</td>
-                </tr>
+                <%=documentsBuilder%>
             </table>
             <table>
                 <tr>

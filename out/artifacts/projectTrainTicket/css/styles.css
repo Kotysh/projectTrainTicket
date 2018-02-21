@@ -66,6 +66,13 @@
     padding: 10px;
     min-width: 100px;
     text-align: center;
+    cursor: pointer;
+}
+
+.train div:hover, .wagon div:hover{
+    background-color: #e9e5ff;
+    cursor: pointer;
+    text-decoration: underline;
 }
 
 .noRoute {

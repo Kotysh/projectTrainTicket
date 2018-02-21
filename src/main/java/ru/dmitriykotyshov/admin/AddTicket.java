@@ -3,13 +3,15 @@ package ru.dmitriykotyshov.admin;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.dmitriykotyshov.DAO.InsertDAO;
-import ru.dmitriykotyshov.other.MyDate;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Date;
+
+import static ru.dmitriykotyshov.other.MyDate.dateFormat;
 
 /**
  * Created by Дмитрий on 26.01.2018.
@@ -32,14 +34,14 @@ public class AddTicket extends HttpServlet{
         Integer year = Integer.valueOf(req.getParameter("year"));
         Integer month = Integer.valueOf(req.getParameter("month"));
         Integer day = Integer.valueOf(req.getParameter("day"));
-        MyDate datebuy = new MyDate(year, month, day);
+        Date dateBuy = new Date();
 
         Integer fistrRouteStationId = Integer.valueOf(req.getParameter("firstRouteStationId"));
         Integer secondRouteStationId = Integer.valueOf(req.getParameter("secondRouteStationId"));
 
         int price = Integer.valueOf(req.getParameter("price"));
 
-        insertDAO.insertTicket(customerId, wagonId, place, datebuy.toString(), fistrRouteStationId, secondRouteStationId, price);
+        insertDAO.insertTicket(customerId, wagonId, place, dateFormat(dateBuy), fistrRouteStationId, secondRouteStationId, price);
 
         req.getRequestDispatcher("ticket").forward(req, resp);
 

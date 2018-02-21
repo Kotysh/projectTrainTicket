@@ -1,8 +1,5 @@
 <%@ page import="ru.dmitriykotyshov.trainticketobjects.Train" %>
 <%@ page import="java.util.List" %>
-<%@ page import="com.fasterxml.jackson.databind.ObjectMapper" %>
-<%@ page import="com.fasterxml.jackson.core.type.TypeReference" %>
-<%@ page import="java.util.ArrayList" %>
 <%@ page import="static ru.dmitriykotyshov.other.MyDate.get5Minute" %><%--
   Created by IntelliJ IDEA.
   User: Дмитрий
@@ -13,39 +10,42 @@
 
 <%
 
-    ObjectMapper objectMapper = new ObjectMapper();
-    String str = (String) request.getAttribute("json");
-    List<Train> trainList = objectMapper.readValue(str, new TypeReference<ArrayList<Train>>(){});
+    List<Train> trainList = (List<Train>) request.getSession().getAttribute("trains");
 
     StringBuilder listToHtml = new StringBuilder();
     if (trainList.size() == 0){
-        listToHtml.append("<div class=\"noRoute\">Маршрутов не найдено...</div>");
+        listToHtml.append("<hr>\n<div class=\"noRoute\">Маршрутов не найдено...</div>\n<hr>");
     }else {
         for (int i = 0; i < trainList.size(); i++) {
 
-            if (get5Minute(trainList.get(i).getRoute().getTimeDateFirstStation()))listToHtml.append("<div class = \"train\">");
-            else listToHtml.append("<div class = \"notrain\">");
+            if (get5Minute(trainList.get(i).getRoute().getTimeDateFirstStation())) {
+                listToHtml.append("<div class = \"train\">\n");
+                listToHtml.append("<form id=\"form"+i+"\" action=\"/gettrain\" method=\"get\" style = \"display:none;\">\n"+
+                                    "<input type=\"text\" name=\"selectRoute\" value=\""+i+"\">\n"+
+                                    "</form>\n");
+            }else{
+                listToHtml.append("<div class = \"notrain\">\n");
+            }
             listToHtml.append("<h3>");
             if (trainList.get(i).getRoute().getFirstStation().getCity().getNameCity() != null)
                 listToHtml.append("("+trainList.get(i).getRoute().getFirstStation().getCity().getNameCity()+") ");
             listToHtml.append(trainList.get(i).getRoute().getFirstStation().getNameStation()+ " - ");
             if (trainList.get(i).getRoute().getSecondStation().getCity().getNameCity() != null)
                 listToHtml.append("("+trainList.get(i).getRoute().getSecondStation().getCity().getNameCity()+") ");
-            listToHtml.append(trainList.get(i).getRoute().getSecondStation().getNameStation()+"</h3>");
-            listToHtml.append("<hr>");
-            listToHtml.append("<table>");
-            listToHtml.append("<tr><td>Маршрут:</td><td>"+trainList.get(i).getRoute().getNameRoute()+"</td></tr>");
-            listToHtml.append("<tr><td>Поезд №:</td><td>"+trainList.get(i).getNumberTrain()+"</td></tr>");
-            listToHtml.append("<tr><td>Дата и время отправки:</td><td>"+trainList.get(i).getRoute().getTimeDateFirstStation()+"</td></tr>");
-            listToHtml.append("<tr><td>Дата и время прибытия:</td><td>"+trainList.get(i).getRoute().getTimeDateSecondStation()+"</td></tr>");
-            listToHtml.append("<tr><td>Расстояние:</td><td>"+trainList.get(i).getRoute().getDistance()+" км</td></tr>");
-            listToHtml.append("<tr><td>Цена от:</td><td>"+trainList.get(i).getRoute().getPrice()+" р.</td></tr>");
-            listToHtml.append("</table>");
+            listToHtml.append(trainList.get(i).getRoute().getSecondStation().getNameStation()+"</h3>\n");
+            listToHtml.append("<hr>\n"
+                            +"<table>\n"
+                            +"<tr><td>Маршрут:</td><td>"+trainList.get(i).getRoute().getNameRoute()+"</td></tr>\n"
+                            +"<tr><td>Поезд №:</td><td>"+trainList.get(i).getNumberTrain()+"</td></tr>\n"
+                            +"<tr><td>Дата и время отправки:</td><td>"+trainList.get(i).getRoute().getTimeDateFirstStation()+"</td></tr>\n"
+                            +"<tr><td>Дата и время прибытия:</td><td>"+trainList.get(i).getRoute().getTimeDateSecondStation()+"</td></tr>\n"
+                            +"<tr><td>Расстояние:</td><td>"+trainList.get(i).getRoute().getDistance()+" км</td></tr>\n"
+                            +"<tr><td>Цена от:</td><td>"+trainList.get(i).getRoute().getPrice()+" р.</td></tr>\n"
+                            +"</table>\n");
             if (get5Minute(trainList.get(i).getRoute().getTimeDateFirstStation()))
-                listToHtml.append("<div><a href=\"javascript: goToTrain(jsonParse["+i+"])\">Купить билет</a></div></div>");
+                listToHtml.append("<div onclick = 'document.getElementById(\"form" + i + "\").submit();'>Купить билет</div></div>\n");
             else
-                listToHtml.append("<div><a>Билеты не продаются</a></div></div>");
-            listToHtml.append("\n");
+                listToHtml.append("<div><a>Билеты не продаются</a></div></div>\n");
         }
     }
 
@@ -57,7 +57,7 @@
     <title>TrainTicket</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="css/new_style.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/linkMenu.css">
     <link href="css/datepicker.min.css" rel="stylesheet" type="text/css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
@@ -70,15 +70,15 @@
         <h1>Train&Ticket</h1>
         <div id="menu">
             <a href="/">Главная</a>
-            <a href="/">Контакты</a>
-            <a href="/">О нас</a>
+            <a href="/contacts">Контакты</a>
+            <a href="/aboutus">О нас</a>
         </div>
     </div>
 
     <div id="body">
         <h2>Укажите маршрут и дату поездки</h2>
         <div id="form">
-            <form action="/getroute" onsubmit="return validRoute()" method="post">
+            <form action="/getroute" onsubmit="return validRoute()" method="get">
                 <table align="center">
                     <tr>
                         <td><label for="stationOne"><span class="bold">Откуда:</span> </label></td><td><input type="text" id="stationOne" name="stationOne"></td>
@@ -104,8 +104,3 @@
     </div>
 </body>
 </html>
-<script src="js/doget.js" defer>
-</script>
-<script defer>
-    var jsonParse = JSON.parse('<%=str%>');
-</script>

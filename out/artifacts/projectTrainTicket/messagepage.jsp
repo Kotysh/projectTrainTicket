@@ -23,13 +23,13 @@
     <h1>Train&Ticket</h1>
     <div id="menu">
         <a href="/">Главная</a>
-        <a href="/">Контакты</a>
-        <a href="/">О нас</a>
+        <a href="/contacts">Контакты</a>
+        <a href="/aboutus">О нас</a>
     </div>
 </div>
 
 <div id="body">
-    <h2><%=request.getAttribute("message")%></h2>
+    <div><%=request.getAttribute("message")%></div>
 </div>
 
 <div id="footer">

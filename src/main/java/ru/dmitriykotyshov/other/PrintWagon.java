@@ -32,19 +32,19 @@ public class PrintWagon {
             if (i%10 == 0)placeRadioButtons.append("<tr>");
 
             if (setPlace.contains(i+1)) {
-                placeRadioButtons.append("<td class=\"noPlace\"><input name=\"place\" type=\"radio\" value=\"" + (i + 1) + "\" disabled>" + (i + 1) + "</td>");
+                placeRadioButtons.append("<td class=\"noPlace\"><input name=\"place\" type=\"radio\" value=\"" + (i + 1) + "\" disabled>" + (i + 1) + "</td>\n");
             }else{
-                placeRadioButtons.append("<td class=\"yesPlace\"><input name=\"place\" type=\"radio\" value=\"" + (i + 1) + "\">" + (i + 1) + "</td>");
+                placeRadioButtons.append("<td class=\"yesPlace\"><input name=\"place\" type=\"radio\" value=\"" + (i + 1) + "\">" + (i + 1) + "</td>\n");
             }
 
             if (i == 29){
-                placeRadioButtons.append("<tr><td colspan=\"10\">&nbsp;</td></tr>");
+                placeRadioButtons.append("<tr><td colspan=\"10\">&nbsp;</td></tr>\n");
             }
 
-            if (i%10 == 9)placeRadioButtons.append("</tr>");
+            if (i%10 == 9)placeRadioButtons.append("</tr>\n");
 
         }
-        placeRadioButtons.append("</table></div>");
+        placeRadioButtons.append("</table></div>\n");
 
 
         return placeRadioButtons;
@@ -62,31 +62,31 @@ public class PrintWagon {
                 if (i%10 == 0)placeRadioButtons.append("<tr>");
 
                 if (setPlace.contains(i+1)) {
-                    placeRadioButtons.append("<td class=\"noPlace\"><input name=\"place\" type=\"radio\" value=\"" + (i + 1) + "\" disabled>" + (i + 1) + "</td>");
+                    placeRadioButtons.append("<td class=\"noPlace\"><input name=\"place\" type=\"radio\" value=\"" + (i + 1) + "\" disabled>" + (i + 1) + "</td>\n");
                 }else{
-                    placeRadioButtons.append("<td class=\"yesPlace\"><input name=\"place\" type=\"radio\" value=\"" + (i + 1) + "\">" + (i + 1) + "</td>");
+                    placeRadioButtons.append("<td class=\"yesPlace\"><input name=\"place\" type=\"radio\" value=\"" + (i + 1) + "\">" + (i + 1) + "</td>\n");
                 }
 
-                if (i%10 == 9)placeRadioButtons.append("</tr>");
+                if (i%10 == 9)placeRadioButtons.append("</tr>\n");
             }else{
                 if ((i-30)%8 == 0)placeRadioButtons.append("<tr>");
 
                 if (setPlace.contains(i+1)) {
-                    placeRadioButtons.append("<td class=\"noPlace\"><input name=\"place\" type=\"radio\" value=\"" + (i + 1) + "\" disabled>" + (i + 1) + "</td>");
+                    placeRadioButtons.append("<td class=\"noPlace\"><input name=\"place\" type=\"radio\" value=\"" + (i + 1) + "\" disabled>" + (i + 1) + "</td>\n");
                 }else{
-                    placeRadioButtons.append("<td class=\"yesPlace\"><input name=\"place\" type=\"radio\" value=\"" + (i + 1) + "\">" + (i + 1) + "</td>");
+                    placeRadioButtons.append("<td class=\"yesPlace\"><input name=\"place\" type=\"radio\" value=\"" + (i + 1) + "\">" + (i + 1) + "</td>\n");
                 }
 
-                if ((i-30)%8 == 7)placeRadioButtons.append("</tr>");
+                if ((i-30)%8 == 7)placeRadioButtons.append("</tr>\n");
             }
 
             if (i == 29){
-                placeRadioButtons.append("<tr><td colspan=\"10\">&nbsp;</td></tr>");
+                placeRadioButtons.append("<tr><td colspan=\"10\">&nbsp;</td></tr>\n");
             }
 
 
         }
-        placeRadioButtons.append("</table></div>");
+        placeRadioButtons.append("</table></div>\n");
 
 
         return placeRadioButtons;

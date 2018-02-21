@@ -36,61 +36,61 @@ public class DeleteDAO {
 
     public void deleteCustomer(String customerId){
 
-        this.delete(getSqlDeleteCustomer(customerId));
+        this.delete(sqlDeleteCustomer(customerId));
 
     }
 
     public void deleteCity(String cityId){
 
-        this.delete(getSqlDeleteCity(cityId));
+        this.delete(sqlDeleteCity(cityId));
 
     }
 
     public void deleteDocument(String documentId){
 
-        this.delete(getSqlDeleteDocument(documentId));
+        this.delete(sqlDeleteDocument(documentId));
 
     }
 
     public void deleteRoute(String routeId){
 
-        this.delete(getSqlDeleteRoute(routeId));
+        this.delete(sqlDeleteRoute(routeId));
 
     }
 
     public void deleteRouteStation(String routeStationId){
 
-        this.delete(getSqlDeleteRouteStation(routeStationId));
+        this.delete(sqlDeleteRouteStation(routeStationId));
 
     }
 
     public void deleteStation(String stationId){
 
-        this.delete(getSqlDeleteStation(stationId));
+        this.delete(sqlDeleteStation(stationId));
 
     }
 
     public void deleteTicket(String ticketId){
 
-        this.delete(getSqlDeleteTicket(ticketId));
+        this.delete(sqlDeleteTicket(ticketId));
 
     }
 
     public void deleteTrain(String trainId){
 
-        this.delete(getSqlDeleteTrain(trainId));
+        this.delete(sqlDeleteTrain(trainId));
 
     }
 
     public void deleteTypeWagon(String typeWagonId){
 
-        this.delete(getSqlDeleteTypeWagon(typeWagonId));
+        this.delete(sqlDeleteTypeWagon(typeWagonId));
 
     }
 
     public void deleteWagon(String wagonId){
 
-        this.delete(getSqlDeleteWagon(wagonId));
+        this.delete(sqlDeleteWagon(wagonId));
 
     }
 

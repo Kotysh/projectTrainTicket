@@ -5,8 +5,8 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"
        default-lazy-init="true">
 
-        <bean id="SelectDAO" class="ru.dmitriykotyshov.DAO.SelectDAO" factory-method="getInstanceSelectDAO"/>
-        <bean id="InsertDAO" class="ru.dmitriykotyshov.DAO.InsertDAO" factory-method="getInstanceInsertDAO"/>
-        <bean id="DeleteDAO" class="ru.dmitriykotyshov.DAO.DeleteDAO" factory-method="getInstanceDeleteDAO"/>
+        <bean id="selectDAO" class="ru.dmitriykotyshov.DAO.SelectDAO" factory-method="getInstanceSelectDAO"/>
+        <bean id="insertDAO" class="ru.dmitriykotyshov.DAO.InsertDAO" factory-method="getInstanceInsertDAO"/>
+        <bean id="deleteDAO" class="ru.dmitriykotyshov.DAO.DeleteDAO" factory-method="getInstanceDeleteDAO"/>
 
 </beans>

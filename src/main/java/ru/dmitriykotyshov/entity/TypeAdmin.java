@@ -15,11 +15,11 @@ public class TypeAdmin {
     @Column(name = "TYPE_ADMIN_ID")
     private int id;
 
-    @Column(name = "TYPE_ADMIN")
-    private String TypeAdmin;
+    @Column(name = "TYPE")
+    private String type;
 
-    public TypeAdmin(String typeAdmin) {
-        TypeAdmin = typeAdmin;
+    public TypeAdmin(String type) {
+        this.type = type;
     }
 
     public TypeAdmin() {
@@ -29,7 +29,7 @@ public class TypeAdmin {
     public String toString() {
         return "TypeAdmin{" +
                 "id=" + id +
-                ", TypeAdmin='" + TypeAdmin + '\'' +
+                ", type='" + type + '\'' +
                 '}';
     }
 
@@ -41,11 +41,11 @@ public class TypeAdmin {
         this.id = id;
     }
 
-    public String getTypeAdmin() {
-        return TypeAdmin;
+    public String getType() {
+        return type;
     }
 
-    public void setTypeAdmin(String typeAdmin) {
-        TypeAdmin = typeAdmin;
+    public void setType(String type) {
+        this.type = type;
     }
 }

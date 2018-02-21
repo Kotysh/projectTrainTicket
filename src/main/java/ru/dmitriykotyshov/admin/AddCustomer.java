@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Date;
 
 /**
  * Created by Дмитрий on 25.01.2018.
@@ -30,7 +31,7 @@ public class AddCustomer extends HttpServlet {
         String first_name = req.getParameter("firstName");
         String middle_name = req.getParameter("middleName");
         String last_name = req.getParameter("lastName");
-        MyDate birthday = new MyDate(Integer.valueOf(req.getParameter("year")), Integer.valueOf(req.getParameter("month")), Integer.valueOf(req.getParameter("day")));
+        Date birthday = new Date();
         String gender = req.getParameter("gender");
         String documentID = req.getParameter("documentID");
         String documentNumber = req.getParameter("documentNumber");

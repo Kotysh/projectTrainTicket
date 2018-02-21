@@ -37,6 +37,9 @@ public class Ticket {
         this.secondStation = secondStation;
     }
 
+    public Ticket() {
+    }
+
     @Override
     public String toString() {
         return "Ticket{" +

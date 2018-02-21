@@ -10,7 +10,7 @@
 <head>
     <title>TrainTicket</title>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/linkMenu.css">
     <link rel="stylesheet" href="css/new_style.css">
     <link href="css/datepicker.min.css" rel="stylesheet" type="text/css">
@@ -23,8 +23,8 @@
         <h1>Train&Ticket</h1>
         <div id="menu">
             <a href="/">Главная</a>
-            <a href="/">Контакты</a>
-            <a href="/">О нас</a>
+            <a href="/contacts">Контакты</a>
+            <a href="/aboutus">О нас</a>
         </div>
     </div>
     <div id="body">

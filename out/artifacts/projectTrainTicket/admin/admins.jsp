@@ -79,7 +79,7 @@
                     writeAdmins.append("<td>"+a.getId()+"</td>");
                     writeAdmins.append("<td>"+a.getName()+"</td>");
                     writeAdmins.append("<td>"+a.getPass()+"</td>");
-                    writeAdmins.append("<td>"+a.getTypeAdmin().getId()+" ("+a.getTypeAdmin().getTypeAdmin()+")</td>");
+                    writeAdmins.append("<td>"+a.getTypeAdmin().getId()+" ("+a.getTypeAdmin().getType()+")</td>");
                     writeAdmins.append("<td>"+a.getBoss()+"</td></tr>");
                 }
             %>

@@ -41,6 +41,27 @@
     </servlet-mapping>
 
     <servlet>
+        <servlet-name>AboutUS</servlet-name>
+        <servlet-class>ru.dmitriykotyshov.otherpage.AboutUS</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AboutUS</servlet-name>
+        <url-pattern>/aboutus</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>Contacts</servlet-name>
+        <servlet-class>ru.dmitriykotyshov.otherpage.Contacts</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Contacts</servlet-name>
+        <url-pattern>/contacts</url-pattern>
+    </servlet-mapping>
+
+
+
+
+    <servlet>
         <servlet-name>InputAdmin</servlet-name>
         <servlet-class>ru.dmitriykotyshov.admin.InputAdmin</servlet-class>
     </servlet>

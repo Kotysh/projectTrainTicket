@@ -5,6 +5,7 @@ import ru.dmitriykotyshov.other.MyDate;
 import ru.dmitriykotyshov.other.PairTimestampDistance;
 import ru.dmitriykotyshov.trainticketobjects.*;
 
+import java.util.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ public class SelectDAO {
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
 
-        ResultSet resultSet = connectionDAO.getSelect(getSqlGetCities());
+        ResultSet resultSet = connectionDAO.getSelect(sqlGetCities());
 
         List<City> cities = new ArrayList<City>();
 
@@ -64,7 +65,7 @@ public class SelectDAO {
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
 
-        ResultSet resultSet = connectionDAO.getSelect(getSqlGetCityByNameCity(nameCity));
+        ResultSet resultSet = connectionDAO.getSelect(sqlGetCityByNameCity(nameCity));
 
         City city = new City();
 
@@ -92,7 +93,7 @@ public class SelectDAO {
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
 
-        ResultSet resultSet = connectionDAO.getSelect(getSqlGetCityByCityId(cityId));
+        ResultSet resultSet = connectionDAO.getSelect(sqlGetCityByCityId(cityId));
 
         City city = new City();
 
@@ -120,7 +121,7 @@ public class SelectDAO {
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
 
-        ResultSet resultSet = connectionDAO.getSelect(getSqlGetStationsByNameStationAndCityId(nameStation, city));
+        ResultSet resultSet = connectionDAO.getSelect(sqlGetStationsByNameStationAndCityId(nameStation, city));
 
         List<Station> stations = new ArrayList<Station>();
 
@@ -150,7 +151,7 @@ public class SelectDAO {
 
     }
 
-    public List<Route> getRoutes (List<Station> firstStationList, List<Station> secondStationList, MyDate date){
+    public List<Route> getRoutes (List<Station> firstStationList, List<Station> secondStationList, Date date){
 
 
         List<Route> routes = new ArrayList<Route>();
@@ -162,7 +163,7 @@ public class SelectDAO {
 
                 ConnectionDAO connectionDAO = new ConnectionDAO();
 
-                ResultSet resultSet = connectionDAO.getSelect(getSqlGetCountRoutes(firstStationList.get(i).getId(), secondStationList.get(j).getId()));
+                ResultSet resultSet = connectionDAO.getSelect(sqlGetCountRoutes(firstStationList.get(i).getId(), secondStationList.get(j).getId()));
 
                 try {
                     if (resultSet.next()){
@@ -206,7 +207,7 @@ public class SelectDAO {
 
         List<Train> trains = new ArrayList<Train>();
 
-        ResultSet resultSet = connectionDAO.getSelect(getSqlGetTrainByRouteId(route.getId()));
+        ResultSet resultSet = connectionDAO.getSelect(sqlGetTrainByRouteId(route.getId()));
 
         try {
             if (resultSet.next()) {
@@ -237,7 +238,7 @@ public class SelectDAO {
 
         List<Wagon> wagons = new ArrayList<Wagon>();
 
-        ResultSet resultSet = connectionDAO.getSelect(getSqlGetWagonsByTrainId(train.getId()));
+        ResultSet resultSet = connectionDAO.getSelect(sqlGetWagonsByTrainId(train.getId()));
 
         try {
             if (resultSet.next()){
@@ -267,7 +268,7 @@ public class SelectDAO {
 
         Set<Integer> places = new HashSet<Integer>();
 
-        ResultSet resultSet = connectionDAO.getSelect(getSqlGetBuyPlacesForWagon(wagon));
+        ResultSet resultSet = connectionDAO.getSelect(sqlGetBuyPlacesForWagon(wagon));
 
         try {
             if (resultSet.next()){
@@ -293,7 +294,7 @@ public class SelectDAO {
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
 
-        ResultSet resultSet = connectionDAO.getSelect(getSqlGetNumberRouteByFirstStationIdAndSecondStationId(firstStationdId, secondStationId));
+        ResultSet resultSet = connectionDAO.getSelect(sqlGetNumberRouteByFirstStationIdAndSecondStationId(firstStationdId, secondStationId));
 
         int route = 0;
 
@@ -312,15 +313,15 @@ public class SelectDAO {
 
     }
 
-    public int getOrderStationOnRoute (int route, int i, MyDate date, int index){
+    public int getOrderStationOnRoute (int route, int i, Date date, int index){
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
         String sql;
 
         if (index == 1) {//OUT = 1
-            sql = getSqlGetOrderStationOnRouteOut(route, i, date);
+            sql = sqlGetOrderStationOnRouteOut(route, i, date);
         }else{          //IN = 2
-            sql = getSqlGetOrderStationOnRouteIn(route, i, date);
+            sql = sqlGetOrderStationOnRouteIn(route, i, date);
         }
 
         int order = 0;
@@ -340,16 +341,16 @@ public class SelectDAO {
 
     }
 
-    public PairTimestampDistance getTimestampStation(int routeId, int stationId, MyDate date, int index){
+    public PairTimestampDistance getTimestampStation(int routeId, int stationId, Date date, int index){
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
 
         String sql;
 
         if (index == 1) {//OUT = 1
-            sql = getSqlGetTimestampStationOut(routeId, stationId, date);
+            sql = sqlGetTimestampStationOut(routeId, stationId, date);
         }else{          //IN = 2
-            sql = getSqlGetTimestampStationIn(routeId, stationId, date);
+            sql = sqlGetTimestampStationIn(routeId, stationId, date);
         }
 
         PairTimestampDistance pairTimestampDistance = new PairTimestampDistance();
@@ -377,7 +378,7 @@ public class SelectDAO {
 
         String nameRoute = "";
 
-        ResultSet resultSet = connectionDAO.getSelect(getSqlGetNameRoute(routeId));
+        ResultSet resultSet = connectionDAO.getSelect(sqlGetNameRoute(routeId));
 
         try {
             if (resultSet.next()){
@@ -397,7 +398,7 @@ public class SelectDAO {
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
 
-        ResultSet resultSet = connectionDAO.getSelect(getSqlGetCustomerId(documentNumber, documentId));
+        ResultSet resultSet = connectionDAO.getSelect(sqlGetCustomerId(documentNumber, documentId));
 
         int customerId = 0;
 
@@ -423,9 +424,9 @@ public class SelectDAO {
         String sql = "";
 
         if (index == 1){//OUT = 1
-            sql = getGetRouteStationIdOutStationByRouteNameAndDepartureTime(nameRoute, timestamp);
+            sql = sqlGetRouteStationIdOutStationByRouteNameAndDepartureTime(nameRoute, timestamp);
         }else{          //IN = 2
-            sql = getGetRouteStationIdInStationByRouteNameAndDepartureTime(nameRoute, timestamp);
+            sql = sqlGetRouteStationIdInStationByRouteNameAndDepartureTime(nameRoute, timestamp);
         }
 
         ResultSet resultSet = connectionDAO.getSelect(sql);
@@ -444,11 +445,11 @@ public class SelectDAO {
 
     }
 
-    public int getWagonId(String numberTrain, String orderWagon){
+    public int getWagonId(String numberTrain, int orderWagon){
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
 
-        ResultSet resultSet = connectionDAO.getSelect(getSqlGetWagonIdByNumberTrainAndOrderWagon(numberTrain, orderWagon));
+        ResultSet resultSet = connectionDAO.getSelect(sqlGetWagonIdByNumberTrainAndOrderWagon(numberTrain, orderWagon));
 
         int wagonId = 0;
 
@@ -469,7 +470,7 @@ public class SelectDAO {
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
 
-        ResultSet resultSet = connectionDAO.getSelect(getSqlGetCustomersJoinDocument());
+        ResultSet resultSet = connectionDAO.getSelect(sqlGetCustomersJoinDocument());
 
         List<Customer> customers = new ArrayList<Customer>();
 
@@ -491,7 +492,7 @@ public class SelectDAO {
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
 
-        ResultSet resultSet = connectionDAO.getSelect(getSqlGetDocuments());
+        ResultSet resultSet = connectionDAO.getSelect(sqlGetDocuments());
 
         List<Document> documents = new ArrayList<Document>();
 
@@ -513,7 +514,7 @@ public class SelectDAO {
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
 
-        ResultSet resultSet = connectionDAO.getSelect(getSqlGetRoutes());
+        ResultSet resultSet = connectionDAO.getSelect(sqlGetRoutes());
 
         List<RouteDB> routes = new ArrayList<RouteDB>();
 
@@ -535,7 +536,7 @@ public class SelectDAO {
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
 
-        ResultSet resultSet = connectionDAO.getSelect(getSqlGetRouteStationsJoinRouteAndStation());
+        ResultSet resultSet = connectionDAO.getSelect(sqlGetRouteStationsJoinRouteAndStation());
 
         List<RouteStation> routeStations = new ArrayList<RouteStation>();
 
@@ -561,7 +562,7 @@ public class SelectDAO {
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
 
-        ResultSet resultSet = connectionDAO.getSelect(getSqlGetStationsJoinCity());
+        ResultSet resultSet = connectionDAO.getSelect(sqlGetStationsJoinCity());
 
         List<Station> stations = new ArrayList<Station>();
 
@@ -615,7 +616,7 @@ public class SelectDAO {
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
 
-        ResultSet resultSet = connectionDAO.getSelect(getSqlGetTrainsJoinRoute());
+        ResultSet resultSet = connectionDAO.getSelect(sqlGetTrainsJoinRoute());
 
         List<Train> trains = new ArrayList<Train>();
 
@@ -639,7 +640,7 @@ public class SelectDAO {
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
 
-        ResultSet resultSet = connectionDAO.getSelect(getSqlGetTypeWagons());
+        ResultSet resultSet = connectionDAO.getSelect(sqlGetTypeWagons());
 
         List<TypeWagon> typeWagons = new ArrayList<TypeWagon>();
 
@@ -664,7 +665,7 @@ public class SelectDAO {
 
         ConnectionDAO connectionDAO = new ConnectionDAO();
 
-        ResultSet resultSet = connectionDAO.getSelect(getSqlGetWagonIdByNumberTrainAndOrderWagon());
+        ResultSet resultSet = connectionDAO.getSelect(sqlGetWagonIdByNumberTrainAndOrderWagon());
 
         List<WagonDB> wagons = new ArrayList<WagonDB>();
 

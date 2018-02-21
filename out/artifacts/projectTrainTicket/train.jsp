@@ -11,9 +11,8 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%
-    ObjectMapper objectMapper = new ObjectMapper();
-    String str = (String) request.getAttribute("json");
-    List<Wagon> wagons = objectMapper.readValue(str, new TypeReference<ArrayList<Wagon>>(){});
+
+    List<Wagon> wagons = (List<Wagon>) request.getSession().getAttribute("wagons");
 
     StringBuilder train = new StringBuilder();
     StringBuilder wagon = new StringBuilder();
@@ -26,35 +25,35 @@
         if (wagons.get(0).getTrain().getRoute().getSecondStation().getCity().getNameCity() != null && !wagons.get(0).getTrain().getRoute().getSecondStation().getCity().getNameCity().equals("null"))
             train.append("("+wagons.get(0).getTrain().getRoute().getSecondStation().getCity().getNameCity()+") ");
         train.append(wagons.get(0).getTrain().getRoute().getSecondStation().getNameStation()+"</h3>");
-        train.append("<table>");
-        train.append("<tr><td>Маршрута:</td><td>"+wagons.get(0).getTrain().getRoute().getNameRoute()+"</td></tr>");
-        train.append("<tr><td>Поезд №:</td><td>"+wagons.get(0).getTrain().getNumberTrain()+"</td></tr>");
-        train.append("<tr><td>Время убытия:</td><td>"+wagons.get(0).getTrain().getRoute().getTimeDateFirstStation()+"</td></tr>");
-        train.append("<tr><td>Время прибытия:</td><td>"+wagons.get(0).getTrain().getRoute().getTimeDateSecondStation()+"</td></tr>");
-        train.append("<tr><td>Расстояние:</td><td>"+wagons.get(0).getTrain().getRoute().getDistance()+"км</td></tr></table></div>");
-        train.append("<hr>");
-        train.append("Информация о вагонах:");
+        train.append("<table>\n"
+                    +"<tr><td>Маршрута:</td><td>"+wagons.get(0).getTrain().getRoute().getNameRoute()+"</td></tr>\n"
+                    +"<tr><td>Поезд №:</td><td>"+wagons.get(0).getTrain().getNumberTrain()+"</td></tr>\n"
+                    +"<tr><td>Время убытия:</td><td>"+wagons.get(0).getTrain().getRoute().getTimeDateFirstStation()+"</td></tr>\n"
+                    +"<tr><td>Время прибытия:</td><td>"+wagons.get(0).getTrain().getRoute().getTimeDateSecondStation()+"</td></tr>\n"
+                    +"<tr><td>Расстояние:</td><td>"+wagons.get(0).getTrain().getRoute().getDistance()+"км</td></tr></table></div>\n"
+                    +"<hr>\n"
+                    +"Информация о вагонах:");
 
         for (int i=0; i<wagons.size(); i++){
-
-            wagon.append("<div class=\"wagon\">");
-            wagon.append("<table>");
-            wagon.append("<tr><td>Номер вагона:</td><td>"+wagons.get(i).getOrder()+"</td></tr>");
-            wagon.append("<tr><td>Тип вагона:</td><td>"+wagons.get(i).getTypeWagon()+"</td></tr>");
-            wagon.append("<tr><td>Биотуалет:</td><td>"+(wagons.get(i).isBioTiolet()?"да":"нет")+"</td></tr>");
-            wagon.append("<tr><td>Кондиционер:</td><td>"+(wagons.get(i).isAirCondition()?"да":"нет")+"</td></tr>");
-            wagon.append("<tr><td>Количество мест:</td><td>"+wagons.get(i).getCountPlace()+"</td></tr>");
-            wagon.append("<tr><td>Цена:</td><td>"+wagons.get(i).getPrice()+"р.</td></tr>");
-            wagon.append("</table>");
-            wagon.append("<div><a href=\"javascript: goToPlace(jsonParse[" + i + "])\">Выбрать место</a></div>");
-            wagon.append("</div>");
-
+            wagon.append("<form id=\"form"+i+"\" action=\"/getplace\" method=\"get\" style = \"display:none;\">\n"+
+                        "<input type=\"text\" name=\"selectWagon\" value=\""+i+"\">\n"+
+                        "</form>\n"
+                        +"<div class=\"wagon\">\n"
+                        +"<table>\n"
+                        +"<tr><td>Номер вагона:</td><td>"+wagons.get(i).getOrder()+"</td></tr>\n"
+                        +"<tr><td>Тип вагона:</td><td>"+wagons.get(i).getTypeWagon()+"</td></tr>\n"
+                        +"<tr><td>Биотуалет:</td><td>"+(wagons.get(i).isBioTiolet()?"да":"нет")+"</td></tr>\n"
+                        +"<tr><td>Кондиционер:</td><td>"+(wagons.get(i).isAirCondition()?"да":"нет")+"</td></tr>\n"
+                        +"<tr><td>Количество мест:</td><td>"+wagons.get(i).getCountPlace()+"</td></tr>\n"
+                        +"<tr><td>Цена:</td><td>"+wagons.get(i).getPrice()+"р.</td></tr>\n"
+                        +"</table>\n"
+                        +"<div onclick = 'document.getElementById(\"form" + i + "\").submit();'>Выбрать место</div>\n"
+                        +"</div>");
         }
 
     }else{
         train.append("Вагонов нет!");
     }
-
 
 %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -62,7 +61,7 @@
 <head>
     <title>TrainTicket</title>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/new_style.css">
     <link rel="stylesheet" href="css/linkMenu.css">
 </head>
@@ -72,8 +71,8 @@
         <h1>Train&Ticket</h1>
         <div id="menu">
             <a href="/">Главная</a>
-            <a href="/">Контакты</a>
-            <a href="/">О нас</a>
+            <a href="/contacts">Контакты</a>
+            <a href="/aboutus">О нас</a>
         </div>
     </div>
     <div id="body">
@@ -89,9 +88,4 @@
 
 </body>
 </html>
-<script src="js/doget.js" defer>
-</script>
-<script defer>
-    var jsonParse = JSON.parse('<%=str%>');
-</script>
 

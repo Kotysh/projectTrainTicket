@@ -80,7 +80,6 @@ public class ConnectionDAO {
             if (statement != null) statement.close();
             if (initContext != null) initContext.close();
             if (envContext != null) envContext.close();
-
         } catch (SQLException e) {
             logger.error(e.getMessage());
         } catch (NamingException e) {

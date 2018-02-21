@@ -4,12 +4,15 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.query.Query;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+
+import static ru.dmitriykotyshov.other.Message.noDeleteSuperAdmin;
 
 /**
  * Created by Дмитрий on 12.02.2018.
@@ -29,14 +32,19 @@ public class DeleteAdmin extends HttpServlet {
 
         Transaction transaction = session.beginTransaction();
 
-        session.createQuery("DELETE Admin WHERE id = :paramId").setParameter("paramId", adminId).executeUpdate();
+        Query query = session.createQuery("from Admin where id = :paramId").setParameter("paramId", adminId);
+        ru.dmitriykotyshov.entity.Admin admin = (ru.dmitriykotyshov.entity.Admin) query.getResultList().get(0);
+
+        if(admin.getTypeAdmin().getId() == 1){
+            noDeleteSuperAdmin(req, resp);
+        }else{
+            session.remove(admin);
+            req.getRequestDispatcher("admins").forward(req, resp);
+        }
 
         transaction.commit();
         session.close();
         sessionFactory.close();
-
-        req.getRequestDispatcher("admins").forward(req, resp);
-
 
     }
 }

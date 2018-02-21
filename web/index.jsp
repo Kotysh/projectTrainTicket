@@ -23,8 +23,8 @@
     <h1>Train&Ticket</h1>
     <div id="menu">
       <a href="/">Главная</a>
-      <a href="/">Контакты</a>
-      <a href="/">О нас</a>
+      <a href="/contacts">Контакты</a>
+      <a href="/aboutus">О нас</a>
     </div>
   </div>
 
@@ -34,7 +34,7 @@
     <hr>
     <h3>Укажите маршрут и дату поездки</h3>
     <div id="form">
-      <form action="/getroute" onsubmit="return validRoute()" method="post">
+      <form action="/getroute" onsubmit="return validRoute()" method="get">
         <table align="center">
           <tr>
             <td><label for="stationOne"><span class="bold">Откуда:</span> </label></td><td><input type="text" id="stationOne" name="stationOne"></td>
