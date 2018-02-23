@@ -84,12 +84,26 @@
     border-radius: 5px;
 }
 
-#wagonPlaces{
-    border: 1px solid black;
-    border-radius: 10px;
-    margin: 0 auto 0;
-    background-image: url("../img/sit.png");
-    width: 836px;
+.plackartV .noPlace, .plackartV .yesPlace{
+    margin: 4px;
+    padding: 4px;
+    padding-bottom: 20px;
+    border-radius: 5px;
+}
+
+.kupe .noPlace, .kupe  .yesPlace{
+    margin: 4px;
+    padding: 4px;
+    padding-bottom: 45px;
+    border-radius: 5px;
+}
+
+.plackartN .noPlace, .plackartN .yesPlace{
+    margin: 4px;
+    padding: 4px;
+    padding-top:10px;
+    padding-bottom: 7px;
+    border-radius: 5px;
 }
 
 #wagonPlaces table{

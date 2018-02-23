@@ -15,6 +15,7 @@ import java.util.List;
 
 import static ru.dmitriykotyshov.other.Message.no5Minute;
 import static ru.dmitriykotyshov.other.MyDate.get5Minute;
+import static ru.dmitriykotyshov.other.Price.getPrice;
 
 /**
  * Created by Дмитрий on 15.01.2018.
@@ -39,9 +40,9 @@ public class GetTrain extends HttpServlet {
 
         for (Wagon w: wagons){
 
-            int priceWagon = (int)(w.getTrain().getRoute().getPrice()*
-                    (w.isAirCondition()? Price.AIR_CONDITION:1)*
-                    (w.isBioTiolet()?Price.BIO_TIOLET:1));
+            int priceWagon = getPrice(w.getTrain().getRoute().getPrice(),
+                                        w.isAirCondition(), w.isBioTiolet(),
+                                        w.getTypeWagon());
             w.setPrice(priceWagon);
             logger.trace(w);
 

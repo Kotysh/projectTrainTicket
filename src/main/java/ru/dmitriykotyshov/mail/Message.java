@@ -75,10 +75,8 @@ public final class Message {
 
         } catch (MessagingException e) {
 
-            logger.warn("message is not sent", e);
+            logger.warn("message is not sent - ", e);
         }
-
-        System.out.println(mail + " " + header + " " + text);
 
     }
 

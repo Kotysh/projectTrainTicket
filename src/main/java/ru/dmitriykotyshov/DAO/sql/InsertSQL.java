@@ -16,7 +16,7 @@ public class InsertSQL {
     private final static String SQL_INSERT_CITY = "insert into city (city) values ('%s')";
 
     private final static String SQL_INSERT_CUSTOMER = "INSERT INTO CUSTOMER (FIRST_NAME, MIDDLE_NAME, LAST_NAME, BIRTHDAY, GENDER, DOCUMENT_ID, DOC_NUMBER, EMAIL, TELEPHONE) "+
-            "VALUES ('%s', '%s', '%s', TO_DATE('%s', 'dd/MM/yyyy'), %s, '%s', '%s', %s, %s)";
+            "VALUES ('%s', '%s', '%s', TO_DATE('%s', 'dd/MM/yyyy'), '%s', '%s', '%s', '%s', '%s')";
 
     private final static String SQL_INSERT_DOCUMENT = "insert into document (document) values ('%s')";
 
@@ -54,10 +54,10 @@ public class InsertSQL {
     public static String sqlInsertCustomer(String first_name, String middle_name, String last_name,
                                            Date birthday, String gender, String documentID, String documentNumber,
                                            String email, String telephone){
-
+/*
         if (gender.length() == 0) gender = "null"; else gender = "'"+gender+"'";
         if (email.length() == 0) email = "null"; else email = "'"+email+"'";
-        if (telephone.length() == 0) telephone = "null"; else telephone = "'"+telephone+"'";
+        if (telephone.length() == 0) telephone = "null"; else telephone = "'"+telephone+"'";*/
 
         return String.format(SQL_INSERT_CUSTOMER, first_name, middle_name, last_name,
                 dateFormat(birthday), gender, documentID, documentNumber, email, telephone);

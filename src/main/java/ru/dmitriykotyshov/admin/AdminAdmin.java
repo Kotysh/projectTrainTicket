@@ -32,7 +32,7 @@ public class AdminAdmin extends HttpServlet {
 
         Query query = session.createQuery("from Admin");
         List<Admin> admins = query.getResultList();
-        //????
+
         System.out.println(admins);
 
         transaction.commit();

@@ -1,8 +1,9 @@
 <%@ page import="ru.dmitriykotyshov.trainticketobjects.Wagon" %>
 <%@ page import="java.util.Set" %>
-<%@ page import="static ru.dmitriykotyshov.other.PrintWagon.printWagonSit" %>
 <%@ page import="java.util.List" %>
-<%@ page import="ru.dmitriykotyshov.trainticketobjects.Document" %><%--
+<%@ page import="ru.dmitriykotyshov.trainticketobjects.Document" %>
+<%@ page import="static ru.dmitriykotyshov.other.PrintWagon.getWayToPNGWagon" %>
+<%@ page import="static ru.dmitriykotyshov.other.PrintWagon.printWagon" %><%--
   Created by IntelliJ IDEA.
   User: Дмитрий
   Date: 22.01.2018
@@ -59,19 +60,9 @@
     }
 
 
-    StringBuilder placeRadioButtons = new StringBuilder();
-    if (wagon.getTypeWagon().equals("сидячий")) placeRadioButtons = printWagonSit(wagon, setPlace, wagon.isBioTiolet());
+    StringBuilder placeRadioButtons = printWagon(wagon, setPlace, wagon.isBioTiolet());
 
-    StringBuilder png = new StringBuilder();
-
-    if (wagon.getTypeWagon().equals("сидячий")){
-        if (wagon.isBioTiolet()){
-            png.append("../img/sit_tiolet.png");
-        }else{
-            png.append("../img/sit.png");
-        }
-    }
-
+    StringBuilder png = new StringBuilder(getWayToPNGWagon(wagon.getTypeWagon(), wagon.isBioTiolet()));
 
 
 %>
@@ -80,7 +71,7 @@
 <head>
     <title>TrainTicket</title>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="css/styles_place.css">
+    <link rel="stylesheet" href="css/styles_places.css">
     <link rel="stylesheet" href="css/new_style.css">
     <link rel="stylesheet" href="css/linkMenu.css">
     <link href="css/datepicker.min.css" rel="stylesheet" type="text/css">
@@ -93,6 +84,8 @@
             border-radius: 10px;
             margin: 0 auto 0;
             background-image: url(<%=png%>);
+            width: 836px;
+            height: 268px;
         }
     </style>
 </head>

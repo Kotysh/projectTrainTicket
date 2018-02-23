@@ -33,7 +33,7 @@
         <hr>
         <div id="form">
             <h2>Укажите маршрут и дату поездки</h2>
-            <form action="/getroute" onsubmit="return validRoute()" method="post">
+            <form action="/getroute" onsubmit="return validRoute()" method="get">
                 <table align="center">
                     <tr>
                         <td><label for="stationOne"><span class="bold">Откуда:</span> </label></td><td><input type="text" id="stationOne" name="stationOne"></td>

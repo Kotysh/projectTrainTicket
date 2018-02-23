@@ -1,8 +1,7 @@
 package ru.dmitriykotyshov.admin;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.dmitriykotyshov.DAO.SelectDAO;
+import ru.dmitriykotyshov.support.ServiceHelper;
 import ru.dmitriykotyshov.trainticketobjects.Customer;
 
 import javax.servlet.ServletException;
@@ -20,9 +19,7 @@ public class AdminCustomer extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("springContext.xml");
-
-        SelectDAO selectDAO = applicationContext.getBean("SelectDAO", SelectDAO.class);
+        SelectDAO selectDAO = ServiceHelper.getInstance("selectDAO");
 
         List<Customer> customers = selectDAO.getCustomersJoinDocument();
 

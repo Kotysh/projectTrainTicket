@@ -18,11 +18,12 @@ public class ServiceHelper {
 
     private static class RootAppServiceLocator {
 
+        private static final String CONFIG_LOCATION = "springContext.xml";
         private static final ServiceHelper.RootAppServiceLocator INSTANCE = new ServiceHelper.RootAppServiceLocator();
         private ApplicationContext beanFactory;
 
         public RootAppServiceLocator() {
-            beanFactory = new ClassPathXmlApplicationContext("springContext.xml");
+            beanFactory = new ClassPathXmlApplicationContext(CONFIG_LOCATION);
         }
 
         public static ServiceHelper.RootAppServiceLocator getInstance() {

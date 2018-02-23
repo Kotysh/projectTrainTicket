@@ -1,8 +1,7 @@
 package ru.dmitriykotyshov.admin;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.dmitriykotyshov.DAO.InsertDAO;
+import ru.dmitriykotyshov.support.ServiceHelper;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -20,9 +19,7 @@ public class AddDocument extends HttpServlet {
 
         req.setCharacterEncoding("UTF-8");
 
-        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("springContext.xml");
-
-        InsertDAO insertDAO = applicationContext.getBean("InsertDAO", InsertDAO.class);
+        InsertDAO insertDAO = ServiceHelper.getInstance("insertDAO");
 
         String document = req.getParameter("document");
 
