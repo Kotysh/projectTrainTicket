@@ -19,6 +19,7 @@ public class ExitAdmin extends HttpServlet{
         HttpSession httpSession = req.getSession();
         httpSession.removeAttribute("login");
         httpSession.removeAttribute("password");
+        httpSession.removeAttribute("typeAdmin");
 
         req.getRequestDispatcher("admin/inputAdmin.jsp").forward(req, resp);
 

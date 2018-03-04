@@ -28,9 +28,6 @@ public class AddTicket extends HttpServlet{
         Integer wagonId = Integer.valueOf(req.getParameter("wagonId"));
         String place = req.getParameter("place");
 
-        Integer year = Integer.valueOf(req.getParameter("year"));
-        Integer month = Integer.valueOf(req.getParameter("month"));
-        Integer day = Integer.valueOf(req.getParameter("day"));
         Date dateBuy = new Date();
 
         Integer fistrRouteStationId = Integer.valueOf(req.getParameter("firstRouteStationId"));

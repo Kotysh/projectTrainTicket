@@ -5,6 +5,9 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
+import ru.dmitriykotyshov.DAO.SelectDAO;
+import ru.dmitriykotyshov.entity.TypeAdmin;
+import ru.dmitriykotyshov.support.ServiceHelper;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -24,6 +27,14 @@ public class AdminAdmin extends HttpServlet {
 
         Locale.setDefault(Locale.ENGLISH);
 
+        SelectDAO selectDAO = ServiceHelper.getInstance("selectDAO");
+
+        List<String> recAdmins = selectDAO.getRecursiveAdmins();
+        System.out.println("Выводим админов!!!! РЕКУРСИВНО");
+        for (String s: recAdmins){
+            System.out.println(s);
+        }
+
         SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
 
         Session session = sessionFactory.openSession();
@@ -35,10 +46,15 @@ public class AdminAdmin extends HttpServlet {
 
         System.out.println(admins);
 
+        query = session.createQuery("from TypeAdmin where id != 1");
+        List<TypeAdmin> types = query.getResultList();
+
         transaction.commit();
         session.close();
         sessionFactory.close();
 
+        req.setAttribute("recAdmins", recAdmins);
+        req.setAttribute("types", types);
         req.setAttribute("admins", admins);
         req.getRequestDispatcher("admin/admins.jsp").forward(req, resp);
 

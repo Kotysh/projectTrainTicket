@@ -9,6 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static ru.dmitriykotyshov.other.Message.noRight;
+import static ru.dmitriykotyshov.other.ValidAdmin.validationSuperAdmin;
+
 /**
  * Created by Дмитрий on 25.01.2018.
  */
@@ -17,15 +20,26 @@ public class DeleteCustomer extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        req.setCharacterEncoding("UTF-8");
+    String typeAdmin = (String) req.getSession().getAttribute("typeAdmin");
 
-        DeleteDAO deleteDAO = ServiceHelper.getInstance("deleteDAO");
+    if(typeAdmin != null && validationSuperAdmin(Integer.valueOf(typeAdmin))) {
 
-        String  customerId = req.getParameter("customer");
+            req.setCharacterEncoding("UTF-8");
 
-        deleteDAO.deleteCustomer(customerId);
+            DeleteDAO deleteDAO = ServiceHelper.getInstance("deleteDAO");
 
-        req.getRequestDispatcher("customer").forward(req, resp);
+            String  customerId = req.getParameter("customer");
+
+            deleteDAO.deleteCustomer(customerId);
+
+            req.getRequestDispatcher("customer").forward(req, resp);
+
+    }else{
+
+        if (typeAdmin!= null) noRight(req, resp);
+        else req.getRequestDispatcher("admin/inputAdmin.jsp").forward(req, resp);
+
+    }
 
     }
 }

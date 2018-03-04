@@ -47,6 +47,9 @@
           <tr>
             <td colspan="4" align="left" id="message">&nbsp;</td>
           </tr>
+          <tr>
+            <td colspan="4"><span id="mess"></span></td>
+          </tr>
         </table>
       </form>
     </div>

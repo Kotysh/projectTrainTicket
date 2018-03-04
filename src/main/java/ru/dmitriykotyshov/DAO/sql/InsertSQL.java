@@ -54,10 +54,6 @@ public class InsertSQL {
     public static String sqlInsertCustomer(String first_name, String middle_name, String last_name,
                                            Date birthday, String gender, String documentID, String documentNumber,
                                            String email, String telephone){
-/*
-        if (gender.length() == 0) gender = "null"; else gender = "'"+gender+"'";
-        if (email.length() == 0) email = "null"; else email = "'"+email+"'";
-        if (telephone.length() == 0) telephone = "null"; else telephone = "'"+telephone+"'";*/
 
         return String.format(SQL_INSERT_CUSTOMER, first_name, middle_name, last_name,
                 dateFormat(birthday), gender, documentID, documentNumber, email, telephone);

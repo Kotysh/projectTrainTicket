@@ -1,5 +1,7 @@
 <%@ page import="ru.dmitriykotyshov.trainticketobjects.City" %>
-<%@ page import="java.util.List" %><%--
+<%@ page import="java.util.List" %>
+<%@ page import="static ru.dmitriykotyshov.other.Message.insufficientRights" %>
+<%@ page import="static ru.dmitriykotyshov.other.ValidAdmin.validationRouteAdmin" %><%--
   Created by IntelliJ IDEA.
   User: Дмитрий
   Date: 13.01.2018
@@ -14,6 +16,9 @@
     if (login == null || password == null){
         request.getRequestDispatcher("inputAdmin.jsp").forward(request, response);
     }
+    Integer typeAdmin = Integer.valueOf((String) request.getSession().getAttribute("typeAdmin"));
+    if (!validationRouteAdmin(typeAdmin))
+        insufficientRights(request, response);
 
 
 %>
@@ -23,6 +28,8 @@
     <title>Administrator</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="../css/new_style.css">
+    <script src="../js/admin/valid.city.js"></script>
+    <script src="../js/admin/valid.delete.js"></script>
 </head>
 <body>
 <div id="header">
@@ -32,20 +39,26 @@
 <div id="wrap">
 <div id="bodyAdmin">
     <p><a href="/admin">На главную администратора</a></p>
-    <form action="/addCity" method="get">
+    <form action="/addCity" onsubmit="return validCity()" method="get">
         <h3>Добавление:</h3>
         <table align="center">
-            <tr>
+            <tr align="center">
                 <td><label for="city"><span class="bold">Город:</span> </label></td><td><input type="text" id="city" name="city"></td>
             </tr>
             <tr>
+                <td colspan="2"><span id="message">&nbsp;</span></td>
+            </tr>
+            <tr align="center">
                 <td colspan="2"><input type="submit" value="Добавить"></td>
             </tr>
         </table>
     </form>
-    <form action="/delCity" method="get">
+    <form action="/delCity" onsubmit="return validDelete('delCity')" method="get">
         <h3>Удаление:</h3>
         <table align="center">
+            <tr>
+                <td colspan="3" id="mesDel"></td>
+            </tr>
             <tr>
                 <td><label for="delCity"><span class="bold">ID:</span> </label></td><td><input type="text" id="delCity" name="city"></td>
                 <td colspan="2"><input type="submit" value="Удалить"></td>

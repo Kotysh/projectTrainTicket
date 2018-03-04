@@ -227,15 +227,6 @@
     </servlet-mapping>
 
     <servlet>
-        <servlet-name>AdminTypeWagon</servlet-name>
-        <servlet-class>ru.dmitriykotyshov.admin.AdminTypeWagon</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>AdminTypeWagon</servlet-name>
-        <url-pattern>/typewagon</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
         <servlet-name>AddTypeWagon</servlet-name>
         <servlet-class>ru.dmitriykotyshov.admin.AddTypeWagon</servlet-class>
     </servlet>
@@ -332,15 +323,6 @@
     <servlet-mapping>
         <servlet-name>DeleteRouteStation</servlet-name>
         <url-pattern>/delRouteStation</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
-        <servlet-name>AdminTicket</servlet-name>
-        <servlet-class>ru.dmitriykotyshov.admin.AdminTicket</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>AdminTicket</servlet-name>
-        <url-pattern>/ticket</url-pattern>
     </servlet-mapping>
 
     <servlet>

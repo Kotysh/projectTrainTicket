@@ -1,6 +1,8 @@
 <%@ page import="ru.dmitriykotyshov.trainticketobjects.City" %>
 <%@ page import="java.util.List" %>
-<%@ page import="ru.dmitriykotyshov.trainticketobjects.RouteDB" %><%--
+<%@ page import="ru.dmitriykotyshov.trainticketobjects.RouteDB" %>
+<%@ page import="static ru.dmitriykotyshov.other.ValidAdmin.validationRouteAdmin" %>
+<%@ page import="static ru.dmitriykotyshov.other.Message.insufficientRights" %><%--
   Created by IntelliJ IDEA.
   User: Дмитрий
   Date: 16.01.2018
@@ -15,6 +17,9 @@
     if (login == null || password == null){
         request.getRequestDispatcher("inputAdmin.jsp").forward(request, response);
     }
+    Integer typeAdmin = Integer.valueOf((String) request.getSession().getAttribute("typeAdmin"));
+    if (!validationRouteAdmin(typeAdmin))
+        insufficientRights(request, response);
 
 
 %>
@@ -24,6 +29,8 @@
     <title>Administrator</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="../css/new_style.css">
+    <script src="../js/admin/valid.route.js"></script>
+    <script src="../js/admin/valid.delete.js"></script>
 </head>
 <body>
 <div id="header">
@@ -33,9 +40,12 @@
 <div id="wrap">
     <div id="bodyAdmin">
         <p><a href="/admin">На главную администратора</a></p>
-        <form action="/addRoute" method="get">
+        <form action="/addRoute" onsubmit="return validRoute()" method="get">
             <h3>Добавление:</h3>
             <table align="center">
+                <tr>
+                    <td colspan="2"><span id="message"></span></td>
+                </tr>
                 <tr>
                     <td><label for="addRoute"><span class="bold">Маршрут:</span> </label></td><td><input type="text" id="addRoute" name="route"></td>
                 </tr>
@@ -44,9 +54,12 @@
                 </tr>
             </table>
         </form>
-        <form action="/delRoute" method="get">
+        <form action="/delRoute" onsubmit="return validDelete('delRoute')" method="get">
             <h3>Удаление:</h3>
             <table align="center">
+                <tr>
+                    <td colspan="3" id="mesDel"></td>
+                </tr>
                 <tr>
                     <td><label for="delRoute"><span class="bold">ID:</span> </label></td><td><input type="text" id="delRoute" name="route"></td>
                     <td colspan="2"><input type="submit" value="Удалить"></td>

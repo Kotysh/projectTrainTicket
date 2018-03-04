@@ -3,6 +3,7 @@ package ru.dmitriykotyshov.admin;
 import ru.dmitriykotyshov.DAO.SelectDAO;
 import ru.dmitriykotyshov.support.ServiceHelper;
 import ru.dmitriykotyshov.trainticketobjects.Customer;
+import ru.dmitriykotyshov.trainticketobjects.Document;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -23,6 +24,9 @@ public class AdminCustomer extends HttpServlet {
 
         List<Customer> customers = selectDAO.getCustomersJoinDocument();
 
+        List<Document> documents = selectDAO.getDocuments();
+
+        req.setAttribute("documents", documents);
         req.setAttribute("customers", customers);
         req.getRequestDispatcher("admin/customer.jsp").forward(req, resp);
 

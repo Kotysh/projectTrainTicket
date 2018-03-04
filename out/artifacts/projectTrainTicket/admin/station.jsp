@@ -1,5 +1,7 @@
 <%@ page import="ru.dmitriykotyshov.trainticketobjects.Station" %>
-<%@ page import="java.util.List" %><%--
+<%@ page import="java.util.List" %>
+<%@ page import="static ru.dmitriykotyshov.other.ValidAdmin.validationRouteAdmin" %>
+<%@ page import="static ru.dmitriykotyshov.other.Message.insufficientRights" %><%--
   Created by IntelliJ IDEA.
   User: Дмитрий
   Date: 13.01.2018
@@ -14,6 +16,9 @@
     if (login == null || password == null){
         request.getRequestDispatcher("inputAdmin.jsp").forward(request, response);
     }
+    Integer typeAdmin = Integer.valueOf((String) request.getSession().getAttribute("typeAdmin"));
+    if (!validationRouteAdmin(typeAdmin))
+        insufficientRights(request, response);
 
 
 
@@ -24,6 +29,8 @@
     <title>Administrator</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="../css/new_style.css">
+    <script src="../js/admin/valid.station.js"></script>
+    <script src="../js/admin/valid.delete.js"></script>
 </head>
 <body>
 <div id="header">
@@ -33,9 +40,15 @@
 <div id="wrap">
 <div id="bodyAdmin">
     <p><a href="/admin">На главную администратора</a></p>
-    <form action="/addStation" method="get">
+    <form action="/addStation" onsubmit="return validStation()" method="get">
         <h3>Добавление:</h3>
         <table align="center">
+            <tr>
+                <td colspan="3"><span id="message">&nbsp;</span></td>
+            </tr>
+            <tr>
+                <td colspan="3"><span id="messageCity">&nbsp;</span></td>
+            </tr>
             <tr>
                 <td><label for="station"><span class="bold">Станция:</span> </label></td><td><input type="text" id="station" name="station"></td>
                 <td><label for="cityId"><span class="bold">ID города:</span> </label></td><td><input type="text" id="cityId" name="cityId"></td>
@@ -43,9 +56,12 @@
             </tr>
         </table>
     </form>
-    <form action="/delStation" method="get">
+    <form action="/delStation" onsubmit="return validDelete('delStation')" method="get">
         <h3>Удаление:</h3>
         <table align="center">
+            <tr>
+                <td colspan="3" id="mesDel"></td>
+            </tr>
             <tr>
                 <td><label for="delStation"><span class="bold">ID:</span> </label></td><td><input type="text" id="delStation" name="station"></td>
                 <td colspan="2"><input type="submit" value="Удалить"></td>

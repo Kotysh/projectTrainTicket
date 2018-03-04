@@ -22,6 +22,7 @@
     <title>Administrator</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="../css/new_style.css">
+    <script src="../js/admin/valid.input.js"></script>
 </head>
 <body>
 <div id="header">
@@ -32,11 +33,14 @@
         <h2>Выполните вход</h2>
 
 
-        <form action="/inputAdmin" method="get">
+        <form action="/inputAdmin" onsubmit="return validInput()" method="get">
             <table align="center">
 
                 <tr align="center">
                     <td colspan="2">Вход</td>
+                </tr>
+                <tr>
+                    <td colspan="2" align="center"><span id="message"></span></td>
                 </tr>
                 <tr>
                     <td><label for="login">Логи: </label></td><td><input type="text" id="login" name="login"></td>

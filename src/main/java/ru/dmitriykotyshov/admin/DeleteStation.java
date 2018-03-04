@@ -9,6 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static ru.dmitriykotyshov.other.Message.noRight;
+import static ru.dmitriykotyshov.other.ValidAdmin.validationRouteAdmin;
+
 
 /**
  * Created by Дмитрий on 13.01.2018.
@@ -18,15 +21,26 @@ public class DeleteStation extends HttpServlet{
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        req.setCharacterEncoding("UTF-8");
+        String typeAdmin = (String) req.getSession().getAttribute("typeAdmin");
 
-        DeleteDAO deleteDAO = ServiceHelper.getInstance("deleteDAO");
+        if(typeAdmin != null && validationRouteAdmin(Integer.valueOf(typeAdmin))) {
 
-        String stationId = req.getParameter("station");
+            req.setCharacterEncoding("UTF-8");
 
-        deleteDAO.deleteStation(stationId);
+            DeleteDAO deleteDAO = ServiceHelper.getInstance("deleteDAO");
 
-        req.getRequestDispatcher("station").forward(req, resp);
+            String stationId = req.getParameter("station");
+
+            deleteDAO.deleteStation(stationId);
+
+            req.getRequestDispatcher("station").forward(req, resp);
+
+        }else{
+
+            if (typeAdmin!= null) noRight(req, resp);
+            else req.getRequestDispatcher("admin/inputAdmin.jsp").forward(req, resp);
+
+        }
 
     }
 }

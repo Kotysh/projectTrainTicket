@@ -9,6 +9,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static ru.dmitriykotyshov.other.Message.noRight;
+import static ru.dmitriykotyshov.other.ValidAdmin.validationRouteAdmin;
+import static ru.dmitriykotyshov.other.ValidAdmin.validationTrainAdmin;
+
 /**
  * Created by Дмитрий on 26.01.2018.
  */
@@ -17,15 +21,26 @@ public class DeleteWagon extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        req.setCharacterEncoding("UTF-8");
+        String typeAdmin = (String) req.getSession().getAttribute("typeAdmin");
 
-        DeleteDAO deleteDAO = ServiceHelper.getInstance("deleteDAO");
+        if(typeAdmin != null && validationTrainAdmin(Integer.valueOf(typeAdmin))) {
 
-        String  wagonId = (req.getParameter("wagon"));
+            req.setCharacterEncoding("UTF-8");
 
-        deleteDAO.deleteWagon(wagonId);
+            DeleteDAO deleteDAO = ServiceHelper.getInstance("deleteDAO");
 
-        req.getRequestDispatcher("wagon").forward(req, resp);
+            String  wagonId = (req.getParameter("wagon"));
+
+            deleteDAO.deleteWagon(wagonId);
+
+            req.getRequestDispatcher("wagon").forward(req, resp);
+
+        }else{
+
+            if (typeAdmin!= null) noRight(req, resp);
+            else req.getRequestDispatcher("admin/inputAdmin.jsp").forward(req, resp);
+
+        }
 
     }
 }

@@ -9,6 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static ru.dmitriykotyshov.other.Message.noRight;
+import static ru.dmitriykotyshov.other.ValidAdmin.validationRouteAdmin;
+
 /**
  * Created by Дмитрий on 16.01.2018.
  */
@@ -17,15 +20,26 @@ public class AddRoute extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        req.setCharacterEncoding("UTF-8");
+        String typeAdmin = (String) req.getSession().getAttribute("typeAdmin");
 
-        InsertDAO insertDAO = ServiceHelper.getInstance("insertDAO");
+        if(typeAdmin != null && validationRouteAdmin(Integer.valueOf(typeAdmin))){
 
-        String route = req.getParameter("route");
+            req.setCharacterEncoding("UTF-8");
 
-        insertDAO.insertRoute(route);
+            InsertDAO insertDAO = ServiceHelper.getInstance("insertDAO");
 
-        req.getRequestDispatcher("route").forward(req, resp);
+            String route = req.getParameter("route");
+
+            insertDAO.insertRoute(route);
+
+            req.getRequestDispatcher("route").forward(req, resp);
+
+        }else{
+
+            if (typeAdmin!= null) noRight(req, resp);
+            else req.getRequestDispatcher("admin/inputAdmin.jsp").forward(req, resp);
+
+        }
 
     }
 }

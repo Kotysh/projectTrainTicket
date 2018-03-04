@@ -25,10 +25,12 @@ public class Message {
     private static final String NO_SUPER_ADMIN = "Нельзя создать супер администратора!!!";
     private static final String NAME_ALREADY_EXISTS = "Администратор с именем %s, уже существует!!!";
     private static final String NO_DELETE_SUPER_ADMIN = "Нельзя удалить супер администратора!!!";
+    private static final String INSUFFICIENT_RIGHTS = "Недостаточно прав";
 
 
     private static final String MESSAGE_PAGE = "messagepage.jsp";
     private static final String ADMIN_MESSAGE = "admin/adminmessage.jsp";
+    private static final String IN_ADMIN_MESSAGE = "adminmessage.jsp";
 
 
     private final static Logger logger = Logger.getLogger(Buy.class);
@@ -86,6 +88,18 @@ public class Message {
     public static void noDeleteSuperAdmin(HttpServletRequest request, HttpServletResponse response){
 
         getMessage(request, response, NO_DELETE_SUPER_ADMIN, ADMIN_MESSAGE);
+
+    }
+
+    public static void insufficientRights(HttpServletRequest request, HttpServletResponse response){
+
+        getMessage(request, response, INSUFFICIENT_RIGHTS, IN_ADMIN_MESSAGE);
+
+    }
+
+    public static void noRight(HttpServletRequest request, HttpServletResponse response){
+
+        getMessage(request, response, INSUFFICIENT_RIGHTS, ADMIN_MESSAGE);
 
     }
 

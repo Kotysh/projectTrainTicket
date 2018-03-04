@@ -1,6 +1,7 @@
 package ru.dmitriykotyshov;
 
 import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import ru.dmitriykotyshov.DAO.InsertDAO;
 import ru.dmitriykotyshov.DAO.SelectDAO;
 import ru.dmitriykotyshov.mail.Message;
@@ -25,6 +26,7 @@ import static ru.dmitriykotyshov.other.MyDate.get5Minute;
 /**
  * Created by Дмитрий on 26.01.2018.
  */
+@EnableTransactionManagement
 public class Buy extends HttpServlet {
 
     private final static Logger logger = Logger.getLogger(Buy.class);

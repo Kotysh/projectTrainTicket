@@ -2,6 +2,7 @@ package ru.dmitriykotyshov.DAO;
 
 import ru.dmitriykotyshov.other.MyDate;
 
+import javax.transaction.Transactional;
 import java.util.Date;
 
 import static ru.dmitriykotyshov.DAO.sql.InsertSQL.*;

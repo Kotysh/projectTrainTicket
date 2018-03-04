@@ -9,6 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static ru.dmitriykotyshov.other.Message.noRight;
+import static ru.dmitriykotyshov.other.ValidAdmin.validationRouteAdmin;
+
 /**
  * Created by Дмитрий on 26.01.2018.
  */
@@ -17,32 +20,43 @@ public class AddRouteStation extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        req.setCharacterEncoding("UTF-8");
+        String typeAdmin = (String) req.getSession().getAttribute("typeAdmin");
 
-        InsertDAO insertDAO = ServiceHelper.getInstance("insertDAO");
+        if(typeAdmin != null && validationRouteAdmin(Integer.valueOf(typeAdmin))){
 
-        String routeId = req.getParameter("routeId");
-        String stationId = req.getParameter("stationId");
-        String orderStation = req.getParameter("orderStation");
+            req.setCharacterEncoding("UTF-8");
 
-        Integer arrivalYear = Integer.valueOf(req.getParameter("arrivalYear"));
-        Integer arrivalMonth = Integer.valueOf(req.getParameter("arrivalMonth"));
-        Integer arrivalDay = Integer.valueOf(req.getParameter("arrivalDay"));
-        Integer arrivalHour = Integer.valueOf(req.getParameter("arrivalHour"));
-        Integer arrivalMinute = Integer.valueOf(req.getParameter("arrivalMinute"));
+            InsertDAO insertDAO = ServiceHelper.getInstance("insertDAO");
 
-        Integer departureYear = Integer.valueOf(req.getParameter("departureYear"));
-        Integer departureMonth = Integer.valueOf(req.getParameter("departureMonth"));
-        Integer departureDay = Integer.valueOf(req.getParameter("departureDay"));
-        Integer departureHour = Integer.valueOf(req.getParameter("departureHour"));
-        Integer departureMinute = Integer.valueOf(req.getParameter("departureMinute"));
+            String routeId = req.getParameter("routeId");
+            String stationId = req.getParameter("stationId");
+            String orderStation = req.getParameter("orderStation");
 
-        Integer distance = Integer.valueOf(req.getParameter("distance"));
+            Integer arrivalYear = Integer.valueOf(req.getParameter("arrivalYear"));
+            Integer arrivalMonth = Integer.valueOf(req.getParameter("arrivalMonth"));
+            Integer arrivalDay = Integer.valueOf(req.getParameter("arrivalDay"));
+            Integer arrivalHour = Integer.valueOf(req.getParameter("arrivalHour"));
+            Integer arrivalMinute = Integer.valueOf(req.getParameter("arrivalMinute"));
 
-        insertDAO.insertRouteStation(routeId, stationId, orderStation, arrivalYear, arrivalMonth, arrivalDay, arrivalHour, arrivalMinute,
-                departureYear, departureMonth, departureDay, departureHour, departureMinute, distance);
+            Integer departureYear = Integer.valueOf(req.getParameter("departureYear"));
+            Integer departureMonth = Integer.valueOf(req.getParameter("departureMonth"));
+            Integer departureDay = Integer.valueOf(req.getParameter("departureDay"));
+            Integer departureHour = Integer.valueOf(req.getParameter("departureHour"));
+            Integer departureMinute = Integer.valueOf(req.getParameter("departureMinute"));
 
-        req.getRequestDispatcher("routestation").forward(req, resp);
+            Integer distance = Integer.valueOf(req.getParameter("distance"));
+
+            insertDAO.insertRouteStation(routeId, stationId, orderStation, arrivalYear, arrivalMonth, arrivalDay, arrivalHour, arrivalMinute,
+                    departureYear, departureMonth, departureDay, departureHour, departureMinute, distance);
+
+            req.getRequestDispatcher("routestation").forward(req, resp);
+
+        }else{
+
+            if (typeAdmin!= null) noRight(req, resp);
+            else req.getRequestDispatcher("admin/inputAdmin.jsp").forward(req, resp);
+
+        }
 
     }
 }

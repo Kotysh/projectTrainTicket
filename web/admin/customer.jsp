@@ -1,5 +1,8 @@
 <%@ page import="java.util.List" %>
 <%@ page import="ru.dmitriykotyshov.trainticketobjects.Customer" %>
+<%@ page import="ru.dmitriykotyshov.trainticketobjects.Document" %>
+<%@ page import="static ru.dmitriykotyshov.other.ValidAdmin.validationSuperAdmin" %>
+<%@ page import="static ru.dmitriykotyshov.other.Message.insufficientRights" %>
 <%--
   Created by IntelliJ IDEA.
   User: Дмитрий
@@ -15,6 +18,23 @@
     if (login == null || password == null){
         request.getRequestDispatcher("inputAdmin.jsp").forward(request, response);
     }
+    Integer typeAdmin = Integer.valueOf((String) request.getSession().getAttribute("typeAdmin"));
+    if (!validationSuperAdmin(typeAdmin))
+        insufficientRights(request, response);
+
+
+    List<Document> documents = (List<Document>) request.getAttribute("documents");
+
+    StringBuilder documentsBuilder = new StringBuilder();
+
+    for (int i = 0 ; i<documents.size(); i++){
+
+        documentsBuilder.append("<tr>\n<td></td>"+
+                "<td><input name = \"document\" type=\"radio\""+
+                "value=\""+documents.get(i).getId()+"\">"+documents.get(i).getDocument()+"</td>\n"+
+                "</tr>\n");
+
+    }
 
 
 %>
@@ -23,6 +43,8 @@
     <title>Administrator</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="../css/new_style.css">
+    <script src="../js/admin/valid.customer.js"></script>
+    <script src="../js/admin/valid.delete.js"></script>
 </head>
 <body>
 <div id="header">
@@ -32,49 +54,65 @@
 <div id="wrap">
     <div id="bodyAdmin">
         <p><a href="/admin">На главную администратора</a></p>
-        <form action="/addCustomer" method="get">
+        <form action="/addCustomer" onsubmit="return validCustomer()" method="get">
             <h3>Добавление:</h3>
             <table align="center">
                 <tr>
-                    <td><label for="firstName"><span class="bold">Имя:</span> </label></td><td colspan="3"><input type="text" id="firstName" name="firstName"></td>
+                    <td><label for="firstName"><span class="bold">Имя:</span> </label></td><td colspan="3"><input type="text" id="firstName" name="firstName"><span id="erFirstName">&nbsp;</span></td>
                 </tr>
                 <tr>
-                    <td><label for="middleName"><span class="bold">Отчество:</span> </label></td><td colspan="3"><input type="text" id="middleName" name="middleName"></td>
+                    <td><label for="middleName"><span class="bold">Отчество:</span> </label></td><td colspan="3"><input type="text" id="middleName" name="middleName"><span id="erMiddleName">&nbsp;</span></td>
                 </tr>
                 <tr>
-                    <td><label for="lastName"><span class="bold">Фамилия:</span> </label></td><td colspan="3"><input type="text" id="lastName" name="lastName"></td>
+                    <td><label for="lastName"><span class="bold">Фамилия:</span> </label></td><td colspan="3"><input type="text" id="lastName" name="lastName"><span id="erLastName">&nbsp;</span></td>
                 </tr>
                 <tr>
-                    <td><label><span class="bold">Дата рождения (YYYY-MM-DD):</span> </label></td>
+                    <td><label><span class="bold">Дата рождения (YYYY-MM-DD):</span><span id="noDate">&nbsp;</span> </label></td>
                     <td><input type="text" id="year" name="year"></td>
                     <td><input type="text" id="month" name="month"></td>
                     <td><input type="text" id="day" name="day"></td>
                 </tr>
                 <tr>
-                    <td><label for="gender"><span class="bold">Пол:</span> </label></td><td colspan="3"><input type="text" id="gender" name="gender"></td>
+                    <td><span class="bold">Пол: </span><span id="noGender">&nbsp;</span></td>
+                    <td><input name="gender" type="radio" value="1">Мужской</td>
+                    <td><input name="gender" type="radio" value="">Женский</td>
                 </tr>
+                <tr><td>
+                <table align="center">
+                    <tr>
+                        <td colspan="2">Тип документа:<span id="noDocument">&nbsp;</span></td>
+                    </tr>
+                    <%=documentsBuilder%>
+                    <tr>
+                        <td><label for="documentNumber"><span class="bold">Номер документа:</span> </label></td><td colspan="3"><input type="text" id="documentNumber" name="documentNumber"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="email"><span class="bold">Email:</span> </label></td><td colspan="3"><input type="text" id="email" name="email"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="3"><span id="erTelephone"></span></td>
+                    </tr>
+                    <tr>
+                        <td><label for="telephone"><span class="bold">Телефон:</span></label></td><td>+7<input type="text" id="telephone" name="telephone"></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td colspan="2"><input type="submit" value="Добавить"></td>
+                        <td></td>
+                    </tr>
+                </td></tr>
+                </table>
                 <tr>
-                    <td><label for="documentID"><span class="bold">ID документа:</span> </label></td><td colspan="3"><input type="text" id="documentID" name="documentID"></td>
-                </tr>
-                <tr>
-                    <td><label for="documentNumber"><span class="bold">Номер документа:</span> </label></td><td colspan="3"><input type="text" id="documentNumber" name="documentNumber"></td>
-                </tr>
-                <tr>
-                    <td><label for="email"><span class="bold">Email:</span> </label></td><td colspan="3"><input type="text" id="email" name="email"></td>
-                </tr>
-                <tr>
-                    <td><label for="telephone"><span class="bold">Телефон:</span> </label></td><td colspan="3"><input type="text" id="telephone" name="telephone"></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td colspan="2"><input type="submit" value="Добавить"></td>
-                    <td></td>
-                </tr>
+                    <td><span id="message">&nbsp;</span></td>
+            </tr>
             </table>
         </form>
-        <form action="/delCustomer" method="get">
+        <form action="/delCustomer" onsubmit="return validDelete('delCustomer')" method="get">
             <h3>Удаление:</h3>
             <table align="center">
+                <tr>
+                    <td colspan="3" id="mesDel"></td>
+                </tr>
                 <tr>
                     <td><label for="delCustomer"><span class="bold">ID:</span> </label></td><td><input type="text" id="delCustomer" name="customer"></td>
                     <td colspan="2"><input type="submit" value="Удалить"></td>

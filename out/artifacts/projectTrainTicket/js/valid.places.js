@@ -15,19 +15,19 @@ function validPlace() {
     var now = new Date();
 
 
-    if (firstName.value.trim().length == 0){
+    if (firstName.value.trim().length == 0 || firstName.value.trim().length > 40){
         firstName.style.border = redBorder;
         countNotValid++;
     }else{
         firstName.style.border = noBorder;
     }
-    if (middleName.value.trim().length == 0){
+    if (middleName.value.trim().length == 0 || middleName.value.trim().length > 40){
         middleName.style.border = redBorder;
         countNotValid++;
     }else{
         middleName.style.border = noBorder;
     }
-    if(lastName.value.trim().length == 0){
+    if(lastName.value.trim().length == 0 || lastName.value.trim().length > 40){
         lastName.style.border = redBorder;
         countNotValid++;
     }else{
@@ -40,6 +40,7 @@ function validPlace() {
         birthday.style.border = noBorder;
     }
 
+
     var email = document.getElementById('email');
     if (email.value.trim().length == 0){
         email.style.border = redBorder;
@@ -49,7 +50,7 @@ function validPlace() {
     }
 
     var docNumber = document.getElementById('docNumber');
-    if (docNumber.value.trim().length == 0){
+    if (docNumber.value.trim().length == 0 || docNumber.value.trim().length > 40){
         docNumber.style.border = redBorder;
         countNotValid++;
     }else{
@@ -59,6 +60,7 @@ function validPlace() {
 
     var radioGender = document.getElementsByName('gender');
     var perGender = check(radioGender);
+
     var gender = document.getElementById('noGender');
 
     if (perGender == 0){
@@ -68,7 +70,6 @@ function validPlace() {
     }else{
         gender.innerHTML = "";
     }
-
 
     var radioDocument = document.getElementsByName('document');
     var perDocument = check(radioDocument);
@@ -96,10 +97,17 @@ function validPlace() {
         pl.innerHTML = "";
     }
 
-
-
-
-
+    var telephone = document.getElementById('telephone');
+    var erTelephone = document.getElementById('erTelephone');
+    if ((telephone.value.trim() == 0) || (telephone.value.trim().length == 10 &&  isInteger(telephone.value.trim()))){
+        telephone.style.border = noBorder;
+        erTelephone.innerHTML = "";
+    }else{
+        telephone.style.border = redBorder;
+        erTelephone.innerHTML = "номер записан не правильно";
+        erTelephone.style.color = "red";
+        countNotValid++;
+    }
 
 
     if (countNotValid > 0){
@@ -113,8 +121,9 @@ function validPlace() {
 
 
 }
-
-
+function isInteger(num) {
+    return num%1 == 0 && num>0;
+}
 function check(inp)
 {
 

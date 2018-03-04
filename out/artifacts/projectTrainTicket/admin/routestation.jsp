@@ -1,5 +1,7 @@
 <%@ page import="ru.dmitriykotyshov.trainticketobjects.RouteStation" %>
-<%@ page import="java.util.List" %><%--
+<%@ page import="java.util.List" %>
+<%@ page import="static ru.dmitriykotyshov.other.ValidAdmin.validationRouteAdmin" %>
+<%@ page import="static ru.dmitriykotyshov.other.Message.insufficientRights" %><%--
   Created by IntelliJ IDEA.
   User: Дмитрий
   Date: 26.01.2018
@@ -14,6 +16,9 @@
     if (login == null || password == null){
         request.getRequestDispatcher("inputAdmin.jsp").forward(request, response);
     }
+    Integer typeAdmin = Integer.valueOf((String) request.getSession().getAttribute("typeAdmin"));
+    if (!validationRouteAdmin(typeAdmin))
+        insufficientRights(request, response);
 
 
 %>
@@ -22,6 +27,8 @@
     <title>Administrator</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="../css/new_style.css">
+    <script src="../js/admin/valid.routestations.js"></script>
+    <script src="../js/admin/valid.delete.js"></script>
 </head>
 <body>
 <div id="header">
@@ -31,17 +38,29 @@
 <div id="wrap">
     <div id="bodyAdmin">
         <p><a href="/admin">На главную администратора</a></p>
-        <form action="/addRouteStation" method="get">
+        <form action="/addRouteStation" onsubmit="return validRouteStation()" method="get">
             <h3>Добавление:</h3>
             <table align="center">
                 <tr>
+                    <td colspan="2"><span id="erRoute"></span></td>
+                </tr>
+                <tr>
                     <td><label for="routeId"><span class="bold">ID маршрута:</span> </label></td><td colspan="3"><input type="text" id="routeId" name="routeId"></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><span id="erStation"></span></td>
                 </tr>
                 <tr>
                     <td><label for="stationId"><span class="bold">ID станции:</span> </label></td><td colspan="3"><input type="text" id="stationId" name="stationId"></td>
                 </tr>
                 <tr>
+                    <td colspan="2"><span id="erOrderStation"></span></td>
+                </tr>
+                <tr>
                     <td><label for="orderStation"><span class="bold">Порядковый номер станции:</span> </label></td><td colspan="3"><input type="text" id="orderStation" name="orderStation"></td>
+                </tr>
+                <tr>
+                    <td colspan="6"><span id="erArrivalTime"></span></td>
                 </tr>
                 <tr>
                     <td><label><span class="bold">Дата прибытия (YYYY-MM-DD HH:MM):</span> </label></td>
@@ -52,6 +71,9 @@
                     <td><input type="text" id="arrivalMinute" name="arrivalMinute"></td>
                 </tr>
                 <tr>
+                    <td colspan="6"><span id="erDepartureTime"></span></td>
+                </tr>
+                <tr>
                     <td><label><span class="bold">Дата убытия (YYYY-MM-DD HH:MM):</span> </label></td>
                     <td><input type="text" id="departureYear" name="departureYear"></td>
                     <td><input type="text" id="departureMonth" name="departureMonth"></td>
@@ -60,7 +82,10 @@
                     <td><input type="text" id="departureMinute" name="departureMinute"></td>
                 </tr>
                 <tr>
-                    <td><label for="distance"><span class="bold">Дистанция от место убытия:</span> </label></td><td colspan="3"><input type="text" id="distance" name="distance"></td>
+                    <td><span id="messageDis"></span></td>
+                </tr>
+                <tr>
+                    <td><label for="distance"><span class="bold">Дистанция от место убытия (км):</span> </label></td><td colspan="3"><input type="text" id="distance" name="distance"></td>
                 </tr>
                 <tr>
                     <td></td>
@@ -69,9 +94,12 @@
                 </tr>
             </table>
         </form>
-        <form action="/delRouteStation" method="get">
+        <form action="/delRouteStation" onsubmit="return validDelete('delRouteStation')" method="get">
             <h3>Удаление:</h3>
             <table align="center">
+                <tr>
+                    <td colspan="3" id="mesDel"></td>
+                </tr>
                 <tr>
                     <td><label for="delRouteStation"><span class="bold">ID:</span> </label></td><td><input type="text" id="delRouteStation" name="routeStation"></td>
                     <td colspan="2"><input type="submit" value="Удалить"></td>

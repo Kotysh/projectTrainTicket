@@ -131,6 +131,11 @@ public class SelectSQL {
             "join type_wagon on wagon.TYPE_WAGON_ID = type_wagon.type_wagon_id " +
             "join train on wagon.train_id = train.train_id";
 
+    private final static String SQL_GET_RECURSIVE_ADMINS = "SELECT lpad(' ', 5*level)||NAME as name\n" +
+            "FROM ADMIN\n" +
+            "START WITH BOSS is null\n" +
+            "CONNECT BY PRIOR ADMIN_ID = BOSS";
+
 
 
     private final static Logger logger = Logger.getLogger(SelectDAO.class);
@@ -391,6 +396,12 @@ public class SelectSQL {
     public static String sqlGetWagonIdByNumberTrainAndOrderWagon(){
 
         return SQL_GET_WAGONS_JOIN_TYPE_WAGON_AND_TRAIN;
+
+    }
+
+    public static String getSqlRecursiveAdmins(){
+
+        return SQL_GET_RECURSIVE_ADMINS;
 
     }
 

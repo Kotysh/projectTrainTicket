@@ -68,13 +68,14 @@ public class AddAdmin extends HttpServlet {
                 admin.setTypeAdmin(typeAdmin);
                 session.save(admin);
 
-                req.getRequestDispatcher("admins").forward(req, resp);
+                resp.sendRedirect("admins");
 
             }
 
             transaction.commit();
             session.close();
             sessionFactory.close();
+
         }
 
     }

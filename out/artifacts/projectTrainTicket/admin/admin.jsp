@@ -1,4 +1,4 @@
-<%--
+<%@ page import="static ru.dmitriykotyshov.other.ValidAdmin.menuAdmin" %><%--
   Created by IntelliJ IDEA.
   User: Дмитрий
   Date: 13.01.2018
@@ -16,29 +16,7 @@
 
     Integer typeAdmin = Integer.valueOf((String) request.getSession().getAttribute("typeAdmin"));
 
-    StringBuilder menu = new StringBuilder();
-    if (typeAdmin == 1){
-        menu.append("<li><a href=\"/customer\">Клиент(CUSTOMER)</a></li>\n"+
-                    "<li><a href=\"/city\">Город(CITY)</a></li>\n"+
-                    "<li><a href=\"/station\">Станция(STATION)</a></li>\n"+
-                    "<li><a href=\"/document\">Документ(DOCUMENT)</a></li>\n"+
-                    "<li><a href=\"/route\">Маршрут(ROUTE)</a></li>\n"+
-                    "<li><a href=\"/routestation\">Маршруты и станции(ROUTE_STATION)</a></li>\n"+
-                    "<li><a href=\"/train\">Поезд(TRAIN)</a></li>\n"+
-                    " <li><a href=\"/wagon\">Вагон(WAGON)</a></li>\n"+
-                    "<li><a href=\"/typewagon\">Тип вагона(TYPE_WAGON)</a></li>\n"+
-                    "<li><a href=\"/ticket\">Билет(TICKET)</a></li>\n"+
-                    "<li><a href=\"/admins\">Администратор(ADMIN)</a></li>\n");
-    } else if (typeAdmin == 2){
-        menu.append("<li><a href=\"/train\">Поезд(TRAIN)</a></li>\n"+
-                    " <li><a href=\"/wagon\">Вагон(WAGON)</a></li>\n"+
-                    "<li><a href=\"/typewagon\">Тип вагона(TYPE_WAGON)</a></li>");
-    }else if (typeAdmin == 3){
-        menu.append("<li><a href=\"/city\">Город(CITY)</a></li>\n"+
-                    "<li><a href=\"/station\">Станция(STATION)</a></li>\n"+
-                    "<li><a href=\"/route\">Маршрут(ROUTE)</a></li>\n"+
-                    "<li><a href=\"/routestation\">Маршруты и станции(ROUTE_STATION)</a></li>");
-    }
+    String menu = menuAdmin(typeAdmin);
 
 
 %>

@@ -15,8 +15,8 @@
     <link rel="stylesheet" href="css/new_style.css">
     <link href="css/datepicker.min.css" rel="stylesheet" type="text/css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-    <script src="js/datepicker.js"></script>
     <script src="js/valid.routes.js"></script>
+    <script src="js/datepicker.js"></script>
 </head>
 <body>
     <div id="header">
@@ -45,6 +45,9 @@
                     </tr>
                     <tr>
                         <td colspan="4" align="left" id="message">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4"><span id="mess"></span></td>
                     </tr>
                 </table>
             </form>

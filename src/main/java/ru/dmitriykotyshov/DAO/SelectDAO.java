@@ -1,7 +1,8 @@
 package ru.dmitriykotyshov.DAO;
 
 import org.apache.log4j.Logger;
-import ru.dmitriykotyshov.other.MyDate;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import ru.dmitriykotyshov.other.PairTimestampDistance;
 import ru.dmitriykotyshov.trainticketobjects.*;
 
@@ -176,6 +177,8 @@ public class SelectDAO {
 
                                 PairTimestampDistance timestampFirstStation = getTimestampStation(resultSet.getInt(1), firstStationList.get(i).getId(), date, 1);
                                 PairTimestampDistance timestampSecondStation = getTimestampStation(resultSet.getInt(1), secondStationList.get(j).getId(), date, 2);
+
+                                if (timestampFirstStation.getTimestamp()== null || timestampSecondStation.getTimestamp() == null) continue;
 
                                 Route newRoute = new Route(resultSet.getInt(1), resultSet.getString(2),
                                         firstStationList.get(i), secondStationList.get(j),
@@ -681,6 +684,27 @@ public class SelectDAO {
         connectionDAO.disconnect();
 
         return wagons;
+
+    }
+
+    public List<String> getRecursiveAdmins(){
+
+        ConnectionDAO connectionDAO = new ConnectionDAO();
+
+        ResultSet resultSet = connectionDAO.getSelect(getSqlRecursiveAdmins());
+
+        List<String> admins = new ArrayList<String>();
+
+        try {
+            while(resultSet.next()){
+                admins.add(resultSet.getString("name"));
+                logger.trace(resultSet.getString("name"));
+            }
+        } catch (SQLException e) {
+            logger.debug("getRecursiveAdmins() - SQLException: ", e);
+        }
+
+        return admins;
 
     }
 

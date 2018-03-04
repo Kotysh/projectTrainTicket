@@ -74,10 +74,10 @@
     <link rel="stylesheet" href="css/styles_places.css">
     <link rel="stylesheet" href="css/new_style.css">
     <link rel="stylesheet" href="css/linkMenu.css">
+    <script src="js/valid.places.js"></script>
     <link href="css/datepicker.min.css" rel="stylesheet" type="text/css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="js/datepicker.js"></script>
-    <script src="js/valid.place.js"></script>
     <style>
         #wagonPlaces{
             border: 1px solid black;
@@ -143,7 +143,10 @@
                     <td><label for="email"><span class="bold">*email:</span> </label></td><td colspan="2"><input type="text" id="email" name="email"></td>
                 </tr>
                 <tr>
-                    <td><label for="telephone"><span class="bold">телефон:</span> </label></td><td colspan="2"><input type="text" id="telephone" name="telephone"></td>
+                    <td colspan="2"><span id="erTelephone"></span></td>
+                </tr>
+                <tr>
+                    <td><label for="telephone"><span class="bold">телефон:</span> </label></td><td colspan="2">+7<input type="text" id="telephone" name="telephone"></td>
                 </tr>
                 <tr>
                     <td colspan="3"><input type="submit" value="Купить"></td>

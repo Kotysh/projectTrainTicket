@@ -12,13 +12,13 @@ function validRoute () {
     var bold = "bold";
     var countNotValid = 0;
 
-    if (firstField.length == 0){
+    if (firstField.length == 0 || firstField.length > 256){
         document.getElementById('stationOne').style.border = redBorder;
         countNotValid++;
     }else{
         document.getElementById('stationOne').style.border = noBorder;
     }
-    if(secondField.length == 0){
+    if(secondField.length == 0 || secondField.length > 256){
         document.getElementById('stationTwo').style.border = redBorder;
         countNotValid++;
     }else{
@@ -34,6 +34,11 @@ function validRoute () {
     if (countNotValid > 0){
         document.getElementById('message').innerHTML = "Заполните форму";
         var mes = document.getElementById('message');
+        if (firstField.length > 256 || secondField.length > 256){
+            document.getElementById('mess').innerHTML = "Слишком длинное имя станции(максимум 256 символов)";
+            document.getElementById('mess').style.color = "#f03600";
+            document.getElementById('mess').style.fontWeight = bold;
+        }
         mes.style.color = "#f03600";
         mes.style.fontWeight = bold;
         return false;

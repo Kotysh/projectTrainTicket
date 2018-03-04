@@ -9,6 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static ru.dmitriykotyshov.other.Message.noRight;
+import static ru.dmitriykotyshov.other.ValidAdmin.validationTrainAdmin;
+
 /**
  * Created by Дмитрий on 26.01.2018.
  */
@@ -17,17 +20,28 @@ public class AddWagon extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        req.setCharacterEncoding("UTF-8");
+        String typeAdmin = (String) req.getSession().getAttribute("typeAdmin");
 
-        InsertDAO insertDAO = ServiceHelper.getInstance("insertDAO");
+        if(typeAdmin != null && validationTrainAdmin(Integer.valueOf(typeAdmin))){
 
-        String trainId = req.getParameter("trainId");
-        String typeWagonId = req.getParameter("typeWagonId");
-        String orderWagon = req.getParameter("orderWagon");
+            req.setCharacterEncoding("UTF-8");
 
-        insertDAO.insertWagon(trainId, typeWagonId, orderWagon);
+            InsertDAO insertDAO = ServiceHelper.getInstance("insertDAO");
 
-        req.getRequestDispatcher("wagon").forward(req, resp);
+            String trainId = req.getParameter("trainId");
+            String typeWagonId = req.getParameter("typeWagonId");
+            String orderWagon = req.getParameter("orderWagon");
+
+            insertDAO.insertWagon(trainId, typeWagonId, orderWagon);
+
+            req.getRequestDispatcher("wagon").forward(req, resp);
+
+        }else{
+
+            if (typeAdmin!= null) noRight(req, resp);
+            else req.getRequestDispatcher("admin/inputAdmin.jsp").forward(req, resp);
+
+        }
 
     }
 }

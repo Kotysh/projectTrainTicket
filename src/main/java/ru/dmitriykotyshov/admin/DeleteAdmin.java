@@ -39,7 +39,7 @@ public class DeleteAdmin extends HttpServlet {
             noDeleteSuperAdmin(req, resp);
         }else{
             session.remove(admin);
-            req.getRequestDispatcher("admins").forward(req, resp);
+            resp.sendRedirect("admins");
         }
 
         transaction.commit();
