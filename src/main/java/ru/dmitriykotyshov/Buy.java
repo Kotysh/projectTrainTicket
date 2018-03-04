@@ -2,6 +2,7 @@ package ru.dmitriykotyshov;
 
 import org.apache.log4j.Logger;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Transactional;
 import ru.dmitriykotyshov.DAO.InsertDAO;
 import ru.dmitriykotyshov.DAO.SelectDAO;
 import ru.dmitriykotyshov.mail.Message;
@@ -107,29 +108,52 @@ public class Buy extends HttpServlet {
 
             logger.trace("insert ticket");
             logger.trace("place check...");
-            Set<Integer> places = selectDAO.getPlaces(new Wagon(wagonId, route.getTimeDateFirstStation(), route.getTimeDateSecondStation()));
 
-            if (places.contains(place)) {
+            method(place, insertDAO, selectDAO, route, customerId, wagonId, date,
+                    firstRouteStationId, secondRouteStationId,
+                    wagon, firstName, middleName,
+                    email, req, resp);
+        }
+    }
 
-                logger.trace("Place "+place+" check");
-                placeBought(req, resp);
+    @Transactional
+    public void method(int place,
+                       InsertDAO insertDAO,
+                       SelectDAO selectDAO,
+                       Route route,
+                       int customerId, int wagonId, String date,
+                       int firstRouteStationId, int secondRouteStationId,
+                       Wagon wagon, String firstName, String middleName,
+                       String email,
+                       HttpServletRequest req, HttpServletResponse resp){
 
-            }else {
+        Set<Integer> places = selectDAO.getPlaces(new Wagon(wagonId, route.getTimeDateFirstStation(), route.getTimeDateSecondStation()));
+        if (places.contains(place)) {
 
-                insertDAO.insertTicket(customerId, wagonId, String.valueOf(place), date, firstRouteStationId, secondRouteStationId, wagon.getPrice());
+            logger.trace("Place "+place+" check");
+            placeBought(req, resp);
 
-                String text = String.format(textMessage, firstName, middleName);
-                logger.trace("text message - " + text);
+        }else {
 
-                Message message = new Message(email, "Train&Ticket", text);
-                message.sendMessage();
+            insertDAO.insertTicket(customerId, wagonId, String.valueOf(place), date, firstRouteStationId, secondRouteStationId, wagon.getPrice());
 
-                logger.trace("ALL OK!");
-                req.setAttribute("firstName", firstName);
-                req.setAttribute("middleName", middleName);
+            String text = String.format(textMessage, firstName, middleName);
+            logger.trace("text message - " + text);
+
+            Message message = new Message(email, "Train&Ticket", text);
+            message.sendMessage();
+
+            logger.trace("ALL OK!");
+            req.setAttribute("firstName", firstName);
+            req.setAttribute("middleName", middleName);
+            try {
                 req.getRequestDispatcher("buy.jsp").forward(req, resp);
-
+            } catch (ServletException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+
         }
     }
 }
